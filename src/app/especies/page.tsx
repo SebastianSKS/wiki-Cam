@@ -78,8 +78,8 @@ function FilterButton({
       aria-current={active ? "true" : undefined}
       className={cn(
         "inline-flex items-center gap-2 rounded-full border-[3px] border-line px-4 py-2 text-sm font-extrabold",
-        "shadow-[0_4px_0_0_var(--line)] transition-transform duration-150 ease-[var(--ease-bounce)]",
-        "hover:-translate-y-0.5 active:translate-y-[4px] active:scale-95 active:shadow-none",
+        "shadow-[var(--shadow-toy)] transition-transform duration-150 ease-[var(--ease-bounce)]",
+        "hover:-translate-y-0.5 active:translate-y-1 active:scale-95 active:shadow-[var(--shadow-toy-press)]",
         active ? tone ?? "bg-ink text-paper" : "bg-paper text-ink-soft",
       )}
     >

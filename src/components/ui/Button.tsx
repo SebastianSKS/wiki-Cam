@@ -8,10 +8,10 @@ type Size = "sm" | "md" | "lg";
 const BASE =
   "group relative inline-flex items-center justify-center gap-2 rounded-full border-[3px] border-line " +
   "font-extrabold no-underline select-none " +
-  "shadow-[0_5px_0_0_var(--line)] " +
+  "shadow-[var(--shadow-toy)] " +
   "transition-transform duration-150 ease-[var(--ease-bounce)] " +
   "hover:-translate-y-0.5 " +
-  "active:translate-y-[5px] active:scale-95 active:shadow-[0_0_0_0_var(--line)] " +
+  "active:translate-y-1 active:scale-95 active:shadow-[var(--shadow-toy-press)] " +
   "focus-visible:outline-[3px] focus-visible:outline-offset-[3px]";
 
 const VARIANT: Record<Variant, string> = {

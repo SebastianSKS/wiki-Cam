@@ -35,7 +35,7 @@ export function StorybookCard({
       )}
     >
       <span
-        className="hand absolute -left-2 -top-3 z-10 rotate-[-8deg] rounded-full border-[3px] border-line bg-sun px-2.5 py-0.5 text-sm text-sun-ink shadow-[2px_3px_0_rgba(59,42,32,0.2)]"
+        className="hand absolute -left-2 -top-3 z-10 rotate-[-8deg] rounded-full border-[3px] border-line bg-sun px-2.5 py-0.5 text-sm text-sun-ink shadow-[var(--shadow-sticker)]"
       >
         n.º {index + 1}
       </span>

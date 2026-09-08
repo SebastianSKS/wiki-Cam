@@ -61,7 +61,7 @@ export function Tag({
       className={cn(
         "inline-flex select-none items-center gap-1.5 rounded-[13px] border-[3px] px-2.5 py-1",
         "text-[0.72rem] font-extrabold leading-tight rotate-[var(--tilt)]",
-        "shadow-[3px_4px_0_rgba(59,42,32,0.18)]",
+        "shadow-[var(--shadow-sticker)]",
         "transition-transform duration-200 ease-[var(--ease-bounce)]",
         "hover:rotate-0 hover:-translate-y-0.5",
         TONE[tone],

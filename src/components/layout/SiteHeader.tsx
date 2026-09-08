@@ -9,20 +9,22 @@ const NAV = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-50 border-b-[3px] border-line bg-paper/90 backdrop-blur-sm">
-      <div className="mx-auto flex max-w-[1200px] items-center justify-between gap-3 px-3 py-2 sm:px-6">
+    <header className="sticky top-0 z-50 border-b-[3px] border-line bg-paper/95">
+      {/* altura fija: el swap tardío de webfonts no puede crecer la cabecera
+          sticky y tapar el contenido de abajo */}
+      <div className="mx-auto flex h-14 max-w-[1200px] items-center justify-between gap-3 px-3 sm:px-6">
         <Link href="/" className="group flex items-center gap-2">
           <span
             aria-hidden
-            className="inline-flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-line bg-sun text-lg transition-transform duration-200 ease-[var(--ease-bounce)] group-hover:-rotate-12"
+            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[3px] border-line bg-sun text-lg transition-transform duration-200 ease-[var(--ease-bounce)] group-hover:-rotate-12"
           >
             🐆
           </span>
-          <span className="leading-none">
-            <span className="font-display block text-lg">
+          <span className="block leading-none">
+            <span className="font-display block text-lg leading-none">
               Wiki<span className="text-rust">·</span>Campeche
             </span>
-            <span className="hand hidden text-sm text-ink-faint sm:block">
+            <span className="hand hidden text-sm leading-none text-ink-faint sm:block">
               el libro de las criaturas
             </span>
           </span>
