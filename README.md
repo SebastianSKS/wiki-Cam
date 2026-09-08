@@ -1,13 +1,16 @@
 # Wiki·Campeche
 
-Catálogo editorial de especies endémicas del estado de Campeche, México.
-Cada especie se trata como un **espécimen de museo**: número de catálogo, lámina,
-ficha técnica y carta de distribución municipal.
+Un **libro de cuentos ilustrado** sobre las especies endémicas del estado de
+Campeche, México, para niñas, niños y familias. Cada especie tiene su página con
+un cuento corto, una ilustración SVG hecha a mano, un *carnet de exploración*
+(taxonomía tipo pasaporte) y un *medidor de cuidado* (una plantita que va de
+floreciente a marchita según el estado de conservación real).
 
-Estética: *field guide* científico llevado al extremo gráfico — ficha de
-espécimen, cuaderno de campo, ficha bibliotecaria antigua. Tipografía técnica
-para datos, nombres científicos en cursiva serif, alto contraste, textura
-impresa.
+Estética: museo de historia natural para la infancia — crema vainilla cálido,
+café cacao, acentos pastel, tipografías redondeadas, textura de acuarela sobre
+cada dibujo. El modo claro es el protagonista; el oscuro es "hora de dormir bajo
+las estrellas". La ternura es de forma, no de contenido: el estado de
+conservación se dice con claridad, sin suavizarlo.
 
 ## Stack
 
@@ -16,9 +19,10 @@ impresa.
 | Framework | Next.js 15 (App Router) + TypeScript |
 | Estilos | Tailwind CSS v4 (tokens en `src/app/globals.css`) |
 | Datos | Turso / libSQL + Drizzle ORM — leído en Server Components |
-| Movimiento | Framer Motion (micro-interacciones), GSAP + ScrollTrigger (scroll), Lenis (smooth scroll) |
-| Transiciones | View Transitions API vía `next-view-transitions` |
-| Tipografía | `next/font` — Anton (display), Newsreader (serif itálica), JetBrains Mono (datos) |
+| Movimiento | Framer Motion (aleteos), GSAP + ScrollTrigger (parallax ambiental), Lenis (smooth scroll); easings tipo resorte |
+| Transiciones | View Transitions API vía `next-view-transitions` — efecto "pasar la página" |
+| Ilustración | SVG dibujado a mano en el código + filtro de acuarela compartido (`WatercolorDefs`) |
+| Tipografía | `next/font` — Baloo 2 (display), Nunito (cuerpo), Fraunces itálica (nombres científicos), Caveat (notas a mano) |
 
 ## Puesta en marcha
 
@@ -78,23 +82,26 @@ npm run dev      # http://localhost:3000
 
 | Ruta | Contenido |
 | --- | --- |
-| `/` | Portada tipo cubierta de catálogo, con animación de apertura |
-| `/especies` | Índice filtrable por categoría taxonómica y estado de conservación |
-| `/especies/[slug]` | Ficha de espécimen individual |
-| `/mapa` | Carta esquemática de los 13 municipios y sus especies |
-| `/acerca` | Metodología y fuentes |
+| `/` | Portada de libro con seres flotando (mariposas, hojas, sol) |
+| `/especies` | Índice con filtros grandes: por tipo de animal y por "cómo están" |
+| `/especies/[slug]` | Ficha-cuento: historia, dato curioso, carnet, medidor de cuidado |
+| `/mapa` | Mapa de los 13 municipios y las criaturas registradas en cada uno |
+| `/acerca` | De qué trata, fuentes y metodología |
 
 ## Modelo de datos (`src/db/schema.ts`)
 
 - **`species`** — taxonomía completa (reino → epíteto), `conservation_status`
   (enum UICN `LC…DD`), `category` (enum `mamiferos|aves|reptiles|flora|marino`),
-  `slug` único, descripción, hábitat, `image_url`, timestamps.
+  `slug` único, `description` (técnica), `kid_description` y `fun_fact`
+  (amigables, opcionales), hábitat, `image_url`, timestamps.
 - **`regions`** — los 13 municipios de Campeche (nombre, cabecera, clave INEGI).
 - **`species_regions`** — tabla puente muchos-a-muchos para el mapa.
 
 ## Accesibilidad y rendimiento
 
-- Contraste AA en claro y oscuro; foco de teclado visible.
-- `prefers-reduced-motion` desactiva Lenis y todas las animaciones.
-- Imágenes con `next/image` (lazy, sin CLS) y respaldo a lámina SVG.
-- Modo oscuro coherente ("archivo en cuarto oscuro"), no un invert.
+- Contraste AA en claro y oscuro incluso con la paleta pastel (café sobre crema ≈ 13:1).
+- `prefers-reduced-motion` desactiva Lenis, la portada, los seres flotantes,
+  los guiños de las ilustraciones y las View Transitions.
+- Ilustraciones en SVG inline (sin peticiones, sin CLS). Cuando una especie no
+  tiene dibujo se muestra un huevo "próximamente", nunca una imagen rota.
+- Modo oscuro coherente ("hora de dormir bajo las estrellas"), no un invert.

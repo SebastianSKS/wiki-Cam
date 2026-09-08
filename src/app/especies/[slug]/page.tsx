@@ -6,27 +6,18 @@ import {
   getAllSlugs,
   getSpeciesCatalog,
 } from "@/lib/queries";
-import {
-  catalogNumber,
-  CATEGORY_LABEL,
-  CONSERVATION,
-  binomial,
-} from "@/lib/format";
+import { CATEGORY_LABEL, CARE, CONSERVATION, binomial } from "@/lib/format";
 import { Tag } from "@/components/ui/Tag";
-import { PlateImage } from "@/components/ui/PlateImage";
 import { Reveal } from "@/components/ui/Reveal";
-import { SpecimenLabel } from "@/components/species/SpecimenLabel";
-import { ConservationMeter } from "@/components/species/ConservationMeter";
-import {
-  DistributionMap,
-  DISTRIBUTION_NODES,
-} from "@/components/species/DistributionMap";
+import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
+import { ExplorerId } from "@/components/species/ExplorerId";
+import { CareMeter } from "@/components/species/CareMeter";
+import { DistributionMap } from "@/components/species/DistributionMap";
 
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  const slugs = await getAllSlugs();
-  return slugs.map((slug) => ({ slug }));
+  return (await getAllSlugs()).map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({
@@ -35,12 +26,11 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const species = await getSpeciesBySlug(slug);
-  if (!species) return { title: "Ficha no encontrada" };
-  const bin = binomial(species.genus, species.speciesEpithet);
+  const s = await getSpeciesBySlug(slug);
+  if (!s) return { title: "No encontramos esta criatura" };
   return {
-    title: `${species.commonNameEs} · ${bin}`,
-    description: species.description.slice(0, 155),
+    title: `${s.commonNameEs} · ${binomial(s.genus, s.speciesEpithet)}`,
+    description: (s.kidDescription ?? s.description).slice(0, 155),
   };
 }
 
@@ -54,196 +44,175 @@ export default async function SpeciesPage({
     getSpeciesBySlug(slug),
     getSpeciesCatalog(),
   ]);
-
   if (!species) notFound();
 
-  const cons = CONSERVATION[species.conservationStatus];
   const bin = binomial(species.genus, species.speciesEpithet);
+  const care = CARE[species.conservationStatus];
+  const level = CONSERVATION[species.conservationStatus].level;
+  const careTone = level >= 3 ? "coral" : level === 2 ? "sun" : "jungle";
   const activeSlugs = species.regions.map((r) => r.slug);
   const idx = catalog.findIndex((s) => s.slug === slug);
   const prev = idx > 0 ? catalog[idx - 1] : catalog[catalog.length - 1];
-  const next =
-    idx < catalog.length - 1 ? catalog[idx + 1] : catalog[0];
-  const orderedNodes = DISTRIBUTION_NODES.filter((n) =>
-    activeSlugs.includes(n.slug),
-  );
+  const next = idx < catalog.length - 1 ? catalog[idx + 1] : catalog[0];
 
   return (
-    <article className="mx-auto max-w-[1400px] px-4 pb-10 pt-8 sm:px-8">
-      {/* Migas */}
-      <div className="flex items-center justify-between border-b border-line pb-3">
-        <Link
-          href="/especies"
-          className="catalog text-ink-soft transition-colors hover:text-rust"
-        >
-          ← Índice
-        </Link>
-        <span className="catalog text-ink-faint">
-          {catalogNumber(species.id, species.category)}
-        </span>
-      </div>
+    <article className="mx-auto max-w-[1200px] px-4 pb-10 pt-8 sm:px-8">
+      <Link
+        href="/especies"
+        className="hand inline-block text-lg text-ink-soft transition-transform hover:-translate-x-1 hover:text-rust"
+      >
+        ← volver al índice
+      </Link>
 
-      {/* Encabezado / héroe */}
-      <header className="grid gap-8 py-8 lg:grid-cols-[1.05fr_0.95fr] lg:gap-12">
-        <div className="flex flex-col justify-between">
-          <div>
-            <div className="flex flex-wrap items-center gap-1.5">
-              <Tag tone="jungle">{CATEGORY_LABEL[species.category]}</Tag>
-              <Tag tone="rust" code={cons.code}>
-                {cons.es}
-              </Tag>
-            </div>
-            <h1 className="mt-5 font-display text-[clamp(3rem,10vw,7.5rem)] leading-[0.9]">
-              {species.commonNameEs}
-            </h1>
-            <p className="sci mt-3 text-[clamp(1.25rem,3.5vw,2rem)] text-ink-soft">
-              {bin}
-            </p>
+      {/* Héroe */}
+      <header className="mt-4 grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
+        <div>
+          <span className="hand inline-block -rotate-2 rounded-full border-[3px] border-line bg-sun px-3 py-0.5 text-lg text-sun-ink">
+            criatura n.º {idx + 1}
+          </span>
+          <h1 className="font-display mt-3 text-[clamp(2.6rem,9vw,5.5rem)] leading-[0.95] text-jungle-deep">
+            {species.commonNameEs}
+          </h1>
+          <p className="sci mt-2 text-[clamp(1.15rem,3.2vw,1.8rem)] text-ink-soft">
+            {bin}
+          </p>
+
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Tag tone={careTone} seed={species.slug}>
+              {care.headline}
+            </Tag>
+            <Tag tone="sky" seed={species.category}>
+              {CATEGORY_LABEL[species.category]}
+            </Tag>
+            <Tag tone="outline" seed={species.slug + "m"}>
+              Vive en {species.regions.length}{" "}
+              {species.regions.length === 1 ? "municipio" : "municipios"}
+            </Tag>
           </div>
-
-          <dl className="mt-8 grid grid-cols-2 gap-x-6 gap-y-3 border-t border-line pt-5 sm:grid-cols-3">
-            {[
-              ["Clase", species.class],
-              ["Orden", species.order],
-              ["Familia", species.family],
-              ["Municipios", `${species.regions.length} / 13`],
-              ["Reino", species.kingdom],
-              ["Filo", species.phylum],
-            ].map(([k, v]) => (
-              <div key={k}>
-                <dt className="catalog text-ink-faint">{k}</dt>
-                <dd className="mt-1 text-sm">{v}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
 
-        {/* Lámina */}
-        <Reveal y={16}>
-          <figure className="relative">
-            {/* marcas de registro */}
-            <span aria-hidden className="absolute -left-2 -top-2 h-5 w-5 border-l border-t border-rust" />
-            <span aria-hidden className="absolute -right-2 -top-2 h-5 w-5 border-r border-t border-rust" />
-            <span aria-hidden className="absolute -bottom-2 -left-2 h-5 w-5 border-b border-l border-rust" />
-            <span aria-hidden className="absolute -bottom-2 -right-2 h-5 w-5 border-b border-r border-rust" />
-
-            <div
-              className="relative aspect-[4/5] overflow-hidden border border-line"
-              style={{ viewTransitionName: `specimen-hero-${species.slug}` }}
-            >
-              <PlateImage
-                src={species.imageUrl}
-                alt={`${species.commonNameEs} — ${bin}`}
-                glyph={species.genus.charAt(0)}
-                priority
-                sizes="(max-width: 1024px) 100vw, 45vw"
-              />
-              <span className="catalog absolute left-2 top-2 bg-paper/85 px-1.5 py-0.5">
-                Lám. {String(idx + 1).padStart(2, "0")}
-              </span>
-              <span className="sci absolute bottom-2 right-2 bg-paper/85 px-1.5 py-0.5 text-xs">
-                {bin}
-              </span>
-            </div>
-            <figcaption className="catalog mt-2 flex justify-between text-ink-faint">
-              <span>{catalogNumber(species.id, species.category)}</span>
-              <span>
-                {species.imageUrl ? "Fotografía · dominio público" : "Lámina esquemática"}
-              </span>
-            </figcaption>
-          </figure>
+        <Reveal y={18}>
+          <SpeciesScene slug={species.slug} shared className="mx-auto w-full max-w-md" />
         </Reveal>
       </header>
 
-      {/* Cuerpo */}
-      <div className="grid gap-10 border-t border-line pt-10 lg:grid-cols-[1fr_22rem] lg:gap-14">
-        <div className="max-w-2xl space-y-12">
+      {/* Cuerpo + aparato lateral */}
+      <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_23rem] lg:gap-14">
+        <div className="max-w-2xl space-y-10">
           <Reveal>
             <section>
-              <h2 className="catalog text-rust">§ 01 · Descripción</h2>
+              <h2 className="font-display text-[clamp(1.6rem,4vw,2.25rem)]">
+                Su historia
+              </h2>
               <p className="mt-3 text-lg leading-relaxed">
-                {species.description}
+                {species.kidDescription ?? species.description}
               </p>
             </section>
           </Reveal>
 
-          <Reveal>
-            <section>
-              <h2 className="catalog text-rust">§ 02 · Hábitat</h2>
-              <p className="mt-3 text-lg leading-relaxed">{species.habitat}</p>
-            </section>
-          </Reveal>
+          {species.funFact && (
+            <Reveal>
+              <aside className="relative rounded-[26px] border-[3px] border-line bg-sun p-5 text-sun-ink shadow-[var(--card-shadow)]">
+                <p className="hand text-2xl">¿Sabías que…?</p>
+                <p className="mt-1 text-lg font-bold leading-snug">
+                  {species.funFact}
+                </p>
+                <span aria-hidden className="absolute -right-3 -top-4 text-3xl">
+                  💡
+                </span>
+              </aside>
+            </Reveal>
+          )}
 
           <Reveal>
             <section>
-              <h2 className="catalog text-rust">
-                § 03 · Distribución municipal
+              <h2 className="font-display text-[clamp(1.6rem,4vw,2.25rem)]">
+                ¿Dónde vive?
               </h2>
-              <div className="mt-4 grid gap-6 border border-line p-4 sm:grid-cols-[minmax(0,15rem)_1fr] sm:gap-8 sm:p-6">
+              <p className="mt-3 text-lg leading-relaxed">{species.habitat}</p>
+
+              <div className="mt-5 grid gap-6 rounded-[26px] border-[3px] border-line bg-paper-2 p-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
                 <DistributionMap active={activeSlugs} />
                 <div>
                   <p className="text-sm text-ink-soft">
-                    Registrada en <strong>{species.regions.length}</strong> de
-                    los 13 municipios del estado. Nodos en óxido: presencia
-                    confirmada.
+                    En Campeche se le ha visto en estos municipios:
                   </p>
-                  <ul className="mt-4 flex flex-wrap gap-1.5">
+                  <ul className="mt-3 flex flex-wrap gap-1.5">
                     {species.regions.map((r) => (
                       <li key={r.slug}>
-                        <Tag tone="outline" title={`Cabecera: ${r.seat}`}>
+                        <Tag tone="jungle" seed={r.slug} title={`Cabecera: ${r.seat}`}>
                           {r.name}
                         </Tag>
                       </li>
                     ))}
                   </ul>
-                  <p className="catalog mt-4 text-ink-faint">
-                    {orderedNodes.length} nodos trazados ·{" "}
-                    <Link href="/mapa" className="text-rust hover:underline">
-                      abrir carta completa →
-                    </Link>
-                  </p>
+                  <Link
+                    href="/mapa"
+                    className="hand mt-3 inline-block text-lg text-rust hover:underline"
+                  >
+                    ver el mapa completo →
+                  </Link>
                 </div>
               </div>
             </section>
           </Reveal>
+
+          <Reveal>
+            <details className="group rounded-[22px] border-[3px] border-dashed border-line bg-paper p-5">
+              <summary className="hand cursor-pointer list-none text-xl text-ink-soft marker:content-none">
+                <span className="group-open:hidden">
+                  🔎 Para quien quiera saber más…
+                </span>
+                <span className="hidden group-open:inline">
+                  🔎 Versión para expertos
+                </span>
+              </summary>
+              <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
+                {species.description}
+              </p>
+            </details>
+          </Reveal>
         </div>
 
-        {/* Aparato lateral */}
         <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
           <Reveal y={16}>
-            <SpecimenLabel species={species} />
+            <ExplorerId species={species} />
           </Reveal>
           <Reveal y={16}>
-            <div className="border border-line bg-paper p-4">
-              <ConservationMeter status={species.conservationStatus} />
-            </div>
+            <CareMeter status={species.conservationStatus} />
           </Reveal>
         </aside>
       </div>
 
-      {/* Navegación de fichas */}
-      <nav className="mt-16 grid grid-cols-2 gap-px border border-line bg-line">
+      {/* Otra criatura */}
+      <nav className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Link
           href={`/especies/${prev.slug}`}
-          className="group bg-paper p-5 transition-colors hover:bg-jungle hover:text-jungle-ink"
+          className="group flex items-center gap-4 rounded-[26px] border-[3px] border-line bg-paper p-4 shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)] hover:-translate-y-1 hover:-rotate-1"
         >
-          <span className="catalog text-ink-faint group-hover:text-jungle-ink/70">
-            ← Ficha anterior
-          </span>
-          <span className="mt-1 block font-display text-xl">
-            {prev.commonNameEs}
+          <SpeciesScene slug={prev.slug} className="h-20 w-20 shrink-0 border-[4px]" />
+          <span>
+            <span className="hand block text-lg text-ink-faint">
+              ← otra criatura
+            </span>
+            <span className="font-display text-xl leading-tight">
+              {prev.commonNameEs}
+            </span>
           </span>
         </Link>
         <Link
           href={`/especies/${next.slug}`}
-          className="group bg-paper p-5 text-right transition-colors hover:bg-jungle hover:text-jungle-ink"
+          className="group flex items-center justify-end gap-4 rounded-[26px] border-[3px] border-line bg-paper p-4 text-right shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)] hover:-translate-y-1 hover:rotate-1"
         >
-          <span className="catalog text-ink-faint group-hover:text-jungle-ink/70">
-            Ficha siguiente →
+          <span>
+            <span className="hand block text-lg text-ink-faint">
+              otra criatura →
+            </span>
+            <span className="font-display text-xl leading-tight">
+              {next.commonNameEs}
+            </span>
           </span>
-          <span className="mt-1 block font-display text-xl">
-            {next.commonNameEs}
-          </span>
+          <SpeciesScene slug={next.slug} className="h-20 w-20 shrink-0 border-[4px]" />
         </Link>
       </nav>
     </article>

@@ -1,15 +1,29 @@
-import { Link } from "next-view-transitions";
 import { getSpeciesCatalog, getAllRegions } from "@/lib/queries";
-import {
-  catalogNumber,
-  CATEGORY_LABEL,
-  CONSERVATION,
-  binomial,
-} from "@/lib/format";
-import { CatalogCover } from "@/components/home/CatalogCover";
+import { StorybookCover } from "@/components/home/StorybookCover";
+import { StorybookCard } from "@/components/ui/StorybookCard";
 import { Reveal } from "@/components/ui/Reveal";
-import { Tag } from "@/components/ui/Tag";
 import { Button } from "@/components/ui/Button";
+
+const STEPS = [
+  {
+    emoji: "📖",
+    tone: "bg-jungle text-jungle-ink",
+    t: "Cada animal tiene su cuento",
+    d: "Una historia cortita y fácil de leer, y al lado la versión larga para quien quiera saberlo todo.",
+  },
+  {
+    emoji: "🧭",
+    tone: "bg-sky text-sky-ink",
+    t: "Un carnet de explorador",
+    d: "Su nombre científico, su familia y de dónde viene, con sellos de la Selva Maya.",
+  },
+  {
+    emoji: "🌱",
+    tone: "bg-coral text-coral-ink",
+    t: "Un medidor de cuidado honesto",
+    d: "Una plantita nos dice si al animal le va bien o si necesita nuestra ayuda. Sin esconder la verdad.",
+  },
+];
 
 export default async function HomePage() {
   const [catalog, regions] = await Promise.all([
@@ -19,136 +33,71 @@ export default async function HomePage() {
 
   return (
     <>
-      <CatalogCover
+      <StorybookCover
         speciesCount={catalog.length}
         regionCount={regions.length}
       />
 
-      {/* ── Especímenes en el registro ─────────────────────────── */}
-      <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-8">
+      {/* Protagonistas */}
+      <section className="mx-auto max-w-[1200px] px-4 py-16 sm:px-8">
         <Reveal>
-          <div className="flex items-end justify-between border-b-2 border-line pb-3">
-            <h2 className="font-display text-[clamp(1.75rem,5vw,3.25rem)]">
-              En el registro
+          <div className="flex flex-wrap items-end justify-between gap-3">
+            <h2 className="font-display text-[clamp(1.9rem,5vw,3.25rem)]">
+              Conoce a los protagonistas
             </h2>
-            <span className="catalog text-ink-faint">
-              {String(catalog.length).padStart(3, "0")} entradas
-            </span>
-          </div>
-        </Reveal>
-
-        <ol>
-          {catalog.map((s, i) => {
-            const cons = CONSERVATION[s.conservationStatus];
-            return (
-              <Reveal as="li" key={s.slug} delay={i * 0.04}>
-                <Link
-                  href={`/especies/${s.slug}`}
-                  className="group grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 border-b border-line py-6 transition-colors duration-200 hover:bg-jungle hover:text-jungle-ink sm:grid-cols-[9rem_1fr_14rem_auto]"
-                >
-                  <span className="catalog order-1 text-ink-faint group-hover:text-jungle-ink/70">
-                    {String(i + 1).padStart(3, "0")}
-                    <span className="hidden sm:inline">
-                      {" "}
-                      · {catalogNumber(s.id, s.category)}
-                    </span>
-                  </span>
-
-                  <span className="order-3 sm:order-2">
-                    <span className="font-display block text-[clamp(1.75rem,4.5vw,3rem)] leading-[0.95]">
-                      {s.commonNameEs}
-                    </span>
-                    <span className="sci text-sm text-ink-soft group-hover:text-jungle-ink/80">
-                      {binomial(s.genus, s.speciesEpithet)} ·{" "}
-                      {CATEGORY_LABEL[s.category]}
-                    </span>
-                  </span>
-
-                  <span className="order-4 hidden sm:order-3 sm:flex sm:justify-start">
-                    <Tag
-                      tone="outline"
-                      code={cons.code}
-                      className="border-current"
-                    >
-                      {cons.es}
-                    </Tag>
-                  </span>
-
-                  <span className="catalog order-2 text-right sm:order-4">
-                    {s.regions.length} mun.
-                    <span className="ml-3 inline-block transition-transform duration-200 group-hover:translate-x-1">
-                      →
-                    </span>
-                  </span>
-                </Link>
-              </Reveal>
-            );
-          })}
-        </ol>
-
-        <Reveal delay={0.1}>
-          <div className="mt-10 flex flex-wrap items-center gap-4">
-            <Button href="/especies">Ver el índice completo</Button>
-            <p className="max-w-xs text-xs text-ink-soft">
-              El índice permite filtrar por categoría taxonómica y estado de
-              conservación.
+            <p className="hand text-xl text-ink-soft">
+              {catalog.length} por ahora · vienen más
             </p>
           </div>
         </Reveal>
+
+        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {catalog.map((s, i) => (
+            <Reveal as="li" key={s.slug} delay={i * 0.06}>
+              <StorybookCard species={s} index={i} />
+            </Reveal>
+          ))}
+        </ul>
       </section>
 
-      {/* ── Cómo leer una ficha ────────────────────────────────── */}
-      <section className="border-y border-line bg-paper-2">
-        <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-8">
+      {/* Cómo funciona */}
+      <section className="border-y-[3px] border-line bg-paper-2">
+        <div className="mx-auto max-w-[1200px] px-4 py-16 sm:px-8">
           <Reveal>
-            <p className="catalog text-ink-faint">Convenciones</p>
-            <h2 className="mt-2 max-w-2xl font-display text-[clamp(1.5rem,4vw,2.75rem)] leading-[0.95]">
-              Cada ficha se lee como una etiqueta de espécimen
+            <p className="hand text-xl text-ink-soft">¿Cómo se lee?</p>
+            <h2 className="mt-1 max-w-2xl font-display text-[clamp(1.7rem,4.5vw,2.75rem)]">
+              Cada ficha es una página de este libro
             </h2>
           </Reveal>
 
-          <div className="mt-10 grid gap-px bg-line sm:grid-cols-3">
-            {[
-              {
-                n: "01",
-                t: "Número de catálogo",
-                d: "Clave CAM · categoría · folio. Identifica el espécimen dentro del archivo estatal.",
-              },
-              {
-                n: "02",
-                t: "Nombre científico",
-                d: "Género y epíteto siempre en cursiva serif, según la convención binomial de Linneo.",
-              },
-              {
-                n: "03",
-                t: "Estado de conservación",
-                d: "Escala UICN (LC→EX) más el estatus nacional de la NOM-059-SEMARNAT.",
-              },
-            ].map((item) => (
-              <Reveal key={item.n} className="bg-paper p-6">
-                <span className="font-display text-4xl text-rust">
-                  {item.n}
-                </span>
-                <h3 className="mt-3 font-display text-xl">{item.t}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-ink-soft">
-                  {item.d}
-                </p>
+          <div className="mt-8 grid gap-5 md:grid-cols-3">
+            {STEPS.map((s, i) => (
+              <Reveal key={s.t} delay={i * 0.08}>
+                <div className="h-full rounded-[26px] border-[3px] border-line bg-paper p-6 shadow-[var(--card-shadow)]">
+                  <span
+                    className={`inline-flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-line text-2xl ${s.tone}`}
+                  >
+                    {s.emoji}
+                  </span>
+                  <h3 className="mt-4 font-display text-xl">{s.t}</h3>
+                  <p className="mt-2 text-sm text-ink-soft">{s.d}</p>
+                </div>
               </Reveal>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── Cierre ─────────────────────────────────────────────── */}
-      <section className="mx-auto max-w-[1400px] px-4 py-24 text-center sm:px-8">
+      {/* Cierre */}
+      <section className="mx-auto max-w-[1000px] px-4 py-20 text-center sm:px-8">
         <Reveal>
           <p className="sci text-lg text-ink-soft">Campeche, México</p>
-          <p className="mx-auto mt-4 max-w-3xl font-display text-[clamp(1.75rem,6vw,4.5rem)] leading-[0.92]">
-            El territorio recuerda a sus especies. Este archivo también.
+          <p className="mx-auto mt-3 max-w-3xl font-display text-[clamp(1.8rem,6vw,3.75rem)] leading-[1.02]">
+            Cuando conocemos a un animal, nos dan ganas de cuidarlo.
           </p>
-          <div className="mt-8 flex justify-center">
-            <Button href="/acerca" variant="outline">
-              Sobre el proyecto
+          <div className="mt-7 flex justify-center">
+            <Button href="/acerca" variant="outline" size="lg">
+              De qué trata este proyecto
             </Button>
           </div>
         </Reveal>

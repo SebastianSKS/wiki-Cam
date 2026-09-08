@@ -1,54 +1,66 @@
 import type { Metadata, Viewport } from "next";
-import { Anton, JetBrains_Mono, Newsreader } from "next/font/google";
+import { Baloo_2, Nunito, Fraunces, Caveat } from "next/font/google";
 import { ViewTransitions } from "next-view-transitions";
 import "./globals.css";
 import { GrainOverlay } from "@/components/layout/GrainOverlay";
 import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
+import { WatercolorDefs } from "@/components/illustration/WatercolorDefs";
 import { themeInitScript } from "@/components/layout/ThemeToggle";
 
-const display = Anton({
-  weight: "400",
+const display = Baloo_2({
   subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
   variable: "--font-display",
   display: "swap",
 });
 
-const mono = JetBrains_Mono({
+const body = Nunito({
   subsets: ["latin"],
-  variable: "--font-mono",
+  weight: ["400", "500", "600", "700", "800", "900"],
+  style: ["normal", "italic"],
+  variable: "--font-body",
   display: "swap",
 });
 
-const serif = Newsreader({
+const serif = Fraunces({
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
   style: ["normal", "italic"],
   variable: "--font-serif",
+  display: "swap",
+});
+
+const hand = Caveat({
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
+  variable: "--font-hand",
   display: "swap",
 });
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://wiki-campeche.local"),
   title: {
-    default: "Wiki·Campeche — Índice de especies endémicas",
+    default: "Wiki·Campeche — El libro de las criaturas de Campeche",
     template: "%s — Wiki·Campeche",
   },
   description:
-    "Catálogo editorial de la biodiversidad endémica del estado de Campeche, México. Fichas de espécimen con taxonomía, estado de conservación y distribución municipal.",
+    "Un libro de cuentos sobre los animales que sólo viven en Campeche, México. Ilustrado a mano, para niñas, niños y familias curiosas.",
   keywords: [
     "Campeche",
+    "animales",
+    "niños",
     "especies endémicas",
-    "biodiversidad",
     "jaguar",
-    "Selva Maya",
-    "conservación",
+    "selva",
+    "naturaleza",
   ],
   authors: [{ name: "Wiki·Campeche" }],
   openGraph: {
-    title: "Wiki·Campeche — Índice de especies endémicas",
+    title: "Wiki·Campeche — El libro de las criaturas de Campeche",
     description:
-      "Catálogo editorial de la biodiversidad endémica del estado de Campeche.",
+      "Un libro de cuentos sobre los animales que sólo viven en Campeche.",
     type: "website",
     locale: "es_MX",
   },
@@ -56,8 +68,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#f1eadb" },
-    { media: "(prefers-color-scheme: dark)", color: "#14120f" },
+    { media: "(prefers-color-scheme: light)", color: "#fff8ec" },
+    { media: "(prefers-color-scheme: dark)", color: "#1b1c3e" },
   ],
 };
 
@@ -68,14 +80,18 @@ export default function RootLayout({
     <ViewTransitions>
       <html
         lang="es"
-        className={`${display.variable} ${mono.variable} ${serif.variable}`}
+        className={`${display.variable} ${body.variable} ${serif.variable} ${hand.variable}`}
         suppressHydrationWarning
       >
         <body className="min-h-dvh">
           <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-          <a href="#contenido" className="skip-link catalog border border-rust bg-paper px-3 py-2">
+          <a
+            href="#contenido"
+            className="skip-link catalog rounded-full border-[3px] border-rust bg-paper px-4 py-2 text-ink"
+          >
             Saltar al contenido
           </a>
+          <WatercolorDefs />
           <GrainOverlay />
           <SmoothScroll />
           <SiteHeader />

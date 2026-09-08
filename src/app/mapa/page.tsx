@@ -3,90 +3,82 @@ import { Link } from "next-view-transitions";
 import { getRegionsWithSpecies } from "@/lib/queries";
 import { DistributionMap } from "@/components/species/DistributionMap";
 import { Tag } from "@/components/ui/Tag";
-import { CONSERVATION } from "@/lib/format";
 import { Reveal } from "@/components/ui/Reveal";
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: "Mapa de distribución",
+  title: "El mapa de Campeche",
   description:
-    "Carta esquemática de los 13 municipios de Campeche y las especies endémicas registradas en cada uno.",
+    "Campeche tiene 13 municipios. Este mapa muestra en cuáles se ha visto a cada criatura del libro.",
 };
 
 export default async function MapaPage() {
   const regions = await getRegionsWithSpecies();
   const withSpecies = regions.filter((r) => r.species.length > 0);
   const activeSlugs = withSpecies.map((r) => r.slug);
-  const totalRecords = regions.reduce((n, r) => n + r.species.length, 0);
+  const total = regions.reduce((n, r) => n + r.species.length, 0);
 
   return (
-    <div className="mx-auto max-w-[1400px] px-4 pb-10 pt-8 sm:px-8">
-      <header className="border-b-2 border-line pb-4">
-        <p className="catalog text-ink-faint">Carta 04 · Distribución</p>
-        <h1 className="mt-2 font-display text-[clamp(2.5rem,8vw,5.5rem)] leading-[0.9]">
-          Mapa municipal
+    <div className="mx-auto max-w-[1200px] px-4 pb-12 pt-10 sm:px-8">
+      <header>
+        <p className="hand text-xl text-ink-soft">¿dónde viven?</p>
+        <h1 className="mt-1 font-display text-[clamp(2.4rem,8vw,5rem)] leading-[0.98]">
+          El mapa de Campeche
         </h1>
-        <p className="mt-3 max-w-xl text-sm text-ink-soft">
-          Campeche se divide en 13 municipios. Esta carta es esquemática: cada
-          nodo ocupa la posición geográfica aproximada de su cabecera.{" "}
-          {withSpecies.length} municipios tienen registros · {totalRecords}{" "}
-          asociaciones especie–territorio.
+        <p className="mt-3 max-w-xl text-lg text-ink-soft">
+          Campeche está dividido en <strong>13 municipios</strong>. Cada puntito
+          es uno de ellos. Los puntos de color coral son los lugares donde se ha
+          visto a alguna criatura del libro: {withSpecies.length} municipios y{" "}
+          {total} apariciones en total.
         </p>
       </header>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,26rem)_1fr] lg:gap-14">
+      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-14">
         <div className="lg:sticky lg:top-24 lg:self-start">
-          <div className="border border-line p-5">
-            <DistributionMap active={activeSlugs} />
-            <div className="mt-4 flex items-center gap-4 border-t border-line pt-3">
-              <span className="catalog flex items-center gap-1.5 text-ink-soft">
-                <span className="inline-block h-2.5 w-2.5 bg-rust" /> con
-                registros
-              </span>
-              <span className="catalog flex items-center gap-1.5 text-ink-faint">
-                <span className="inline-block h-2.5 w-2.5 border border-current" />{" "}
-                sin registros
-              </span>
-            </div>
+          <DistributionMap active={activeSlugs} />
+          <div className="mt-4 flex flex-wrap gap-4">
+            <span className="inline-flex items-center gap-2 text-sm font-bold text-ink-soft">
+              <span className="inline-block h-3 w-3 rounded-full border-[2px] border-line bg-rust" />
+              con criaturas
+            </span>
+            <span className="inline-flex items-center gap-2 text-sm font-bold text-ink-faint">
+              <span className="inline-block h-3 w-3 rounded-full border-[2px] border-line bg-paper" />
+              todavía sin registrar
+            </span>
           </div>
         </div>
 
-        <ul className="grid gap-px bg-line sm:grid-cols-2">
+        <ul className="grid gap-5 sm:grid-cols-2">
           {regions.map((r) => (
-            <Reveal as="li" key={r.slug} className="bg-paper p-5">
-              <div className="flex items-baseline justify-between">
-                <h2 className="font-display text-2xl">{r.name}</h2>
-                <span className="catalog text-ink-faint">
+            <Reveal
+              as="li"
+              key={r.slug}
+              className="rounded-[24px] border-[3px] border-line bg-paper p-5 shadow-[var(--card-shadow)]"
+            >
+              <div className="flex items-baseline justify-between gap-2">
+                <h2 className="font-display text-xl">{r.name}</h2>
+                <span className="hand text-base text-ink-faint">
                   {r.inegiKey ?? "—"}
                 </span>
               </div>
-              <p className="catalog mt-1 text-ink-faint">
-                Cabecera · {r.seat}
-              </p>
+              <p className="text-xs text-ink-faint">Cabecera · {r.seat}</p>
 
               {r.species.length > 0 ? (
                 <ul className="mt-3 flex flex-wrap gap-1.5">
-                  {r.species.map((s) => {
-                    const c = CONSERVATION[s.conservationStatus];
-                    return (
-                      <li key={s.slug}>
-                        <Link href={`/especies/${s.slug}`}>
-                          <Tag
-                            tone="outline"
-                            code={c.code}
-                            className="transition-colors hover:border-rust hover:text-rust"
-                          >
-                            {s.commonNameEs}
-                          </Tag>
-                        </Link>
-                      </li>
-                    );
-                  })}
+                  {r.species.map((s) => (
+                    <li key={s.slug}>
+                      <Link href={`/especies/${s.slug}`}>
+                        <Tag tone="jungle" seed={s.slug + r.slug}>
+                          {s.commonNameEs}
+                        </Tag>
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               ) : (
-                <p className="mt-3 text-xs text-ink-faint">
-                  Sin especies catalogadas todavía.
+                <p className="mt-3 text-sm text-ink-faint">
+                  Aún no hay ninguna criatura del libro registrada aquí.
                 </p>
               )}
             </Reveal>

@@ -45,7 +45,8 @@ export function ThemeToggle() {
   }
 
   const label =
-    mode === "light" ? "Luz" : mode === "dark" ? "Oscuro" : "Sistema";
+    mode === "light" ? "Día" : mode === "dark" ? "Noche" : "Automático";
+  const emoji = mode === "light" ? "☀️" : mode === "dark" ? "🌙" : "🌗";
 
   return (
     <button
@@ -53,20 +54,11 @@ export function ThemeToggle() {
       onClick={cycle}
       aria-label={`Tema actual: ${label}. Pulsa para cambiar.`}
       title={`Tema: ${label}`}
-      className="catalog group inline-flex items-center gap-2 border border-current px-2 py-1.5 text-ink transition-colors hover:bg-ink hover:text-paper"
+      className="inline-flex h-9 items-center gap-1.5 rounded-full border-[3px] border-line bg-lavender px-2.5 text-[0.75rem] font-extrabold text-lavender-ink transition-transform duration-150 ease-[var(--ease-bounce)] hover:-translate-y-0.5 active:scale-95"
     >
-      <span
-        aria-hidden
-        className="inline-block h-2.5 w-2.5 border border-current bg-index group-hover:bg-paper"
-        style={{
-          clipPath:
-            mode === "dark"
-              ? "polygon(50% 0, 100% 0, 100% 100%, 50% 100%)"
-              : mode === "light"
-                ? "none"
-                : "polygon(0 0, 50% 0, 50% 100%, 0 100%)",
-        }}
-      />
+      <span aria-hidden className="text-sm leading-none">
+        {emoji}
+      </span>
       <span className="hidden sm:inline">{label}</span>
     </button>
   );

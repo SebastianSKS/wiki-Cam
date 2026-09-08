@@ -49,6 +49,10 @@ export const species = sqliteTable("species", {
   }).notNull(),
   category: text("category", { enum: SPECIES_CATEGORY }).notNull(),
   description: text("description").notNull(),
+  /** Descripción cálida y sencilla para niñas y niños. */
+  kidDescription: text("kid_description"),
+  /** Dato curioso corto, tono de sobremesa. */
+  funFact: text("fun_fact"),
   habitat: text("habitat").notNull(),
   imageUrl: text("image_url"),
   createdAt: text("created_at")

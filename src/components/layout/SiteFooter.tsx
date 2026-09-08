@@ -3,54 +3,53 @@ import { Link } from "next-view-transitions";
 export function SiteFooter() {
   const year = new Date().getFullYear();
   return (
-    <footer className="mt-24 border-t border-line">
-      <div className="mx-auto grid max-w-[1400px] gap-px bg-line sm:grid-cols-3">
-        <div className="bg-paper p-5">
-          <p className="catalog text-ink-faint">Registro</p>
-          <p className="mt-2 font-display text-2xl leading-none">
-            Wiki·Campeche
+    <footer className="mt-24 border-t-[3px] border-line bg-paper-2">
+      <div className="mx-auto grid max-w-[1200px] gap-6 px-4 py-12 sm:grid-cols-3 sm:px-8">
+        <div>
+          <p className="font-display text-2xl">
+            Wiki<span className="text-rust">·</span>Campeche
           </p>
-          <p className="mt-2 text-xs leading-relaxed text-ink-soft">
-            Archivo vivo de la biodiversidad endémica del estado de Campeche,
-            México. Cada ficha es un espécimen catalogado.
+          <p className="mt-2 text-sm text-ink-soft">
+            Un libro de cuentos sobre los animales que sólo viven en Campeche,
+            México. Ilustrado a mano, para toda la familia.
           </p>
         </div>
-        <div className="bg-paper p-5">
-          <p className="catalog text-ink-faint">Fuentes</p>
-          <ul className="mt-2 space-y-1 text-xs text-ink-soft">
-            <li>Taxonomía · GBIF Backbone</li>
-            <li>Estado de conservación · UICN Red List</li>
-            <li>Estatus nacional · NOM-059-SEMARNAT-2010</li>
-            <li>Municipios · Marco Geoestadístico INEGI</li>
+        <div>
+          <p className="hand text-lg text-ink-faint">¿De dónde salen los datos?</p>
+          <ul className="mt-2 space-y-1 text-sm text-ink-soft">
+            <li>🧬 Nombres y familias · GBIF</li>
+            <li>🌱 Cómo están · Lista Roja UICN</li>
+            <li>🇲🇽 Estatus en México · NOM-059-SEMARNAT</li>
+            <li>🗺️ Municipios · INEGI</li>
           </ul>
         </div>
-        <div className="bg-paper p-5">
-          <p className="catalog text-ink-faint">Navegación</p>
-          <ul className="mt-2 space-y-1 text-xs">
+        <div>
+          <p className="hand text-lg text-ink-faint">Pasar la página</p>
+          <ul className="mt-2 space-y-1 text-sm font-bold">
             <li>
               <Link className="hover:text-rust" href="/especies">
-                Índice de especies →
+                El índice de criaturas →
               </Link>
             </li>
             <li>
               <Link className="hover:text-rust" href="/mapa">
-                Mapa de distribución →
+                El mapa de Campeche →
               </Link>
             </li>
             <li>
               <Link className="hover:text-rust" href="/acerca">
-                Metodología →
+                De qué trata →
               </Link>
             </li>
           </ul>
-          <p className="catalog mt-6 text-[0.5625rem] text-ink-faint">
-            MMXXV · {year} · Campeche, MX
+          <p className="mt-5 text-xs text-ink-faint">
+            Hecho con cariño · {year} · Campeche, MX
           </p>
         </div>
       </div>
-      <p className="mx-auto max-w-[1400px] border-t border-line px-5 py-3 text-[0.625rem] text-ink-faint">
-        Ningún espécimen fue molestado en la elaboración de este catálogo.
-        Ilustraciones y fotografías pendientes de curaduría.
+      <p className="mx-auto max-w-[1200px] border-t-[3px] border-dashed border-line px-4 py-3 text-xs text-ink-faint sm:px-8">
+        Ningún animal fue molestado para hacer este libro. Las ilustraciones son
+        dibujos, no fotos: así imaginamos a cada criatura.
       </p>
     </footer>
   );

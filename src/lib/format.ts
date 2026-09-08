@@ -56,3 +56,74 @@ export const CONSERVATION_SCALE: ConservationStatus[] = [
 export function binomial(genus: string, epithet: string): string {
   return `${genus} ${epithet}`;
 }
+
+/* ============================================================
+   MEDIDOR DE CUIDADO
+   Traduce el código UICN a una plantita de 5 estados, sin
+   endulzar el fondo: si está en peligro, se dice claramente.
+   ============================================================ */
+
+export type PlantStage = "bloom" | "healthy" | "thirsty" | "wilting" | "bare";
+
+type CareMeta = {
+  stage: PlantStage;
+  /** 1 (marchita) … 5 (floreciente) — cuánta "vida" pintar */
+  fill: number;
+  headline: string;
+  kidLine: string;
+};
+
+export const CARE: Record<ConservationStatus, CareMeta> = {
+  LC: {
+    stage: "bloom",
+    fill: 5,
+    headline: "Le va bien",
+    kidLine: "Todavía hay muchos y su casa está sana. ¡A seguir cuidándola!",
+  },
+  NT: {
+    stage: "healthy",
+    fill: 4,
+    headline: "Hay que estar pendientes",
+    kidLine:
+      "Aún no está en peligro, pero podría estarlo pronto si su selva se hace más pequeña.",
+  },
+  VU: {
+    stage: "thirsty",
+    fill: 3,
+    headline: "Necesita ayuda",
+    kidLine: "Quedan menos de los que debería. Es una especie vulnerable.",
+  },
+  EN: {
+    stage: "wilting",
+    fill: 2,
+    headline: "Está en peligro",
+    kidLine:
+      "Quedan pocos y podrían desaparecer. Proteger su hogar es urgente.",
+  },
+  CR: {
+    stage: "bare",
+    fill: 1,
+    headline: "Está en peligro crítico",
+    kidLine:
+      "Quedan muy, muy pocos. Es de los animales que más nos necesitan ahora.",
+  },
+  EW: {
+    stage: "bare",
+    fill: 1,
+    headline: "Ya no vive en libertad",
+    kidLine: "Sólo quedan algunos al cuidado de personas, ninguno en la naturaleza.",
+  },
+  EX: {
+    stage: "bare",
+    fill: 0,
+    headline: "Se extinguió",
+    kidLine: "Ya no existe en ningún lugar del mundo. Por eso cuidamos a los demás.",
+  },
+  DD: {
+    stage: "thirsty",
+    fill: 3,
+    headline: "Nos faltan datos",
+    kidLine:
+      "Todavía no sabemos cuántos quedan; hace falta estudiarlo más.",
+  },
+};

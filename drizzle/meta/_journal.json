@@ -8,6 +8,13 @@
       "when": 1788906033490,
       "tag": "0000_chubby_joseph",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1788908259689,
+      "tag": "0001_brainy_bloodaxe",
+      "breakpoints": true
     }
   ]
 }

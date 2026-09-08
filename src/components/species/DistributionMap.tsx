@@ -44,24 +44,29 @@ export function DistributionMap({
   const activeSet = new Set(active);
 
   return (
-    <figure className={cn("relative", className)}>
+    <figure
+      className={cn(
+        "relative overflow-hidden border-[4px] border-line bg-paper p-2",
+        className,
+      )}
+      style={{ borderRadius: "38% 62% 58% 42% / 45% 45% 55% 55%" }}
+    >
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="h-auto w-full text-ink"
         role="img"
-        aria-label={`Distribución en ${active.length} de ${NODES.length} municipios de Campeche`}
+        aria-label={`Vive en ${active.length} de ${NODES.length} municipios de Campeche`}
       >
+        <path d={OUTLINE} fill="var(--jungle)" opacity="0.14" />
         <path
           d={OUTLINE}
           fill="none"
           stroke="currentColor"
-          strokeWidth="0.6"
-          strokeDasharray="1.4 1.6"
-          opacity="0.4"
+          strokeWidth="1.1"
+          strokeLinejoin="round"
+          strokeDasharray="2 2.4"
+          opacity="0.5"
         />
-
-        {/* trama interior */}
-        <path d={OUTLINE} fill="var(--jungle)" opacity="0.06" />
 
         {NODES.map((n) => {
           const on = activeSet.has(n.slug);
@@ -73,32 +78,31 @@ export function DistributionMap({
                 <circle
                   cx={cx}
                   cy={cy}
-                  r="4.4"
+                  r="5"
                   fill="none"
                   stroke="var(--rust)"
-                  strokeWidth="0.5"
-                  opacity="0.6"
+                  strokeWidth="0.8"
+                  opacity="0.5"
                 />
               )}
-              <rect
-                x={cx - 1.7}
-                y={cy - 1.7}
-                width="3.4"
-                height="3.4"
+              <circle
+                cx={cx}
+                cy={cy}
+                r={on ? "2.6" : "1.9"}
                 fill={on ? "var(--rust)" : "var(--paper)"}
-                stroke={on ? "var(--rust)" : "currentColor"}
-                strokeWidth="0.5"
+                stroke="currentColor"
+                strokeWidth="0.9"
                 opacity={on ? 1 : 0.55}
               />
               {showLabels && (
                 <text
-                  x={cx + 3}
-                  y={cy + 1}
-                  fontSize="2.6"
-                  fontFamily="var(--font-mono)"
+                  x={cx + 4}
+                  y={cy + 1.2}
+                  fontSize="3"
+                  fontFamily="var(--font-body)"
+                  fontWeight={on ? 800 : 600}
                   fill="currentColor"
-                  opacity={on ? 0.95 : 0.4}
-                  style={{ letterSpacing: "0.02em" }}
+                  opacity={on ? 0.95 : 0.42}
                 >
                   {n.name}
                 </text>
