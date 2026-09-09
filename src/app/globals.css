@@ -183,8 +183,8 @@
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-color: var(--ink-faint) transparent;
-  /* la cabecera es sticky (~3.5rem); reserva espacio para saltos de ancla */
-  scroll-padding-top: 4.5rem;
+  /* la cabecera es sticky (h-20 + borde ≈ 84px); reserva espacio para anclas */
+  scroll-padding-top: 6rem;
 }
 
 body {

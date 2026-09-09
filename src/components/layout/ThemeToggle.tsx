@@ -45,21 +45,18 @@ export function ThemeToggle() {
   }
 
   const label =
-    mode === "light" ? "Día" : mode === "dark" ? "Noche" : "Automático";
-  const emoji = mode === "light" ? "☀️" : mode === "dark" ? "🌙" : "🌗";
+    mode === "light" ? "Día" : mode === "dark" ? "Noche" : "Auto";
 
   return (
     <button
       type="button"
       onClick={cycle}
-      aria-label={`Tema actual: ${label}. Pulsa para cambiar.`}
-      title={`Tema: ${label}`}
-      className="inline-flex h-9 items-center gap-1.5 rounded-full border-[3px] border-line bg-lavender px-2.5 text-[0.75rem] font-extrabold text-lavender-ink transition-transform duration-150 ease-[var(--ease-bounce)] hover:-translate-y-0.5 active:scale-95"
+      aria-label={`Tema: ${
+        mode === "system" ? "automático" : label
+      }. Pulsa para cambiar.`}
+      className="inline-flex h-8 items-center rounded-full border-[3px] border-line bg-lavender px-2 text-xs font-extrabold text-lavender-ink transition-transform duration-150 ease-[var(--ease-bounce)] hover:-translate-y-0.5 active:scale-95 sm:h-11 sm:px-4 sm:text-sm"
     >
-      <span aria-hidden className="text-sm leading-none">
-        {emoji}
-      </span>
-      <span className="hidden sm:inline">{label}</span>
+      {label}
     </button>
   );
 }
