@@ -14,6 +14,7 @@ import { ExplorerId } from "@/components/species/ExplorerId";
 import { CareMeter } from "@/components/species/CareMeter";
 import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
+import { JaguarDiscover } from "@/components/species/JaguarDiscover"; // prototipo "Toca para descubrir" (sólo jaguar)
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -102,7 +103,12 @@ export default async function SpeciesPage({
         </div>
 
         <Reveal y={18}>
-          <SpeciesScene slug={species.slug} shared className="mx-auto w-full max-w-md" />
+          {/* prototipo: puntos "Toca para descubrir" dentro del hero (sólo jaguar) */}
+          {species.slug === "jaguar" ? (
+            <JaguarDiscover className="mx-auto w-full max-w-md" />
+          ) : (
+            <SpeciesScene slug={species.slug} shared className="mx-auto w-full max-w-md" />
+          )}
         </Reveal>
       </header>
 
