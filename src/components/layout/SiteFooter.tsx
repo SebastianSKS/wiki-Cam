@@ -4,9 +4,11 @@ import {
   SproutIcon,
   PinIcon,
   MapIcon,
+  BookIcon,
 } from "@/components/ui/icons";
 
 const SOURCES = [
+  { Icon: BookIcon, text: "Fichas y nombres en maya · bio.campeche.gob.mx" },
   { Icon: DnaIcon, text: "Nombres y familias · GBIF" },
   { Icon: SproutIcon, text: "Cómo están · Lista Roja UICN" },
   { Icon: PinIcon, text: "Estatus en México · NOM-059-SEMARNAT" },

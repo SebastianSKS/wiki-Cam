@@ -14,19 +14,16 @@ import { cn } from "@/lib/cn";
 export function EndemicBadge({ className }: { className?: string }) {
   return (
     <span
-      // Borde explícito: ver nota en NativeBadge (la regla global `*` gana).
-      style={{ borderColor: "var(--line)" }}
       className={cn(
         "relative inline-flex -rotate-2 select-none items-center gap-1.5 rounded-full",
-        "border-[3px] bg-sun px-3 py-1.5 text-[0.72rem] font-extrabold text-sun-ink",
+        "border-[3px] border-line bg-sun px-3 py-1.5 text-[0.72rem] font-extrabold text-sun-ink",
         "shadow-[var(--shadow-sticker)]",
         className,
       )}
     >
       <span
         aria-hidden
-        style={{ borderColor: "color-mix(in srgb, var(--sun-ink) 45%, transparent)" }}
-        className="pointer-events-none absolute inset-[3px] rounded-full border-2 border-dashed"
+        className="pointer-events-none absolute inset-[3px] rounded-full border-2 border-dashed border-sun-ink/45"
       />
       <StarIcon className="relative h-4 w-4 shrink-0" />
       <span className="relative">Sólo existe aquí</span>
@@ -37,12 +34,8 @@ export function EndemicBadge({ className }: { className?: string }) {
 export function NativeBadge({ className }: { className?: string }) {
   return (
     <span
-      // Borde explícito por style: la regla global `* { border-color }` (sin
-      // capa) le gana a las utilidades `border-*`, así que aquí lo fijamos a mano
-      // para que la línea fina se vea a propósito, no como un hairline accidental.
-      style={{ borderColor: "var(--ink-faint)" }}
       className={cn(
-        "inline-flex select-none items-center gap-1.5 rounded-[12px] border-2",
+        "inline-flex select-none items-center gap-1.5 rounded-[12px] border-2 border-current",
         "px-2.5 py-1 text-[0.68rem] font-bold text-ink-faint",
         className,
       )}

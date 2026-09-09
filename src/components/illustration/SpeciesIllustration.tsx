@@ -7,6 +7,9 @@ import { OcellatedTurkey } from "./OcellatedTurkey";
 import { MoreletCrocodile } from "./MoreletCrocodile";
 import { Ceiba } from "./Ceiba";
 import { AntilleanManatee } from "./AntilleanManatee";
+import { YucatanJay } from "./YucatanJay";
+import { YucatanWoodpecker } from "./YucatanWoodpecker";
+import { WhiteNosedCoati } from "./WhiteNosedCoati";
 import { MysteryEgg } from "./MysteryEgg";
 
 type IlloProps = { className?: string };
@@ -35,6 +38,13 @@ const REGISTRY: Record<
     habitat: "agua",
     wash: "var(--coral)",
   },
+  "chara-yucateca": { Illo: YucatanJay, habitat: "dosel", wash: "var(--sun)" },
+  "carpintero-yucateco": {
+    Illo: YucatanWoodpecker,
+    habitat: "selva",
+    wash: "var(--jungle)",
+  },
+  pizote: { Illo: WhiteNosedCoati, habitat: "selva", wash: "var(--lavender)" },
 };
 
 export function hasIllustration(slug: string): boolean {

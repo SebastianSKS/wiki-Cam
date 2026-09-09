@@ -64,6 +64,8 @@ export const species = sqliteTable("species", {
   kidDescription: text("kid_description"),
   /** Dato curioso corto, tono de sobremesa. */
   funFact: text("fun_fact"),
+  /** Nombre en maya yucateco, cuando la ficha oficial lo incluye. */
+  mayaName: text("maya_name"),
   habitat: text("habitat").notNull(),
   imageUrl: text("image_url"),
   createdAt: text("created_at")

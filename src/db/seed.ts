@@ -194,6 +194,103 @@ const SPECIES: SpeciesSeed[] = [
     imageUrl: null,
     regionSlugs: ["carmen", "palizada", "champoton"],
   },
+  {
+    slug: "chara-yucateca",
+    commonNameEs: "Chara yucateca",
+    genus: "Cyanocorax",
+    speciesEpithet: "yucatanicus",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Aves",
+    order: "Passeriformes",
+    family: "Corvidae",
+    conservationStatus: "LC",
+    category: "aves",
+    presenceType: "endemic",
+    mayaName: "Ch'eel",
+    description:
+      "Ave de la familia de los cuervos y las urracas, endémica de la península de Yucatán: se distribuye por Campeche, Yucatán, Quintana Roo, el norte de Belice y el Petén guatemalteco. El adulto mide unos 30 cm, con la cabeza, el pecho y el vientre de un negro aterciopelado y la espalda, las alas y la cola de azul cobalto intenso; el pico es negro. Los juveniles son muy distintos: nacen con el plumaje claro, el pico y el anillo ocular amarillos, y van perdiendo ese amarillo con la edad. Es gregaria, ruidosa y omnívora —insectos, frutos, huevos y pequeños vertebrados— y forma grupos familiares que colaboran en la crianza. Frecuenta selva baja caducifolia, selva mediana, bordes de bosque y acahuales, y es habitual en zonas arqueológicas. La UICN la considera de Preocupación Menor.",
+    kidDescription:
+      "La chara yucateca es prima de los cuervos y sólo vive en la península de Yucatán. De grande es negra como el terciopelo, con la espalda, las alas y la cola de un azul intenso, como el cielo justo antes de la noche. Pero de pequeña se ve totalmente distinta: nace clarita, con el pico y un anillo alrededor del ojo amarillos, y poco a poco se va cambiando de disfraz hasta quedar azul y negra. Anda en pandilla, hace mucho escándalo y toda la familia ayuda a cuidar a los pollitos. Es una de las aves preferidas de quienes vienen a Campeche a mirar pájaros.",
+    funFact:
+      "De cría es clarita con el pico amarillo y de adulta es negra con azul cobalto: es como si el mismo pájaro se cambiara de disfraz al crecer.",
+    habitat:
+      "Selva baja caducifolia, selva mediana subcaducifolia, bordes de bosque y acahuales; muy frecuente entre las ruinas de las zonas arqueológicas. Se mueve en grupos familiares por el sotobosque y los árboles medianos.",
+    imageUrl: null,
+    regionSlugs: [
+      "calakmul",
+      "hopelchen",
+      "champoton",
+      "hecelchakan",
+      "campeche",
+      "candelaria",
+    ],
+  },
+  {
+    slug: "carpintero-yucateco",
+    commonNameEs: "Carpintero yucateco",
+    genus: "Melanerpes",
+    speciesEpithet: "pygmaeus",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Aves",
+    order: "Piciformes",
+    family: "Picidae",
+    conservationStatus: "LC",
+    category: "aves",
+    presenceType: "endemic",
+    mayaName: "Ch'ojom",
+    description:
+      "El más pequeño de los carpinteros de México (unos 16 cm) y el más común de la península de Yucatán, con una población menor en el norte de Honduras. Dorso barrado en blanco y negro, cara y vientre de tono ante y una banda roja en la cabeza: en el macho cubre corona y nuca, y en la hembra sólo la nuca. Excava sus nidos en troncos y ramas muertas de muchas especies de árboles, y esos huecos, al quedar libres, son ocupados por lechuzas, golondrinas, trepatroncos y otras aves que no pueden excavar los suyos; por eso se le llama “ingeniero de ecosistemas”. Come insectos, arañas, frutos y néctar. Habita selvas, acahuales, manglares y jardines arbolados. UICN: Preocupación Menor. En maya también se le dice Ch'elom.",
+    kidDescription:
+      "El carpintero yucateco es un pajarito chiquito que vive sólo en la península de Yucatán. Tiene la espalda a rayas blancas y negras y un gorrito rojo: completo en los papás y más pequeño en las mamás. Con el pico hace agujeros en los troncos secos para armar su casa, y cuando se muda, esos agujeros los aprovechan búhos, golondrinas y otros animales que no saben excavar. Por eso decimos que construye casas para todo el vecindario. Además no canta con la voz: “canta” tamborileando muy rápido con el pico sobre la madera.",
+    funFact:
+      "No canta con la voz: “canta” tamborileando el pico contra la madera a toda velocidad, y sus agujeros viejos se vuelven casa de búhos, golondrinas y otros animales.",
+    habitat:
+      "Selvas altas y medianas, acahuales, manglares y jardines con árboles maduros; es el carpintero que se ve con más facilidad en cualquier rincón arbolado de Campeche. Necesita troncos y ramas muertas en pie para excavar.",
+    imageUrl: null,
+    regionSlugs: [
+      "campeche",
+      "champoton",
+      "calakmul",
+      "hopelchen",
+      "carmen",
+      "hecelchakan",
+      "calkini",
+    ],
+  },
+  {
+    slug: "pizote",
+    commonNameEs: "Pizote / Tejón",
+    genus: "Nasua",
+    speciesEpithet: "narica",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Mammalia",
+    order: "Carnivora",
+    family: "Procyonidae",
+    conservationStatus: "LC",
+    category: "mamiferos",
+    presenceType: "native",
+    mayaName: "Chi'ik",
+    description:
+      "Carnívoro emparentado con el mapache, de cuerpo esbelto, hocico largo y móvil y cola larga con anillos claros y oscuros que suele llevar erguida como una antena. Tiene una “máscara” pálida alrededor de los ojos y el hocico. Se distribuye desde el suroeste de Estados Unidos hasta Colombia, así que no es exclusivo de Campeche. Es omnívoro y forrajea sobre todo en el suelo, hurgando la hojarasca con la nariz en busca de invertebrados, frutos, huevos y pequeños vertebrados. Las hembras y las crías viven en bandas de hasta 25–30 individuos, mientras que los machos adultos son solitarios. Ocupa todos los ambientes boscosos del estado, del manglar a la selva húmeda y seca, y es frecuente en Calakmul. UICN: Preocupación Menor.",
+    kidDescription:
+      "El pizote es primo del mapache y se pasea por casi toda Campeche con la cola levantada, llena de anillos, como si llevara una banderita. Tiene una nariz larga y movediza que mete entre las hojas del suelo para encontrar bichos, frutas y huevitos: es su herramienta favorita. Las mamás y las crías andan en pandillas grandes, de hasta treinta, jugando y buscando comida juntas; los papás grandes, en cambio, prefieren andar solitos. No vive sólo aquí: también habita desde Estados Unidos hasta Colombia.",
+    funFact:
+      "Su nariz larga y flexible es su navaja suiza: huele, escarba la hojarasca y saca comida de los huecos. Las hembras y crías andan en grupos de hasta 30; los machos grandes, solos.",
+    habitat:
+      "Todos los ambientes con árboles de Campeche: manglar, selva húmeda y selva seca, acahuales y bordes de milpa. Muy común en la Reserva de la Biosfera Calakmul. Duerme y cría en los árboles y busca comida en el suelo.",
+    imageUrl: null,
+    regionSlugs: [
+      "calakmul",
+      "candelaria",
+      "escarcega",
+      "champoton",
+      "hopelchen",
+      "carmen",
+    ],
+  },
 ];
 
 async function main() {

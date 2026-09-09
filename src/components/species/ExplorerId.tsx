@@ -127,9 +127,17 @@ export function ExplorerId({
           </div>
         </div>
 
-        <div className="my-3 flex justify-end gap-1">
+        <div className="my-3 flex flex-wrap justify-end gap-1">
           <Stamp top="SELVA" bottom="MAYA" rotate={-8} color="var(--jungle-deep)" />
           <Stamp top="CAMPECHE" bottom="MÉXICO" rotate={6} color="var(--rust)" />
+          {species.mayaName ? (
+            <Stamp
+              top={species.mayaName}
+              bottom="EN MAYA"
+              rotate={-4}
+              color="var(--sky)"
+            />
+          ) : null}
         </div>
 
         <dl className="rounded-2xl border-[3px] border-line bg-paper p-3">

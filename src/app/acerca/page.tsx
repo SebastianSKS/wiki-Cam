@@ -27,7 +27,7 @@ const SECTIONS = [
   },
   {
     t: "Para saber más",
-    body: "Cada ficha tiene una sección para quien quiera profundizar, con el texto más técnico. Los datos de taxonomía vienen de GBIF y los municipios del marco geoestadístico del INEGI.",
+    body: "Cada ficha tiene una sección para quien quiera profundizar, con el texto más técnico. Las descripciones, los hábitats y los nombres en maya se basan en las fichas oficiales del portal de biodiversidad de Campeche (bio.campeche.gob.mx); la taxonomía viene de GBIF y los municipios del marco geoestadístico del INEGI.",
   },
   {
     t: "Cómo está hecho",

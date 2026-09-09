@@ -182,10 +182,6 @@
    BASE
    ============================================================ */
 
-* {
-  border-color: var(--hairline);
-}
-
 html {
   -webkit-text-size-adjust: 100%;
   scrollbar-color: var(--ink-faint) transparent;
@@ -215,14 +211,23 @@ body {
   border-radius: 4px;
 }
 
-/* Reset de enlaces DENTRO de @layer base: si va sin capa, gana por encima de
-   TODA utilidad de Tailwind (que sí va en capa), y `color: inherit` tapaba
-   `text-*` en cada <a>/<Link> — por eso el botón "Todos"/"Todas" quedaba con
-   texto del color del fondo. En @layer base, las utilidades vuelven a mandar. */
+/* Resets DENTRO de @layer base: una regla sin capa gana por encima de TODA
+   utilidad de Tailwind (que sí va en capa). Sin esto:
+   · `a { color: inherit }` tapaba `text-*` en cada <a>/<Link> → el botón
+     "Todos"/"Todas" quedaba con el texto del color de su fondo.
+   · `* { border-color: hairline }` tapaba `border-*` en toda la app → cada
+     borde se pintaba al 16% de opacidad en vez del color pedido.
+   Dentro de @layer base, las utilidades vuelven a mandar; el `*` sólo fija el
+   color por defecto para bordes sin clase de color. */
 @layer base {
   a {
     color: inherit;
     text-decoration: none;
+  }
+  *,
+  ::before,
+  ::after {
+    border-color: var(--hairline);
   }
 }
 
