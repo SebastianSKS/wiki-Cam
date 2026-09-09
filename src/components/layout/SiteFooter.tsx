@@ -23,8 +23,9 @@ export function SiteFooter() {
             Wiki<span className="text-rust">·</span>Campeche
           </p>
           <p className="mt-2 text-sm text-ink-soft">
-            Un libro de cuentos sobre los animales que sólo viven en Campeche,
-            México. Ilustrado a mano, para toda la familia.
+            Un libro de cuentos sobre la fauna y la flora de Campeche, México:
+            algunas especies sólo viven aquí, otras comparten su hogar con
+            vecinos cercanos. Ilustrado a mano, para toda la familia.
           </p>
         </div>
         <div>

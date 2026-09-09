@@ -1,5 +1,6 @@
 import type {
   ConservationStatus,
+  PresenceType,
   SpeciesCategory,
 } from "@/db/schema";
 
@@ -21,6 +22,25 @@ export const CATEGORY_LABEL: Record<SpeciesCategory, string> = {
   reptiles: "Reptiles",
   flora: "Flora",
   marino: "Marino",
+};
+
+/** Relación con Campeche: exclusiva vs. compartida con vecinos. */
+export const PRESENCE: Record<
+  PresenceType,
+  { short: string; long: string; blurb: string }
+> = {
+  endemic: {
+    short: "Sólo existe aquí",
+    long: "Sólo vive en esta región",
+    blurb:
+      "No vive en ningún otro lugar del mundo: cuidarla aquí es cuidarla en todas partes.",
+  },
+  native: {
+    short: "También vive aquí",
+    long: "Vive aquí y también en otras partes",
+    blurb:
+      "Es de Campeche, pero comparte su hogar con vecinos de otras regiones de América.",
+  },
 };
 
 type ConservationMeta = {

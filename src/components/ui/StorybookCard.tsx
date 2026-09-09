@@ -3,6 +3,7 @@ import type { SpeciesWithRegions } from "@/lib/queries";
 import { CATEGORY_LABEL, CARE, CONSERVATION, binomial } from "@/lib/format";
 import { SpeciesScene, hasIllustration } from "@/components/illustration/SpeciesIllustration";
 import { Tag } from "@/components/ui/Tag";
+import { PresenceBadge } from "@/components/species/PresenceBadge";
 import { cn } from "@/lib/cn";
 
 function firstSentence(text: string): string {
@@ -52,7 +53,11 @@ export function StorybookCard({
 
         <p className="mt-2 line-clamp-2 text-sm text-ink-soft">{teaser}</p>
 
-        <div className="mt-3 flex flex-wrap items-center gap-1.5">
+        <div className="mt-3">
+          <PresenceBadge type={species.presenceType} />
+        </div>
+
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
           {ready ? (
             <Tag tone={careTone} seed={species.slug}>
               {care.headline}

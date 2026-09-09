@@ -46,12 +46,14 @@ export const metadata: Metadata = {
     template: "%s — Wiki·Campeche",
   },
   description:
-    "Un libro de cuentos sobre los animales que sólo viven en Campeche, México. Ilustrado a mano, para niñas, niños y familias curiosas.",
+    "Un libro de cuentos ilustrado sobre la fauna y la flora de Campeche, México: algunas especies sólo viven aquí, otras comparten su hogar con vecinos cercanos. Para niñas, niños y familias curiosas.",
   keywords: [
     "Campeche",
-    "animales",
+    "fauna",
+    "flora",
     "niños",
     "especies endémicas",
+    "especies nativas",
     "jaguar",
     "selva",
     "naturaleza",
@@ -60,7 +62,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Wiki·Campeche — El libro de las criaturas de Campeche",
     description:
-      "Un libro de cuentos sobre los animales que sólo viven en Campeche.",
+      "Un libro de cuentos ilustrado sobre la fauna y la flora de Campeche: algunas sólo viven aquí, otras las comparten con vecinos cercanos.",
     type: "website",
     locale: "es_MX",
   },

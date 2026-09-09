@@ -15,6 +15,13 @@
       "when": 1788908259689,
       "tag": "0001_brainy_bloodaxe",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1788917094915,
+      "tag": "0002_keen_kid_colt",
+      "breakpoints": true
     }
   ]
 }

@@ -99,24 +99,27 @@
   }
 }
 
+/* Debe ser idéntico al bloque @media de arriba: el toggle explícito y el modo
+   "sistema" tienen que verse igual. (En un commit anterior el retono nocturno
+   entró sólo en el bloque @media; aquí se completa.) */
 :root[data-theme="dark"] {
-  --cream: #1b1c3e;
-  --paper: #1b1c3e;
-  --paper-2: #24264f;
-  --paper-3: #313467;
-  --cacao: #f6ecd8;
-  --ink: #f6ecd8;
-  --ink-soft: #cdbfa6;
-  --ink-faint: #9a8f7d;
+  --cream: #202b3c;
+  --paper: #202b3c;
+  --paper-2: #2b3749;
+  --paper-3: #3b4a5f;
+  --cacao: #f4ead4;
+  --ink: #f4ead4;
+  --ink-soft: #c9baa0;
+  --ink-faint: #9b9079;
 
-  --jungle: #8be0ad;
-  --jungle-deep: #8be0ad;
-  --sky: #9ad7ee;
-  --coral: #ff9f80;
-  --rust: #ff9f80;
-  --sun: #ffde82;
-  --index: #ffde82;
-  --lavender: #d7bcff;
+  --jungle: #86dda6;
+  --jungle-deep: #86dda6;
+  --sky: #97d1e9;
+  --coral: #ff9d80;
+  --rust: #ff9d80;
+  --sun: #ffd97e;
+  --index: #ffd97e;
+  --lavender: #d3bcff;
 
   --jungle-ink: #0c2a1a;
   --sky-ink: #06232e;
@@ -124,12 +127,15 @@
   --sun-ink: #3a2b07;
   --lavender-ink: #2a1a45;
 
-  --line: #f6ecd8;
-  --hairline: rgba(246, 236, 216, 0.18);
-  --card-shadow: 0 10px 0 -4px rgba(0, 0, 0, 0.25),
-    0 20px 44px -18px rgba(0, 0, 0, 0.6);
+  --line: #f4ead4;
+  --hairline: rgba(244, 234, 212, 0.16);
+  --card-shadow: 0 3px 0 -1px rgba(6, 10, 22, 0.35),
+    0 16px 30px -16px rgba(6, 10, 22, 0.55);
+  --shadow-toy: 0 4px 0 rgba(6, 10, 22, 0.38);
+  --shadow-toy-press: 0 1px 0 rgba(6, 10, 22, 0.38);
+  --shadow-sticker: 1.5px 3px 6px rgba(6, 10, 22, 0.45);
   --grain-blend: soft-light;
-  --grain-opacity: 0.22;
+  --grain-opacity: 0.14;
   color-scheme: dark;
 }
 
@@ -209,9 +215,15 @@ body {
   border-radius: 4px;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+/* Reset de enlaces DENTRO de @layer base: si va sin capa, gana por encima de
+   TODA utilidad de Tailwind (que sí va en capa), y `color: inherit` tapaba
+   `text-*` en cada <a>/<Link> — por eso el botón "Todos"/"Todas" quedaba con
+   texto del color del fondo. En @layer base, las utilidades vuelven a mandar. */
+@layer base {
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
 }
 
 /* --- Tipografía utilitaria --- */

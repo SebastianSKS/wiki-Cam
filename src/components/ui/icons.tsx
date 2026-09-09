@@ -161,6 +161,29 @@ export function MapIcon(props: IconProps) {
   );
 }
 
+/* — Especie endémica: estrella (única, un tesoro) — */
+export function StarIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path
+        d="M12 2.5 14.9 8.4 21.5 9.3 16.7 13.9 17.9 20.5 12 17.4 6.1 20.5 7.3 13.9 2.5 9.3 9.1 8.4Z"
+        fill="var(--sun)"
+      />
+    </Base>
+  );
+}
+
+/* — Especie nativa: casita (está en casa aquí, y también en otras) — */
+export function HomeIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M4 11 12 4l8 7" />
+      <path d="M6 10v9h12v-9" fill="var(--jungle)" />
+      <path d="M10 19v-4.5h4V19" />
+    </Base>
+  );
+}
+
 /* — Marca del logo: carita de jaguar (línea, va sobre el círculo bg-sun) — */
 export function JaguarMark(props: IconProps) {
   return (

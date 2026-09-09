@@ -1,0 +1,1 @@
+ALTER TABLE `species` ADD `presence_type` text DEFAULT 'native' NOT NULL;

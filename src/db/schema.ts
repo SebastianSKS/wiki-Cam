@@ -33,6 +33,14 @@ export const SPECIES_CATEGORY = [
 ] as const;
 export type SpeciesCategory = (typeof SPECIES_CATEGORY)[number];
 
+/**
+ * Relación de la especie con Campeche.
+ * endemic → sólo existe en esta región y en ningún otro lugar del mundo.
+ * native  → vive en Campeche pero también en otras partes.
+ */
+export const PRESENCE_TYPE = ["endemic", "native"] as const;
+export type PresenceType = (typeof PRESENCE_TYPE)[number];
+
 export const species = sqliteTable("species", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   slug: text("slug").notNull().unique(),
@@ -48,6 +56,9 @@ export const species = sqliteTable("species", {
     enum: CONSERVATION_STATUS,
   }).notNull(),
   category: text("category", { enum: SPECIES_CATEGORY }).notNull(),
+  presenceType: text("presence_type", { enum: PRESENCE_TYPE })
+    .notNull()
+    .default("native"),
   description: text("description").notNull(),
   /** Descripción cálida y sencilla para niñas y niños. */
   kidDescription: text("kid_description"),

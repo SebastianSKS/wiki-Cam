@@ -288,8 +288,8 @@ export function StorybookCover({
           className={cn("mx-auto mt-5 max-w-xl text-lg text-ink-soft", item)}
           style={delay(4)}
         >
-          Conoce a los animales que no viven en ningún otro lugar del mundo.
-          {" "}
+          Conoce la fauna y la flora de Campeche: algunas sólo viven aquí,
+          otras comparten su hogar con vecinos cercanos.{" "}
           {speciesCount} historias ilustradas a mano · {regionCount} municipios
           por explorar.
         </p>

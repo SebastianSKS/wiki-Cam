@@ -3,6 +3,10 @@ import { cn } from "@/lib/cn";
 import { Jaguar } from "./Jaguar";
 import { Howler } from "./Howler";
 import { Tapir } from "./Tapir";
+import { OcellatedTurkey } from "./OcellatedTurkey";
+import { MoreletCrocodile } from "./MoreletCrocodile";
+import { Ceiba } from "./Ceiba";
+import { AntilleanManatee } from "./AntilleanManatee";
 import { MysteryEgg } from "./MysteryEgg";
 
 type IlloProps = { className?: string };
@@ -15,6 +19,22 @@ const REGISTRY: Record<
   jaguar: { Illo: Jaguar, habitat: "selva", wash: "var(--jungle)" },
   "mono-aullador-negro": { Illo: Howler, habitat: "dosel", wash: "var(--sky)" },
   "tapir-centroamericano": { Illo: Tapir, habitat: "agua", wash: "var(--sun)" },
+  "pavo-ocelado": {
+    Illo: OcellatedTurkey,
+    habitat: "selva",
+    wash: "var(--lavender)",
+  },
+  "cocodrilo-de-pantano": {
+    Illo: MoreletCrocodile,
+    habitat: "agua",
+    wash: "var(--sky)",
+  },
+  ceiba: { Illo: Ceiba, habitat: "dosel", wash: "var(--sun)" },
+  "manati-antillano": {
+    Illo: AntilleanManatee,
+    habitat: "agua",
+    wash: "var(--coral)",
+  },
 };
 
 export function hasIllustration(slug: string): boolean {

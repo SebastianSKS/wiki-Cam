@@ -13,6 +13,8 @@ import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
 import { ExplorerId } from "@/components/species/ExplorerId";
 import { CareMeter } from "@/components/species/CareMeter";
 import { DistributionMap } from "@/components/species/DistributionMap";
+import { PresenceBadge } from "@/components/species/PresenceBadge";
+import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
 export const revalidate = 300;
@@ -78,7 +80,8 @@ export default async function SpeciesPage({
             {bin}
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <PresenceBadge type={species.presenceType} />
             <Tag tone={careTone} seed={species.slug}>
               {care.headline}
             </Tag>
@@ -90,6 +93,9 @@ export default async function SpeciesPage({
               {species.regions.length === 1 ? "municipio" : "municipios"}
             </Tag>
           </div>
+          <p className="mt-3 max-w-md text-sm text-ink-soft">
+            {PRESENCE[species.presenceType].blurb}
+          </p>
         </div>
 
         <Reveal y={18}>

@@ -3,7 +3,9 @@ import { Link } from "next-view-transitions";
 import { getSpeciesCatalog } from "@/lib/queries";
 import {
   SPECIES_CATEGORY,
+  PRESENCE_TYPE,
   type ConservationStatus,
+  type PresenceType,
   type SpeciesCategory,
 } from "@/db/schema";
 import type { ComponentType, ReactNode, SVGProps } from "react";
@@ -13,6 +15,8 @@ import {
   TreeIcon,
   CloudSunIcon,
   LifeRingIcon,
+  StarIcon,
+  HomeIcon,
 } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
@@ -21,10 +25,26 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: "El índice de criaturas",
   description:
-    "Todos los animales del libro, para buscar por tipo (mamíferos, aves…) y por cómo están: si les va bien o si necesitan ayuda.",
+    "Toda la fauna y flora del libro, para buscar por tipo, por cómo están y por si sólo viven aquí o comparten hogar con vecinos cercanos.",
 };
 
-type SP = { tipo?: string; estado?: string };
+type SP = { tipo?: string; estado?: string; presencia?: string };
+
+const PRESENCE_GROUPS = {
+  endemic: {
+    label: "Sólo aquí",
+    Icon: StarIcon,
+    tone: "bg-sun text-sun-ink",
+  },
+  native: {
+    label: "También en otras partes",
+    Icon: HomeIcon,
+    tone: "bg-jungle text-jungle-ink",
+  },
+} as const satisfies Record<
+  PresenceType,
+  { label: string; Icon: ComponentType<SVGProps<SVGSVGElement>>; tone: string }
+>;
 
 const CARE_GROUPS = {
   bien: {
@@ -69,6 +89,7 @@ function href(cur: SP, patch: Partial<SP>): string {
   const qs = new URLSearchParams();
   if (m.tipo) qs.set("tipo", m.tipo);
   if (m.estado) qs.set("estado", m.estado);
+  if (m.presencia) qs.set("presencia", m.presencia);
   const s = qs.toString();
   return s ? `/especies?${s}` : "/especies";
 }
@@ -115,15 +136,21 @@ export default async function IndexPage({
   const estado = (
     sp.estado && sp.estado in CARE_GROUPS ? (sp.estado as CareKey) : undefined
   );
+  const presencia = (PRESENCE_TYPE as readonly string[]).includes(
+    sp.presencia ?? "",
+  )
+    ? (sp.presencia as PresenceType)
+    : undefined;
 
   const all = await getSpeciesCatalog();
   const list = all.filter((s) => {
     if (tipo && s.category !== tipo) return false;
     if (estado && !CARE_GROUPS[estado].set.includes(s.conservationStatus))
       return false;
+    if (presencia && s.presenceType !== presencia) return false;
     return true;
   });
-  const cur: SP = { tipo, estado };
+  const cur: SP = { tipo, estado, presencia };
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 pb-12 pt-10 sm:px-8">
@@ -183,7 +210,37 @@ export default async function IndexPage({
           </div>
         </div>
 
-        {(tipo || estado) && (
+        <div>
+          <p className="catalog mb-2 text-ink-faint">¿Sólo vive aquí?</p>
+          <div className="flex flex-wrap gap-2">
+            <FilterButton
+              to={href(cur, { presencia: undefined })}
+              active={!presencia}
+            >
+              Todas
+            </FilterButton>
+            {(Object.keys(PRESENCE_GROUPS) as PresenceType[]).map((k) => {
+              const Icon = PRESENCE_GROUPS[k].Icon;
+              return (
+                <FilterButton
+                  key={k}
+                  to={href(cur, { presencia: presencia === k ? undefined : k })}
+                  active={presencia === k}
+                  tone={PRESENCE_GROUPS[k].tone}
+                  icon={<Icon className="h-[18px] w-[18px]" />}
+                >
+                  {PRESENCE_GROUPS[k].label}
+                </FilterButton>
+              );
+            })}
+          </div>
+          <p className="mt-2 text-xs text-ink-faint">
+            Algunas criaturas sólo existen en esta región; otras también viven
+            en otras partes de América.
+          </p>
+        </div>
+
+        {(tipo || estado || presencia) && (
           <Link
             href="/especies"
             className="hand inline-block text-lg text-rust hover:underline"

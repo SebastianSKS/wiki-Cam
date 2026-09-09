@@ -9,7 +9,7 @@ const STEPS = [
   {
     Icon: BookIcon,
     tone: "bg-jungle text-jungle-ink",
-    t: "Cada animal tiene su cuento",
+    t: "Cada especie tiene su cuento",
     d: "Una historia cortita y fácil de leer, y al lado la versión larga para quien quiera saberlo todo.",
   },
   {
@@ -94,7 +94,7 @@ export default async function HomePage() {
         <Reveal>
           <p className="sci text-lg text-ink-soft">Campeche, México</p>
           <p className="mx-auto mt-3 max-w-3xl font-display text-[clamp(1.8rem,6vw,3.75rem)] leading-[1.02]">
-            Cuando conocemos a un animal, nos dan ganas de cuidarlo.
+            Cuando conocemos a un ser vivo, nos dan ganas de cuidarlo.
           </p>
           <div className="mt-7 flex justify-center">
             <Button href="/acerca" variant="outline" size="lg">

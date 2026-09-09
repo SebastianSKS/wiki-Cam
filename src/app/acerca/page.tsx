@@ -5,17 +5,21 @@ import { Button } from "@/components/ui/Button";
 export const metadata: Metadata = {
   title: "De qué trata",
   description:
-    "Wiki·Campeche es un libro digital sobre los animales endémicos de Campeche, para niñas, niños y familias.",
+    "Wiki·Campeche es un libro digital sobre la fauna y la flora de Campeche, para niñas, niños y familias: algunas especies sólo viven aquí, otras comparten su hogar con vecinos cercanos.",
 };
 
 const SECTIONS = [
   {
     t: "¿Qué es esto?",
-    body: "Un libro digital sobre los animales que sólo viven en Campeche, México. Cada criatura tiene su página con un cuento corto, un dibujo hecho a mano y un carnet con su nombre científico y su familia.",
+    body: "Un libro digital sobre los animales y las plantas de Campeche, México. Cada especie tiene su página con un cuento corto, un dibujo hecho a mano y un carnet con su nombre científico y su familia.",
+  },
+  {
+    t: "¿Endémica o nativa?",
+    body: "Algunas criaturas sólo existen en esta región y en ningún otro lugar del mundo: son endémicas y llevan la insignia “Sólo existe aquí”. Otras viven en Campeche pero también en otras partes de América: son nativas y llevan una insignia más discreta, “También vive aquí”. No todo lo de este libro es exclusivo de Campeche, y está bien que así sea.",
   },
   {
     t: "Los dibujos",
-    body: "Todas las ilustraciones están dibujadas dentro del propio sitio, con formas simples y una textura de acuarela. Cuando un animal todavía no tiene su dibujo, verás un huevo: quiere decir que viene en camino.",
+    body: "Todas las ilustraciones están dibujadas dentro del propio sitio, con formas simples y una textura de acuarela. Cuando una especie todavía no tiene su dibujo, verás un huevo: quiere decir que viene en camino.",
   },
   {
     t: "Decimos la verdad",
@@ -43,9 +47,9 @@ export default function AcercaPage() {
 
       <Reveal>
         <p className="sci mt-8 text-xl leading-relaxed text-ink-soft">
-          Un estado, muchísimos animales que no viven en ningún otro lugar del
-          planeta. Este libro intenta presentártelos con cariño y sin inventar
-          nada.
+          Un estado lleno de vida: algunas especies sólo existen aquí, otras
+          cruzan fronteras y las compartimos con los vecinos. Este libro intenta
+          presentártelas con cariño y sin inventar nada.
         </p>
       </Reveal>
 
