@@ -1,4 +1,17 @@
 import { Link } from "next-view-transitions";
+import {
+  DnaIcon,
+  SproutIcon,
+  PinIcon,
+  MapIcon,
+} from "@/components/ui/icons";
+
+const SOURCES = [
+  { Icon: DnaIcon, text: "Nombres y familias · GBIF" },
+  { Icon: SproutIcon, text: "Cómo están · Lista Roja UICN" },
+  { Icon: PinIcon, text: "Estatus en México · NOM-059-SEMARNAT" },
+  { Icon: MapIcon, text: "Municipios · INEGI" },
+];
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -16,11 +29,13 @@ export function SiteFooter() {
         </div>
         <div>
           <p className="hand text-lg text-ink-faint">¿De dónde salen los datos?</p>
-          <ul className="mt-2 space-y-1 text-sm text-ink-soft">
-            <li>🧬 Nombres y familias · GBIF</li>
-            <li>🌱 Cómo están · Lista Roja UICN</li>
-            <li>🇲🇽 Estatus en México · NOM-059-SEMARNAT</li>
-            <li>🗺️ Municipios · INEGI</li>
+          <ul className="mt-2 space-y-1.5 text-sm text-ink-soft">
+            {SOURCES.map((s) => (
+              <li key={s.text} className="flex items-center gap-2">
+                <s.Icon className="h-[18px] w-[18px] shrink-0" />
+                {s.text}
+              </li>
+            ))}
           </ul>
         </div>
         <div>

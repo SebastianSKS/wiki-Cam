@@ -1,5 +1,6 @@
 import { Link } from "next-view-transitions";
 import { ThemeToggle } from "./ThemeToggle";
+import { JaguarMark } from "@/components/ui/icons";
 
 const NAV = [
   {
@@ -17,12 +18,17 @@ export function SiteHeader() {
       {/* Alto FIJO (h-20 = 80px): ni el logo ni el swap tardío de webfonts
           pueden crecer la cabecera sticky y tapar el contenido de abajo. */}
       <div className="relative mx-auto flex h-20 max-w-[1200px] items-center justify-between gap-2 px-2 sm:gap-3 sm:px-8">
-        <Link href="/" className="block leading-none">
-          <span className="font-display block text-base leading-none sm:text-2xl">
-            Wiki<span className="text-rust">·</span>Campeche
+        <Link href="/" className="group flex items-center gap-2 sm:gap-3">
+          <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[3px] border-line bg-sun text-sun-ink transition-transform duration-200 ease-[var(--ease-bounce)] group-hover:-rotate-6 sm:h-[52px] sm:w-[52px]">
+            <JaguarMark className="h-6 w-6 sm:h-8 sm:w-8" />
           </span>
-          <span className="hand mt-1 hidden text-sm leading-none text-ink-faint sm:block">
-            el libro de las criaturas
+          <span className="block leading-none">
+            <span className="font-display block text-base leading-none sm:text-2xl">
+              Wiki<span className="text-rust">·</span>Campeche
+            </span>
+            <span className="hand mt-1 hidden text-sm leading-none text-ink-faint sm:block">
+              el libro de las criaturas
+            </span>
           </span>
         </Link>
 

@@ -3,22 +3,23 @@ import { StorybookCover } from "@/components/home/StorybookCover";
 import { StorybookCard } from "@/components/ui/StorybookCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { Button } from "@/components/ui/Button";
+import { BookIcon, CompassIcon, SproutIcon } from "@/components/ui/icons";
 
 const STEPS = [
   {
-    emoji: "📖",
+    Icon: BookIcon,
     tone: "bg-jungle text-jungle-ink",
     t: "Cada animal tiene su cuento",
     d: "Una historia cortita y fácil de leer, y al lado la versión larga para quien quiera saberlo todo.",
   },
   {
-    emoji: "🧭",
+    Icon: CompassIcon,
     tone: "bg-sky text-sky-ink",
     t: "Un carnet de explorador",
     d: "Su nombre científico, su familia y de dónde viene, con sellos de la Selva Maya.",
   },
   {
-    emoji: "🌱",
+    Icon: SproutIcon,
     tone: "bg-coral text-coral-ink",
     t: "Un medidor de cuidado honesto",
     d: "Una plantita nos dice si al animal le va bien o si necesita nuestra ayuda. Sin esconder la verdad.",
@@ -75,9 +76,9 @@ export default async function HomePage() {
               <Reveal key={s.t} delay={i * 0.08}>
                 <div className="h-full rounded-[26px] border-[3px] border-line bg-paper p-6 shadow-[var(--card-shadow)]">
                   <span
-                    className={`inline-flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-line text-2xl ${s.tone}`}
+                    className={`inline-flex h-14 w-14 items-center justify-center rounded-full border-[3px] border-line ${s.tone}`}
                   >
-                    {s.emoji}
+                    <s.Icon className="h-7 w-7" />
                   </span>
                   <h3 className="mt-4 font-display text-xl">{s.t}</h3>
                   <p className="mt-2 text-sm text-ink-soft">{s.d}</p>

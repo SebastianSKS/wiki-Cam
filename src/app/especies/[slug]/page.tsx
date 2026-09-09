@@ -13,6 +13,7 @@ import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
 import { ExplorerId } from "@/components/species/ExplorerId";
 import { CareMeter } from "@/components/species/CareMeter";
 import { DistributionMap } from "@/components/species/DistributionMap";
+import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
 export const revalidate = 300;
 
@@ -117,8 +118,11 @@ export default async function SpeciesPage({
                 <p className="mt-1 text-lg font-bold leading-snug">
                   {species.funFact}
                 </p>
-                <span aria-hidden className="absolute -right-3 -top-4 text-3xl">
-                  💡
+                <span
+                  aria-hidden
+                  className="absolute -right-3 -top-5 inline-flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-line bg-paper text-ink"
+                >
+                  <BulbIcon className="h-6 w-6" />
                 </span>
               </aside>
             </Reveal>
@@ -159,12 +163,13 @@ export default async function SpeciesPage({
 
           <Reveal>
             <details className="group rounded-[22px] border-[3px] border-dashed border-line bg-paper p-5">
-              <summary className="hand cursor-pointer list-none text-xl text-ink-soft marker:content-none">
+              <summary className="hand flex cursor-pointer list-none items-center gap-2 text-xl text-ink-soft marker:content-none">
+                <SearchIcon className="h-5 w-5 shrink-0" />
                 <span className="group-open:hidden">
-                  🔎 Para quien quiera saber más…
+                  Para quien quiera saber más…
                 </span>
                 <span className="hidden group-open:inline">
-                  🔎 Versión para expertos
+                  Versión para expertos
                 </span>
               </summary>
               <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">

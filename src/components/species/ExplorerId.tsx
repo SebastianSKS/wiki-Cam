@@ -2,6 +2,7 @@ import type { SpeciesWithRegions } from "@/lib/queries";
 import { CATEGORY_LABEL, binomial } from "@/lib/format";
 import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
 import { Tag } from "@/components/ui/Tag";
+import { CompassIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
 function Stamp({
@@ -100,9 +101,7 @@ export function ExplorerId({
     >
       <div className="flex items-center justify-between border-b-[3px] border-dashed border-line bg-sky px-4 py-2 text-sky-ink">
         <span className="catalog">Carnet de exploración</span>
-        <span aria-hidden className="text-base">
-          🧭
-        </span>
+        <CompassIcon className="h-5 w-5" />
       </div>
 
       <div className="p-5">

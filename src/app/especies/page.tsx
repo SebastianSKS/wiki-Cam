@@ -6,8 +6,14 @@ import {
   type ConservationStatus,
   type SpeciesCategory,
 } from "@/db/schema";
+import type { ComponentType, ReactNode, SVGProps } from "react";
 import { CATEGORY_LABEL } from "@/lib/format";
 import { StorybookCard } from "@/components/ui/StorybookCard";
+import {
+  TreeIcon,
+  CloudSunIcon,
+  LifeRingIcon,
+} from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 
 export const revalidate = 300;
@@ -23,23 +29,31 @@ type SP = { tipo?: string; estado?: string };
 const CARE_GROUPS = {
   bien: {
     label: "Les va bien",
-    emoji: "🌳",
+    Icon: TreeIcon,
     tone: "bg-jungle text-jungle-ink",
     set: ["LC", "NT"] as ConservationStatus[],
   },
   ayuda: {
     label: "Necesitan ayuda",
-    emoji: "🌤️",
+    Icon: CloudSunIcon,
     tone: "bg-sun text-sun-ink",
     set: ["VU", "DD"] as ConservationStatus[],
   },
   peligro: {
     label: "En peligro",
-    emoji: "🆘",
+    Icon: LifeRingIcon,
     tone: "bg-coral text-coral-ink",
     set: ["EN", "CR", "EW", "EX"] as ConservationStatus[],
   },
-} as const;
+} as const satisfies Record<
+  string,
+  {
+    label: string;
+    Icon: ComponentType<SVGProps<SVGSVGElement>>;
+    tone: string;
+    set: ConservationStatus[];
+  }
+>;
 type CareKey = keyof typeof CARE_GROUPS;
 
 const CAT_TONE: Record<SpeciesCategory, string> = {
@@ -63,27 +77,27 @@ function FilterButton({
   to,
   active,
   tone,
-  emoji,
+  icon,
   children,
 }: {
   to: string;
   active: boolean;
   tone?: string;
-  emoji?: string;
-  children: React.ReactNode;
+  icon?: ReactNode;
+  children: ReactNode;
 }) {
   return (
     <Link
       href={to}
       aria-current={active ? "true" : undefined}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border-[3px] border-line px-4 py-2 text-sm font-extrabold",
+        "inline-flex items-center gap-1.5 rounded-full border-[3px] border-line px-4 py-2 text-sm font-extrabold",
         "shadow-[var(--shadow-toy)] transition-transform duration-150 ease-[var(--ease-bounce)]",
         "hover:-translate-y-0.5 active:translate-y-1 active:scale-95 active:shadow-[var(--shadow-toy-press)]",
         active ? tone ?? "bg-ink text-paper" : "bg-paper text-ink-soft",
       )}
     >
-      {emoji ? <span aria-hidden>{emoji}</span> : null}
+      {icon ? <span className="-ml-0.5 shrink-0">{icon}</span> : null}
       {children}
     </Link>
   );
@@ -152,17 +166,20 @@ export default async function IndexPage({
             <FilterButton to={href(cur, { estado: undefined })} active={!estado}>
               Todas
             </FilterButton>
-            {(Object.keys(CARE_GROUPS) as CareKey[]).map((k) => (
-              <FilterButton
-                key={k}
-                to={href(cur, { estado: estado === k ? undefined : k })}
-                active={estado === k}
-                tone={CARE_GROUPS[k].tone}
-                emoji={CARE_GROUPS[k].emoji}
-              >
-                {CARE_GROUPS[k].label}
-              </FilterButton>
-            ))}
+            {(Object.keys(CARE_GROUPS) as CareKey[]).map((k) => {
+              const Icon = CARE_GROUPS[k].Icon;
+              return (
+                <FilterButton
+                  key={k}
+                  to={href(cur, { estado: estado === k ? undefined : k })}
+                  active={estado === k}
+                  tone={CARE_GROUPS[k].tone}
+                  icon={<Icon className="h-[18px] w-[18px]" />}
+                >
+                  {CARE_GROUPS[k].label}
+                </FilterButton>
+              );
+            })}
           </div>
         </div>
 
