@@ -336,11 +336,6 @@ body {
   }
 }
 
-::view-transition-group(species-illo) {
-  animation-duration: 0.6s;
-  animation-timing-function: var(--ease-bounce);
-}
-
 /* ============================================================
    MOVIMIENTO AMBIENTAL (loops suaves)
    ============================================================ */

@@ -14,7 +14,7 @@ import { ExplorerId } from "@/components/species/ExplorerId";
 import { CareMeter } from "@/components/species/CareMeter";
 import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
-import { JaguarDiscover } from "@/components/species/JaguarDiscover"; // prototipo "Toca para descubrir" (sólo jaguar)
+import { SpeciesDiscover } from "@/components/species/SpeciesDiscover"; // "Toca para descubrir": capa de puntos sobre el hero
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -103,12 +103,13 @@ export default async function SpeciesPage({
         </div>
 
         <Reveal y={18}>
-          {/* prototipo: puntos "Toca para descubrir" dentro del hero (sólo jaguar) */}
-          {species.slug === "jaguar" ? (
-            <JaguarDiscover className="mx-auto w-full max-w-md" />
-          ) : (
-            <SpeciesScene slug={species.slug} shared className="mx-auto w-full max-w-md" />
-          )}
+          {/* "Toca para descubrir": la ilustración la pinta el servidor;
+              SpeciesDiscover es sólo la capa de puntos (cliente, sin importar
+              ilustraciones). Contenedor relativo para posicionarla encima. */}
+          <div className="relative mx-auto w-full max-w-md">
+            <SpeciesScene slug={species.slug} shared className="w-full" />
+            <SpeciesDiscover slug={species.slug} mayaName={species.mayaName} />
+          </div>
         </Reveal>
       </header>
 

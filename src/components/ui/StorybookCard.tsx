@@ -41,7 +41,11 @@ export function StorybookCard({
         n.º {index + 1}
       </span>
 
-      <SpeciesScene slug={species.slug} shared className="w-full" />
+      {/* Sin `shared`: si cada tarjeta lleva un view-transition-name, el
+          navegador fotografía las 12-18 viñetas del índice en CADA salto a una
+          ficha, y sólo una llega a emparejar. El nombre compartido vive sólo
+          en el hero de la ficha (SpeciesScene `shared`). */}
+      <SpeciesScene slug={species.slug} className="w-full" />
 
       <div className="px-1 pb-1 pt-4">
         <h3 className="font-display text-[1.7rem] leading-[1.05]">
