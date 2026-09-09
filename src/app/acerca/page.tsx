@@ -10,27 +10,22 @@ export const metadata: Metadata = {
 
 const SECTIONS = [
   {
-    emoji: "📖",
     t: "¿Qué es esto?",
     body: "Un libro digital sobre los animales que sólo viven en Campeche, México. Cada criatura tiene su página con un cuento corto, un dibujo hecho a mano y un carnet con su nombre científico y su familia.",
   },
   {
-    emoji: "🎨",
     t: "Los dibujos",
     body: "Todas las ilustraciones están dibujadas dentro del propio sitio, con formas simples y una textura de acuarela. Cuando un animal todavía no tiene su dibujo, verás un huevo: quiere decir que viene en camino.",
   },
   {
-    emoji: "🌱",
     t: "Decimos la verdad",
     body: "El medidor de cuidado usa la Lista Roja de la UICN y la norma mexicana NOM-059. Si una especie está en peligro, lo decimos con claridad y con calma: saberlo es el primer paso para ayudar.",
   },
   {
-    emoji: "🔎",
     t: "Para saber más",
     body: "Cada ficha tiene una sección para quien quiera profundizar, con el texto más técnico. Los datos de taxonomía vienen de GBIF y los municipios del marco geoestadístico del INEGI.",
   },
   {
-    emoji: "🛠️",
     t: "Cómo está hecho",
     body: "Con Next.js y TypeScript, tipografías redondeadas, una base de datos en la nube y dibujos en SVG. Todo el movimiento se apaga si tu dispositivo pide menos animación.",
   },
@@ -62,10 +57,12 @@ export default function AcercaPage() {
             delay={i * 0.05}
             className="rounded-[24px] border-[3px] border-line bg-paper p-6 shadow-[var(--card-shadow)]"
           >
-            <span className="inline-flex h-12 w-12 items-center justify-center rounded-full border-[3px] border-line bg-sun text-xl">
-              {s.emoji}
-            </span>
-            <h2 className="mt-3 font-display text-2xl">{s.t}</h2>
+            <h2 className="font-display text-2xl">
+              <span className="hand mr-2 text-lg text-ink-faint">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              {s.t}
+            </h2>
             <p className="mt-2 leading-relaxed text-ink-soft">{s.body}</p>
           </Reveal>
         ))}
