@@ -38,6 +38,7 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "NT",
     category: "mamiferos",
     presenceType: "native",
+    mayaName: "Balam",
     description:
       "El felino más grande del continente americano y el tercero del mundo. En la península de Yucatán encuentra en la Selva Maya de Calakmul su último gran refugio: un corredor biológico transfronterizo que conecta Campeche con Guatemala y Belice. Depredador tope, regula las poblaciones de pecarí, venado y tepezcuintle; su presencia es indicador de un ecosistema íntegro. En México está catalogado como En Peligro (En) por la NOM-059-SEMARNAT-2010 y su cacería está prohibida desde 1987. La fragmentación del hábitat por la frontera agrícola, los atropellamientos en la carretera Escárcega–Xpujil y el conflicto con la ganadería son sus principales amenazas.",
     kidDescription:
@@ -92,7 +93,7 @@ const SPECIES: SpeciesSeed[] = [
     kidDescription:
       "El tapir es como un primo lejano y muy antiguo del caballo y del rinoceronte: ¡casi no ha cambiado en millones de años! Tiene una naricita larga y movediza que usa como manita para agarrar hojas. Le encanta el agua: se mete a los charcos para refrescarse y hasta sabe bucear. Cuando come frutas grandes, esparce las semillas por toda la selva; por eso lo llaman el jardinero del bosque. Quedan muy poquitos y tienen una sola cría cada dos años, así que cada tapir cuenta.",
     funFact:
-      "Los tapires bebés nacen con rayas y puntitos por todo el cuerpo, como una sandía con patas, para esconderse entre la luz y la sombra de la selva.",
+      "En maya el tapir se llama tzimín, y de ahí viene el nombre del municipio yucateco de Tizimín, que significa “lugar de tapires”. Cuando los españoles llegaron con sus caballos —un animal que nadie por aquí había visto—, los mayas los llamaron con esa misma palabra por su tamaño y sus pezuñas; por eso hoy tzimín quiere decir “caballo”. (Y los tapires bebés, además, nacen rayados y con puntitos, como una sandía con patas.)",
     habitat:
       "Selva alta y mediana perennifolia con cuerpos de agua permanentes, bajos inundables (akalché) y pantanos. Depende de aguadas y lagunas para termorregularse y refugiarse; en Campeche se concentra en el bloque forestal de Calakmul y Balam-Kú.",
     imageUrl: null,
@@ -135,6 +136,7 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "LC",
     category: "reptiles",
     presenceType: "native",
+    mayaName: "Áayin",
     description:
       "Cocodrilo de agua dulce de tamaño moderado (rara vez supera los 3 m) y hocico ancho, propio de la vertiente atlántica de México, Belice y Guatemala. Estuvo al borde de la desaparición a mediados del siglo XX por la cacería para peletería; tras décadas de protección se recuperó y hoy la UICN lo considera de Preocupación Menor, aunque en México sigue sujeto a protección especial (Pr) por la NOM-059. Es un depredador clave de humedales: controla peces, tortugas y crustáceos, y sus nidos y cuevas crean microhábitats para otras especies.",
     kidDescription:

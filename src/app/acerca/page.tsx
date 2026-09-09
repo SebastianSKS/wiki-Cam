@@ -27,7 +27,7 @@ const SECTIONS = [
   },
   {
     t: "Para saber más",
-    body: "Cada ficha tiene una sección para quien quiera profundizar, con el texto más técnico. Las descripciones, los hábitats y los nombres en maya se basan en las fichas oficiales del portal de biodiversidad de Campeche (bio.campeche.gob.mx); la taxonomía viene de GBIF y los municipios del marco geoestadístico del INEGI.",
+    body: "Cada ficha tiene una sección para quien quiera profundizar, con el texto más técnico. Trece de las dieciocho fichas (jaguar, mono aullador negro, puma, ocelote, iguana verde, pavo ocelado, chara yucateca, carpintero yucateco, cangrejo violinista, mariposa pavo real blanca, sapo gigante, rubia y coral cerebro de roca) se basan en las fichas oficiales del portal de biodiversidad de Campeche (bio.campeche.gob.mx), de donde vienen también sus nombres en maya. Las otras cuatro (tapir centroamericano, cocodrilo de pantano, manatí antillano y ceiba), que aún no tienen ficha en ese portal, se apoyan en la Lista Roja de la UICN, GBIF y la NOM-059-SEMARNAT-2010. La taxonomía general viene de GBIF y los municipios del marco geoestadístico del INEGI.",
   },
   {
     t: "Cómo está hecho",

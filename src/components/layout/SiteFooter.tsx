@@ -8,10 +8,10 @@ import {
 } from "@/components/ui/icons";
 
 const SOURCES = [
-  { Icon: BookIcon, text: "Fichas y nombres en maya · bio.campeche.gob.mx" },
-  { Icon: DnaIcon, text: "Nombres y familias · GBIF" },
-  { Icon: SproutIcon, text: "Cómo están · Lista Roja UICN" },
-  { Icon: PinIcon, text: "Estatus en México · NOM-059-SEMARNAT" },
+  { Icon: BookIcon, text: "Fichas de 13 especies · bio.campeche.gob.mx" },
+  { Icon: DnaIcon, text: "Taxonomía y familias · GBIF" },
+  { Icon: SproutIcon, text: "Estado de conservación · Lista Roja UICN" },
+  { Icon: PinIcon, text: "Estatus en México · NOM-059-SEMARNAT-2010" },
   { Icon: MapIcon, text: "Municipios · INEGI" },
 ];
 
