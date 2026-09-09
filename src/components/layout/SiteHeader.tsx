@@ -1,5 +1,6 @@
 import { Link } from "next-view-transitions";
 import { ThemeToggle } from "./ThemeToggle";
+import { StampCounter } from "./StampCounter"; // prototipo "Quiz del Explorador"
 import { JaguarMark } from "@/components/ui/icons";
 
 const NAV = [
@@ -42,6 +43,7 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          <StampCounter />
           <ThemeToggle />
         </nav>
 

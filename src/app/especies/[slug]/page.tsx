@@ -14,6 +14,7 @@ import { ExplorerId } from "@/components/species/ExplorerId";
 import { CareMeter } from "@/components/species/CareMeter";
 import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
+import { ExplorerQuiz } from "@/components/species/ExplorerQuiz"; // prototipo (sólo jaguar)
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -239,6 +240,12 @@ export default async function SpeciesPage({
           <SpeciesScene slug={next.slug} className="h-20 w-20 shrink-0 border-[4px]" />
         </Link>
       </nav>
+
+      {/* Prototipo del "Quiz del Explorador": hoy sólo el jaguar tiene preguntas.
+          Componente aislado — quitar este bloque + su import lo elimina sin más. */}
+      {species.slug === "jaguar" && (
+        <ExplorerQuiz species={species} number={idx + 1} />
+      )}
     </article>
   );
 }
