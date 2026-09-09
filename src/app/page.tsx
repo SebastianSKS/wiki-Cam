@@ -39,26 +39,34 @@ export default async function HomePage() {
         regionCount={regions.length}
       />
 
-      {/* Protagonistas */}
+      {/* Protagonistas — un adelanto; el catálogo completo está en /especies */}
       <section className="mx-auto max-w-[1200px] px-4 py-16 sm:px-8">
         <Reveal>
           <div className="flex flex-wrap items-end justify-between gap-3">
             <h2 className="font-display text-[clamp(1.9rem,5vw,3.25rem)]">
-              Conoce a los protagonistas
+              Conoce a algunas criaturas
             </h2>
             <p className="hand text-xl text-ink-soft">
-              {catalog.length} por ahora · vienen más
+              {catalog.length} en el libro · y vienen más
             </p>
           </div>
         </Reveal>
 
         <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {catalog.map((s, i) => (
+          {catalog.slice(0, 6).map((s, i) => (
             <Reveal as="li" key={s.slug} delay={i * 0.06}>
               <StorybookCard species={s} index={i} />
             </Reveal>
           ))}
         </ul>
+
+        <Reveal>
+          <div className="mt-8 flex justify-center">
+            <Button href="/especies" size="lg">
+              Ver el índice completo
+            </Button>
+          </div>
+        </Reveal>
       </section>
 
       {/* Cómo funciona */}

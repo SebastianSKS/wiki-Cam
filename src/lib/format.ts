@@ -10,6 +10,9 @@ export function catalogNumber(id: number, category: SpeciesCategory): string {
     mamiferos: "MAM",
     aves: "AVE",
     reptiles: "REP",
+    anfibios: "ANF",
+    insectos: "INS",
+    crustaceos: "CRU",
     flora: "FLO",
     marino: "MAR",
   };
@@ -20,6 +23,9 @@ export const CATEGORY_LABEL: Record<SpeciesCategory, string> = {
   mamiferos: "Mamíferos",
   aves: "Aves",
   reptiles: "Reptiles",
+  anfibios: "Anfibios",
+  insectos: "Insectos",
+  crustaceos: "Crustáceos",
   flora: "Flora",
   marino: "Marino",
 };
@@ -60,6 +66,7 @@ export const CONSERVATION: Record<ConservationStatus, ConservationMeta> = {
   EW: { code: "EW", es: "Extinta en estado silvestre", level: 5, tone: "gone" },
   EX: { code: "EX", es: "Extinta", level: 6, tone: "gone" },
   DD: { code: "DD", es: "Datos insuficientes", level: -1, tone: "unknown" },
+  NE: { code: "NE", es: "Todavía sin evaluar", level: -1, tone: "unknown" },
 };
 
 /** Escala UICN ordenada para el medidor. */
@@ -145,5 +152,12 @@ export const CARE: Record<ConservationStatus, CareMeta> = {
     headline: "Nos faltan datos",
     kidLine:
       "Todavía no sabemos cuántos quedan; hace falta estudiarlo más.",
+  },
+  NE: {
+    stage: "healthy",
+    fill: 4,
+    headline: "Todavía sin evaluar",
+    kidLine:
+      "Nadie ha hecho el conteo oficial, pero es una especie común y estable.",
   },
 };

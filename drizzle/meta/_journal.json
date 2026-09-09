@@ -29,6 +29,13 @@
       "when": 1788930930434,
       "tag": "0003_freezing_centennial",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1788932367481,
+      "tag": "0004_zippy_supernaut",
+      "breakpoints": true
     }
   ]
 }

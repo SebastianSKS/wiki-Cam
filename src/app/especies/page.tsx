@@ -28,7 +28,15 @@ export const metadata: Metadata = {
     "Toda la fauna y flora del libro, para buscar por tipo, por cómo están y por si sólo viven aquí o comparten hogar con vecinos cercanos.",
 };
 
-type SP = { tipo?: string; estado?: string; presencia?: string };
+type SP = {
+  tipo?: string;
+  estado?: string;
+  presencia?: string;
+  todas?: string;
+};
+
+/** Cuántas fichas mostrar antes del botón "ver todas" (sin filtro activo). */
+const PAGE_SIZE = 12;
 
 const PRESENCE_GROUPS = {
   endemic: {
@@ -80,8 +88,11 @@ const CAT_TONE: Record<SpeciesCategory, string> = {
   mamiferos: "bg-jungle text-jungle-ink",
   aves: "bg-sky text-sky-ink",
   reptiles: "bg-sun text-sun-ink",
-  flora: "bg-coral text-coral-ink",
-  marino: "bg-lavender text-lavender-ink",
+  anfibios: "bg-coral text-coral-ink",
+  insectos: "bg-lavender text-lavender-ink",
+  crustaceos: "bg-rust text-coral-ink",
+  flora: "bg-jungle-deep text-paper",
+  marino: "bg-sky text-sky-ink",
 };
 
 function href(cur: SP, patch: Partial<SP>): string {
@@ -90,6 +101,7 @@ function href(cur: SP, patch: Partial<SP>): string {
   if (m.tipo) qs.set("tipo", m.tipo);
   if (m.estado) qs.set("estado", m.estado);
   if (m.presencia) qs.set("presencia", m.presencia);
+  if (m.todas) qs.set("todas", m.todas);
   const s = qs.toString();
   return s ? `/especies?${s}` : "/especies";
 }
@@ -151,6 +163,12 @@ export default async function IndexPage({
     return true;
   });
   const cur: SP = { tipo, estado, presencia };
+  const anyFilter = Boolean(tipo || estado || presencia);
+  // Con filtro activo se muestra todo (los subconjuntos son pequeños).
+  // Sin filtro, se pagina para que el catálogo no se vuelva interminable.
+  const showAll = anyFilter || sp.todas === "1";
+  const visible = showAll ? list : list.slice(0, PAGE_SIZE);
+  const hidden = list.length - visible.length;
 
   return (
     <div className="mx-auto max-w-[1200px] px-4 pb-12 pt-10 sm:px-8">
@@ -259,13 +277,44 @@ export default async function IndexPage({
           </Link>
         </p>
       ) : (
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {list.map((s, i) => (
-            <li key={s.slug}>
-              <StorybookCard species={s} index={i} />
-            </li>
-          ))}
-        </ul>
+        <>
+          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((s, i) => (
+              <li key={s.slug}>
+                <StorybookCard species={s} index={i} />
+              </li>
+            ))}
+          </ul>
+
+          {hidden > 0 && (
+            <div className="mt-10 flex flex-col items-center gap-2">
+              <Link
+                href={href(cur, { todas: "1" })}
+                className={cn(
+                  "inline-flex items-center gap-2 rounded-full border-[3px] border-line bg-sun px-6 py-3 text-base font-extrabold text-sun-ink",
+                  "shadow-[var(--shadow-toy)] transition-transform duration-150 ease-[var(--ease-bounce)]",
+                  "hover:-translate-y-0.5 active:translate-y-1 active:scale-95 active:shadow-[var(--shadow-toy-press)]",
+                )}
+              >
+                Ver las {list.length} criaturas
+              </Link>
+              <p className="hand text-base text-ink-faint">
+                mostrando {visible.length} de {list.length}
+              </p>
+            </div>
+          )}
+
+          {showAll && sp.todas === "1" && !anyFilter && list.length > PAGE_SIZE && (
+            <div className="mt-8 text-center">
+              <Link
+                href="/especies"
+                className="hand text-lg text-rust hover:underline"
+              >
+                ↑ ver menos
+              </Link>
+            </div>
+          )}
+        </>
       )}
 
       {estado === "peligro" && list.length > 0 && (

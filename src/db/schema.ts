@@ -9,7 +9,8 @@ import {
 /**
  * Estados de conservación según la UICN.
  * LC menor preocupación · NT casi amenazada · VU vulnerable · EN en peligro
- * CR en peligro crítico · EW extinta en estado silvestre · EX extinta · DD datos insuficientes
+ * CR en peligro crítico · EW extinta en estado silvestre · EX extinta
+ * DD datos insuficientes · NE todavía sin evaluar
  */
 export const CONSERVATION_STATUS = [
   "LC",
@@ -20,6 +21,7 @@ export const CONSERVATION_STATUS = [
   "EW",
   "EX",
   "DD",
+  "NE",
 ] as const;
 export type ConservationStatus = (typeof CONSERVATION_STATUS)[number];
 
@@ -28,6 +30,9 @@ export const SPECIES_CATEGORY = [
   "mamiferos",
   "aves",
   "reptiles",
+  "anfibios",
+  "insectos",
+  "crustaceos",
   "flora",
   "marino",
 ] as const;
@@ -66,6 +71,13 @@ export const species = sqliteTable("species", {
   funFact: text("fun_fact"),
   /** Nombre en maya yucateco, cuando la ficha oficial lo incluye. */
   mayaName: text("maya_name"),
+  /**
+   * Para especies de mar abierto que no encajan en un municipio de tierra
+   * (arrecifes, banco de Campeche): el nombre de la zona marina. Si está
+   * presente, la ficha muestra "vive mar adentro, en …" y trata los
+   * municipios asociados como "frente a estas costas".
+   */
+  marineZone: text("marine_zone"),
   habitat: text("habitat").notNull(),
   imageUrl: text("image_url"),
   createdAt: text("created_at")

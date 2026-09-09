@@ -291,6 +291,245 @@ const SPECIES: SpeciesSeed[] = [
       "carmen",
     ],
   },
+  {
+    slug: "puma",
+    commonNameEs: "Puma",
+    genus: "Puma",
+    speciesEpithet: "concolor",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Mammalia",
+    order: "Carnivora",
+    family: "Felidae",
+    conservationStatus: "LC",
+    category: "mamiferos",
+    presenceType: "native",
+    mayaName: "Kab-kòh",
+    description:
+      "Segundo felino más grande de América después del jaguar y el de mayor distribución del continente: desde Canadá hasta la Patagonia. El adulto no tiene manchas —el pelaje es de un pardo grisáceo a pardo rojizo uniforme, con el vientre claro y la cola larga rematada en negro—; sólo los cachorros nacen moteados. Es un cazador solitario y sigiloso que se alimenta sobre todo de venado, pecarí y presas medianas. En Campeche comparte la selva con el jaguar y suele ocupar zonas algo más abiertas o de menor cobertura. La UICN lo considera de Preocupación Menor a escala global, aunque a nivel local depende de que haya selva y presas suficientes.",
+    kidDescription:
+      "El puma es el segundo gato más grande de América, después del jaguar, y el que vive en más países: lo hay desde Canadá hasta el sur de Argentina. De adulto no tiene manchas: es de un solo color, café grisáceo o café rojizo, con la punta de la cola oscura. Es callado y solitario, y camina por la selva de Campeche buscando venados. Aunque en el mundo le va bien, aquí necesita que la selva siga grande y con animales para comer.",
+    funFact:
+      "Salta más de 5 metros hacia arriba y hasta 12 de largo: es uno de los mejores saltadores de todo el reino animal.",
+    habitat:
+      "Selva alta, mediana y baja, acahuales y zonas semiabiertas de todo el estado, muchas veces cerca de donde también hay jaguar. Necesita territorios grandes y suficientes presas —venado, pecarí, tepezcuintle— para mantenerse.",
+    imageUrl: null,
+    regionSlugs: [
+      "calakmul",
+      "candelaria",
+      "escarcega",
+      "champoton",
+      "hopelchen",
+      "carmen",
+    ],
+  },
+  {
+    slug: "ocelote",
+    commonNameEs: "Ocelote",
+    genus: "Leopardus",
+    speciesEpithet: "pardalis",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Mammalia",
+    order: "Carnivora",
+    family: "Felidae",
+    conservationStatus: "LC",
+    category: "mamiferos",
+    presenceType: "native",
+    mayaName: "Chak-mool",
+    description:
+      "Felino manchado de tamaño mediano (mucho menor que el jaguar), con el fondo del pelaje amarillento a gris y un patrón de rosetas abiertas y cadenas de manchas alargadas, único en cada individuo; el vientre es blanco con manchas negras. Es principalmente nocturno y buen trepador y nadador. La UICN lo cataloga como de Preocupación Menor a escala global, pero en México la NOM-059-SEMARNAT lo considera En Peligro de Extinción y está en el Apéndice I de la CITES, que prohíbe su comercio internacional. La pérdida de selva, los atropellamientos y el tráfico de pieles y de crías son sus principales amenazas en Campeche.",
+    kidDescription:
+      "El ocelote es como un jaguar en pequeño: un gato manchado del tamaño de un perro mediano, con el vientre blanco y un dibujo de rosetas distinto en cada uno, como una huella digital. Sale de noche, trepa y nada muy bien. En el mundo todavía hay bastantes, pero en México le va mal: la ley mexicana lo considera En Peligro de Extinción porque aquí quedan pocos y perder selva le hace mucho daño. Ver uno es un regalo poco común.",
+    funFact:
+      "Aunque la lista mundial dice que al ocelote le va bien, en México la norma oficial NOM-059 lo tiene como En Peligro de Extinción: aquí sí necesita ayuda urgente.",
+    habitat:
+      "Selva alta y mediana con sotobosque denso, acahuales maduros y galerías de río; evita las zonas muy abiertas. En Campeche se le asocia sobre todo con la región de Calakmul y las selvas del sur. Es más nocturno donde hay gente cerca.",
+    imageUrl: null,
+    regionSlugs: [
+      "calakmul",
+      "candelaria",
+      "escarcega",
+      "hopelchen",
+      "champoton",
+      "carmen",
+    ],
+  },
+  {
+    slug: "iguana-verde",
+    commonNameEs: "Iguana verde",
+    genus: "Iguana",
+    speciesEpithet: "iguana",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Reptilia",
+    order: "Squamata",
+    family: "Iguanidae",
+    conservationStatus: "LC",
+    category: "reptiles",
+    presenceType: "native",
+    mayaName: "T'oh",
+    description:
+      "Lagarto grande y herbívoro, con una cresta de espinas a lo largo del dorso, una papada (gular) que despliega para comunicarse y termorregular, y una cola larga y anillada que usa como látigo y como timón al nadar. Las crías son de un verde intenso que se vuelve más grisáceo o pardo con la edad. La UICN la considera de Preocupación Menor, pero en México la NOM-059-SEMARNAT la incluye como Sujeta a Protección Especial y está en el Apéndice II de la CITES, por la presión del comercio de mascotas y el consumo de carne y huevos. En Campeche es común en la costa, los manglares y los bordes de selva.",
+    kidDescription:
+      "La iguana verde es un lagarto grande que come plantas y toma el sol en las ramas junto al agua. Tiene una fila de espinas en la espalda y una bolsa debajo de la barbilla que infla para saludar o para asustar. De bebé es verde brillante y de grande se pone más grisácea. En México está en una lista de especies que hay que proteger (NOM-059, Sujeta a Protección Especial), porque mucha gente la atrapa para venderla o comerla.",
+    funFact:
+      "Si algo la asusta arriba de un árbol, se deja caer al agua desde varios metros y escapa nadando, moviendo la cola aplanada como un remo.",
+    habitat:
+      "Manglares, vegetación de la costa, bordes de selva y orillas de ríos y lagunas; siempre cerca del agua y con árboles altos para asolearse y dormir. Muy frecuente en el litoral y en la Laguna de Términos.",
+    imageUrl: null,
+    regionSlugs: [
+      "campeche",
+      "champoton",
+      "carmen",
+      "calkini",
+      "tenabo",
+      "hecelchakan",
+      "palizada",
+    ],
+  },
+  {
+    slug: "sapo-gigante",
+    commonNameEs: "Sapo gigante",
+    genus: "Rhinella",
+    speciesEpithet: "marina",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Amphibia",
+    order: "Anura",
+    family: "Bufonidae",
+    conservationStatus: "LC",
+    category: "anfibios",
+    presenceType: "native",
+    mayaName: "Uo",
+    description:
+      "Anfibio de gran tamaño (puede pasar los 15 cm), de cuerpo robusto y piel seca y verrugosa de tono café a oliváceo. Detrás de la cabeza tiene dos glándulas parotoides grandes y triangulares que segregan un veneno lechoso (bufotoxinas) como defensa. Es de hábitos nocturnos y muy oportunista: come insectos, otros invertebrados y hasta pequeños vertebrados. En Campeche es abundante cerca de cuerpos de agua y asentamientos humanos. La UICN lo considera de Preocupación Menor; en su rango nativo cumple un papel de control de plagas.",
+    kidDescription:
+      "El sapo gigante es un sapo muy grande, del tamaño de un plato pequeño, con la piel llena de bultitos y dos bolsas grandes detrás de los ojos. En la cultura maya se le relaciona con la lluvia y con que la tierra dé frutos. Ojo: esas bolsas guardan un veneno tan fuerte que puede enfermar a un perro que lo muerda, así que a este amigo se le mira, no se le toca.",
+    funFact:
+      "En la cosmología maya se asocia con la lluvia y la fertilidad; su piel segrega una toxina tan potente que puede enfermar hasta a un perro: mejor sólo mirarlo.",
+    habitat:
+      "Orillas de charcas, aguadas, canales y jardines, casi siempre cerca del agua y de donde vive la gente. De día se esconde bajo troncos, piedras u hojarasca húmeda y de noche sale a cazar bajo las luces.",
+    imageUrl: null,
+    regionSlugs: [
+      "campeche",
+      "champoton",
+      "carmen",
+      "escarcega",
+      "candelaria",
+      "palizada",
+      "calkini",
+    ],
+  },
+  {
+    slug: "cangrejo-violinista",
+    commonNameEs: "Cangrejo violinista",
+    genus: "Uca",
+    speciesEpithet: "sp.",
+    kingdom: "Animalia",
+    phylum: "Arthropoda",
+    class: "Malacostraca",
+    order: "Decapoda",
+    family: "Ocypodidae",
+    conservationStatus: "NE",
+    category: "crustaceos",
+    presenceType: "native",
+    mayaName: "Chichim",
+    description:
+      "Cangrejo pequeño de las planicies lodosas y los manglares del litoral. Presenta un marcado dimorfismo: el macho tiene una pinza enormemente agrandada y de color llamativo —que agita para cortejar a las hembras y para intimidar a otros machos— y otra diminuta para alimentarse; las hembras tienen las dos pinzas pequeñas e iguales. Vive en galerías que excava en el lodo y sale con la marea baja a filtrar materia orgánica del sedimento, un trabajo que oxigena y limpia el suelo del manglar. No ha sido evaluado por la UICN ni por la NOM-059.",
+    kidDescription:
+      "El cangrejo violinista es chiquito y vive en el lodo de los manglares. Los machos tienen una pinza gigante y de color, casi tan grande como su cuerpo, que mueven en el aire como si tocaran un violín para llamar la atención; la otra pinza es diminuta. Las hembras tienen las dos pequeñas e iguales. Cavan casitas en el lodo y, al remover el suelo buscando comida, lo mantienen limpio y aireado para todo el manglar.",
+    funFact:
+      "Cuando baja la marea salen por miles al mismo tiempo y cubren la playa de lodo como una alfombra que se mueve.",
+    habitat:
+      "Planicies de lodo, esteros y bordes de manglar de la costa, sobre todo alrededor de la Laguna de Términos y en las desembocaduras de los ríos. Necesita suelo blando para excavar y el vaivén de la marea para comer.",
+    imageUrl: null,
+    regionSlugs: ["carmen", "champoton", "campeche", "palizada", "calkini"],
+  },
+  {
+    slug: "rubia",
+    commonNameEs: "Rubia (pargo)",
+    genus: "Ocyurus",
+    speciesEpithet: "chrysurus",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Actinopterygii",
+    order: "Perciformes",
+    family: "Lutjanidae",
+    conservationStatus: "LC",
+    category: "marino",
+    presenceType: "native",
+    marineZone: "la Sonda de Campeche y los arrecifes de Cayo Arcas",
+    description:
+      "Pez de arrecife de cuerpo fusiforme y plateado, con una franja amarilla brillante que recorre el cuerpo del hocico a la cola y aletas de color amarillo intenso; la cola es profundamente ahorquillada. Forma cardúmenes numerosos que se desplazan a gran velocidad sobre el arrecife y los pastos marinos, donde se alimenta de peces pequeños, crustáceos y plancton. Es una especie de importancia pesquera en el Golfo de México. La UICN la considera de Preocupación Menor. En Campeche habita mar adentro, en los arrecifes de Cayo Arcas y el resto de la Sonda de Campeche, no en aguas de tierra firme.",
+    kidDescription:
+      "La rubia es un pez plateado con una raya amarilla que va de la nariz a la cola y aletas amarillas muy vivas. No vive en los ríos ni en la laguna, sino mar adentro, sobre los arrecifes de Cayo Arcas, lejos de la costa. Nada en cardúmenes enormes y rapidísimos que giran todos juntos, como una sola nube de plata y oro moviéndose sobre el coral.",
+    funFact:
+      "Nadan en cardúmenes de cientos que se mueven como un solo cuerpo: de lejos parecen una nube de plata y oro flotando sobre el arrecife.",
+    habitat:
+      "Arrecifes de coral, fondos rocosos y pastos marinos de mar abierto, entre 10 y 70 m de profundidad. En Campeche, los arrecifes de Cayo Arcas y la Sonda de Campeche; de día ronda el arrecife en cardumen y de noche se dispersa a cazar.",
+    imageUrl: null,
+    regionSlugs: ["carmen", "champoton", "campeche"],
+  },
+  {
+    slug: "coral-cerebro-de-roca",
+    commonNameEs: "Coral cerebro de roca",
+    genus: "Colpophyllia",
+    speciesEpithet: "natans",
+    kingdom: "Animalia",
+    phylum: "Cnidaria",
+    class: "Anthozoa",
+    order: "Scleractinia",
+    family: "Mussidae",
+    conservationStatus: "VU",
+    category: "marino",
+    presenceType: "native",
+    marineZone: "los arrecifes de Cayo Arcas, en la Sonda de Campeche",
+    description:
+      "Coral pétreo colonial que forma domos redondeados de hasta 2 m de diámetro, recorridos por valles y crestas sinuosas que le dan aspecto de cerebro. Cada colonia está formada por miles de pólipos diminutos emparentados con las anémonas y las medusas; en sus tejidos viven algas microscópicas (zooxantelas) que, mediante fotosíntesis, le aportan hasta el 90 % de su alimento. Construye arrecife, el hábitat de miles de otras especies. La UICN lo cataloga como Vulnerable y en México está Sujeto a Protección Especial (NOM-059) y en el Apéndice II de la CITES; el calentamiento del mar, que provoca su blanqueamiento, es su mayor amenaza.",
+    kidDescription:
+      "El coral cerebro de roca no es una piedra: es un animal, o mejor dicho, una ciudad de miles de animalitos diminutos, primos de las medusas, viviendo juntos. Su forma de domo con surcos parece un cerebro gigante. Dentro de él viven algas muy pequeñas que le hacen casi toda la comida usando la luz del sol, como plantas. Vive sólo en los arrecifes de Cayo Arcas, mar adentro. El mar cada vez más caliente lo pone blanco y lo enferma; por eso en México es una especie protegida.",
+    funFact:
+      "Es un animal solar: obtiene hasta el 90 % de su comida de unas algas diminutas que viven dentro de él y hacen fotosíntesis con la luz del sol.",
+    habitat:
+      "Arrecifes de coral de aguas cálidas, claras y poco profundas. En Campeche sólo existe en los arrecifes de Cayo Arcas, en la Sonda de Campeche, a más de 100 km de la costa. Crece muy despacio, apenas unos milímetros al año.",
+    imageUrl: null,
+    regionSlugs: ["carmen", "champoton", "campeche"],
+  },
+  {
+    slug: "mariposa-pavo-real-blanca",
+    commonNameEs: "Mariposa pavo real blanca",
+    genus: "Anartia",
+    speciesEpithet: "jatrophae",
+    kingdom: "Animalia",
+    phylum: "Arthropoda",
+    class: "Insecta",
+    order: "Lepidoptera",
+    family: "Nymphalidae",
+    conservationStatus: "NE",
+    category: "insectos",
+    presenceType: "native",
+    mayaName: "Péepen",
+    description:
+      "Mariposa diurna de tamaño mediano, de alas blanco perlado con líneas y manchas café claro y bordes ondulados; en las alas traseras luce dos ocelos grandes de aspecto de ojo, con anillo naranja y centro oscuro. Vuela bajo y lento en terrenos abiertos, jardines, orillas de camino y potreros, y liba néctar de flores pequeñas. Sus orugas se alimentan de plantas de las familias Acanthaceae y Verbenaceae. No ha sido evaluada por la UICN ni por la NOM-059: es muy común y sus poblaciones son estables.",
+    kidDescription:
+      "La mariposa pavo real blanca tiene las alas de color blanco perla con dibujos café, y en las alas de atrás dos manchas redondas que parecen ojos. Vuela bajito y despacio por jardines, caminos y potreros de toda Campeche. Es tan común que casi siempre hay una cerca cuando hace sol.",
+    funFact:
+      "Esos dos ojos de las alas de atrás son falsos: hacen que un pájaro pique ahí, lejos del cuerpo, y la mariposa escape con sólo un mordisco en el ala.",
+    habitat:
+      "Terrenos abiertos y soleados: jardines, orillas de camino, potreros, milpas y bordes de selva. Necesita flores para el néctar y plantas específicas (como las del género Ruellia) para que coman sus orugas.",
+    imageUrl: null,
+    regionSlugs: [
+      "campeche",
+      "champoton",
+      "carmen",
+      "calkini",
+      "hecelchakan",
+      "tenabo",
+      "hopelchen",
+      "escarcega",
+    ],
+  },
 ];
 
 async function main() {

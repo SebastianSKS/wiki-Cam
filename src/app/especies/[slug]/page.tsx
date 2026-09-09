@@ -89,8 +89,11 @@ export default async function SpeciesPage({
               {CATEGORY_LABEL[species.category]}
             </Tag>
             <Tag tone="outline" seed={species.slug + "m"}>
-              Vive en {species.regions.length}{" "}
-              {species.regions.length === 1 ? "municipio" : "municipios"}
+              {species.marineZone
+                ? "Vive mar adentro"
+                : `Vive en ${species.regions.length} ${
+                    species.regions.length === 1 ? "municipio" : "municipios"
+                  }`}
             </Tag>
           </div>
           <p className="mt-3 max-w-md text-sm text-ink-soft">
@@ -141,11 +144,21 @@ export default async function SpeciesPage({
               </h2>
               <p className="mt-3 text-lg leading-relaxed">{species.habitat}</p>
 
+              {species.marineZone && (
+                <p className="mt-4 rounded-[20px] border-[3px] border-dashed border-sky bg-paper px-4 py-3 text-sm text-ink-soft">
+                  <strong className="text-sky-ink">Mar abierto:</strong> no vive
+                  en ningún municipio de tierra. Su hogar es {species.marineZone},
+                  lejos de la costa.
+                </p>
+              )}
+
               <div className="mt-5 grid gap-6 rounded-[26px] border-[3px] border-line bg-paper-2 p-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
                 <DistributionMap active={activeSlugs} />
                 <div>
                   <p className="text-sm text-ink-soft">
-                    En Campeche se le ha visto en estos municipios:
+                    {species.marineZone
+                      ? "Frente a las costas de estos municipios:"
+                      : "En Campeche se le ha visto en estos municipios:"}
                   </p>
                   <ul className="mt-3 flex flex-wrap gap-1.5">
                     {species.regions.map((r) => (

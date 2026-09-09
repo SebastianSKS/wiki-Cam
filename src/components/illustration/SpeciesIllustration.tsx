@@ -10,10 +10,18 @@ import { AntilleanManatee } from "./AntilleanManatee";
 import { YucatanJay } from "./YucatanJay";
 import { YucatanWoodpecker } from "./YucatanWoodpecker";
 import { WhiteNosedCoati } from "./WhiteNosedCoati";
+import { Puma } from "./Puma";
+import { Ocelot } from "./Ocelot";
+import { GreenIguana } from "./GreenIguana";
+import { CaneToad } from "./CaneToad";
+import { FiddlerCrab } from "./FiddlerCrab";
+import { YellowtailSnapper } from "./YellowtailSnapper";
+import { BrainCoral } from "./BrainCoral";
+import { WhitePeacockButterfly } from "./WhitePeacockButterfly";
 import { MysteryEgg } from "./MysteryEgg";
 
 type IlloProps = { className?: string };
-type Habitat = "selva" | "dosel" | "agua";
+type Habitat = "selva" | "dosel" | "agua" | "arrecife";
 
 const REGISTRY: Record<
   string,
@@ -45,6 +53,26 @@ const REGISTRY: Record<
     wash: "var(--jungle)",
   },
   pizote: { Illo: WhiteNosedCoati, habitat: "selva", wash: "var(--lavender)" },
+  puma: { Illo: Puma, habitat: "selva", wash: "var(--jungle)" },
+  ocelote: { Illo: Ocelot, habitat: "selva", wash: "var(--sun)" },
+  "iguana-verde": { Illo: GreenIguana, habitat: "selva", wash: "var(--sky)" },
+  "sapo-gigante": { Illo: CaneToad, habitat: "agua", wash: "var(--jungle)" },
+  "cangrejo-violinista": {
+    Illo: FiddlerCrab,
+    habitat: "agua",
+    wash: "var(--sun)",
+  },
+  rubia: { Illo: YellowtailSnapper, habitat: "arrecife", wash: "var(--sky)" },
+  "coral-cerebro-de-roca": {
+    Illo: BrainCoral,
+    habitat: "arrecife",
+    wash: "var(--sun)",
+  },
+  "mariposa-pavo-real-blanca": {
+    Illo: WhitePeacockButterfly,
+    habitat: "selva",
+    wash: "var(--lavender)",
+  },
 };
 
 export function hasIllustration(slug: string): boolean {
@@ -82,6 +110,28 @@ function HabitatBackdrop({ habitat }: { habitat: Habitat }) {
           <ellipse cx="60" cy="70" rx="26" ry="14" />
           <ellipse cx="250" cy="90" rx="30" ry="16" />
         </g>
+      </g>
+    );
+  }
+  if (habitat === "arrecife") {
+    return (
+      <g stroke="var(--cacao)" strokeWidth="4" strokeLinejoin="round">
+        {/* corales de fondo en las esquinas */}
+        <path
+          d="M6 320c-6-40 2-64 16-84 6 18 4 40-4 60 14-8 26-6 34 6-12 14-30 20-46 18Z"
+          fill="var(--jungle-deep)"
+        />
+        <path
+          d="M320 320c8-44-2-70-18-92-6 20-2 44 6 66-16-8-28-4-34 10 12 14 30 20 46 16Z"
+          fill="var(--coral)"
+        />
+        {/* burbujas subiendo */}
+        <g fill="none" stroke="#fff" opacity="0.7" strokeWidth="4">
+          <circle cx="40" cy="60" r="8" />
+          <circle cx="28" cy="34" r="5" />
+          <circle cx="286" cy="90" r="7" />
+        </g>
+        <circle cx="284" cy="44" r="12" fill="var(--sun)" stroke="none" opacity="0.85" />
       </g>
     );
   }
