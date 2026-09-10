@@ -81,6 +81,17 @@ export default async function SpeciesPage({
             {bin}
           </p>
 
+          {species.mayaName && (
+            <p className="mt-2 flex flex-wrap items-center gap-2">
+              <span className="catalog rounded-full border-[3px] border-line bg-sky px-2.5 py-0.5 text-sky-ink">
+                en maya
+              </span>
+              <span className="hand text-[clamp(1.3rem,3.4vw,1.9rem)] leading-none text-ink">
+                {species.mayaName}
+              </span>
+            </p>
+          )}
+
           <div className="mt-4 flex flex-wrap items-center gap-2">
             <PresenceBadge type={species.presenceType} />
             <Tag tone={careTone} seed={species.slug}>
