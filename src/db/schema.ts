@@ -69,8 +69,15 @@ export const species = sqliteTable("species", {
   kidDescription: text("kid_description"),
   /** Dato curioso corto, tono de sobremesa. */
   funFact: text("fun_fact"),
-  /** Nombre en maya yucateco, cuando la ficha oficial lo incluye. */
+  /** Nombre en lengua maya, cuando hay fuente que lo documente. */
   mayaName: text("maya_name"),
+  /**
+   * Lengua maya del nombre, sólo cuando NO es el maya yucateco (que es el
+   * de la mayor parte de Campeche y el caso por defecto). Ej.: "chontal"
+   * para el suroeste del estado. `null` → yucateco, la ficha rotula
+   * simplemente "EN MAYA".
+   */
+  mayaLanguage: text("maya_language"),
   /**
    * Para especies de mar abierto que no encajan en un municipio de tierra
    * (arrecifes, banco de Campeche): el nombre de la zona marina. Si está

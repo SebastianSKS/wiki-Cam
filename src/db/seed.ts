@@ -64,6 +64,7 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "EN",
     category: "mamiferos",
     presenceType: "endemic",
+    mayaName: "Batz'",
     description:
       "Primate endémico de la selva del sureste de México, Guatemala y Belice, y una de las especies de mono más grandes del Nuevo Mundo. Su llamado gutural, audible a más de tres kilómetros, delimita el territorio de la tropa al amanecer y al atardecer. Folívoro casi estricto, actúa como dispersor de semillas de higuerones y otras especies clave de la selva. Está catalogado En Peligro por la UICN y por la NOM-059; la tala selectiva, los incendios y el tráfico de crías para mascota han reducido y aislado sus poblaciones en Campeche.",
     kidDescription:
@@ -88,6 +89,7 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "EN",
     category: "mamiferos",
     presenceType: "native",
+    mayaName: "Tzimín",
     description:
       "El mamífero terrestre nativo más grande de Mesoamérica, con hasta 300 kg de peso. Pariente lejano de caballos y rinocerontes, es un linaje que ha cambiado poco en millones de años. Herbívoro ramoneador y nadador consumado, dispersa semillas grandes que ninguna otra especie mueve, por lo que se le llama \"jardinero de la selva\". Está catalogado En Peligro por la UICN y en Peligro de Extinción por la NOM-059. Su baja tasa reproductiva —una cría cada dos años— lo hace muy vulnerable a la cacería y a la pérdida de selva.",
     kidDescription:
@@ -112,6 +114,7 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "NT",
     category: "aves",
     presenceType: "endemic",
+    mayaName: "Kuts",
     description:
       "Galliforme endémico de la península de Yucatán: sólo habita en Campeche, Yucatán y Quintana Roo, más el norte de Guatemala y Belice. A diferencia del guajolote norteño, carece de barba y luce un plumaje bronce-verde iridiscente y una cabeza azul sin plumas con carúnculas anaranjadas que se hinchan durante el cortejo. Su cola ostenta ocelos —manchas circulares azules con borde bronce— que le dan el nombre. Forrajea en el suelo semillas, frutos e insectos, y se percha en árboles para dormir. Está catalogado como Casi Amenazado por la UICN; la cacería de subsistencia y la pérdida de selva por la frontera agrícola presionan sus poblaciones.",
     kidDescription:
@@ -161,6 +164,7 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "LC",
     category: "flora",
     presenceType: "native",
+    mayaName: "Yáax Che'",
     description:
       "Árbol emergente de la selva tropical que puede superar los 60 m de altura y desarrollar contrafuertes —raíces en forma de pared— de varios metros. Su tronco joven es verde y está cubierto de aguijones cónicos. Produce cápsulas con una fibra algodonosa, el kapok, que dispersa el viento. Es de amplia distribución en América tropical y África occidental, y de Preocupación Menor según la UICN. Para la cultura maya es el Yáax che’, el árbol sagrado que conecta el inframundo, la tierra y el cielo; por eso muchos ejemplares se dejan en pie en milpas y potreros.",
     kidDescription:
@@ -185,10 +189,12 @@ const SPECIES: SpeciesSeed[] = [
     conservationStatus: "VU",
     category: "marino",
     presenceType: "native",
+    mayaName: "Aj Tíl",
+    mayaLanguage: "chontal",
     description:
       "Mamífero acuático herbívoro de hasta 3.5 m y 500 kg, pariente cercano de los elefantes. Habita aguas costeras cálidas, estuarios y ríos desde el sureste de Estados Unidos hasta Brasil. La UICN lo cataloga como Vulnerable y la NOM-059 lo considera En Peligro de Extinción en México. En Campeche, la Laguna de Términos y las desembocaduras de los ríos Palizada, Candelaria y Champotón concentran una de las poblaciones más importantes del Golfo. Los golpes de embarcación, el enmalle en redes y la pérdida de pastos marinos son sus mayores amenazas.",
     kidDescription:
-      "El manatí es un gigante bueno que pasa el día comiendo plantas bajo el agua, despacito, como una vaca marina. No tiene patas traseras: se impulsa con una cola plana en forma de remo. Vive en la Laguna de Términos y en las bocas de los ríos de Campeche, donde el agua del río se junta con la del mar. Las lanchas rápidas y las redes olvidadas son su mayor peligro, por eso hay zonas donde los barcos deben ir muy despacio.",
+      "El manatí es un gigante bueno que pasa el día comiendo plantas bajo el agua, despacito, como una vaca marina. No tiene patas traseras: se impulsa con una cola plana en forma de remo. Vive en la Laguna de Términos y en las bocas de los ríos de Campeche, donde el agua del río se junta con la del mar. En esa parte del estado se habla maya chontal, una lengua distinta del maya yucateco del resto de Campeche, y ahí al manatí se le dice “Aj Tíl”. Las lanchas rápidas y las redes olvidadas son su mayor peligro, por eso hay zonas donde los barcos deben ir muy despacio.",
     funFact:
       "Come cada día casi la décima parte de su propio peso en pasto marino; los marineros antiguos que creían ver sirenas seguramente estaban viendo manatíes.",
     habitat:

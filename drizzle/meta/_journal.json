@@ -36,6 +36,13 @@
       "when": 1788932367481,
       "tag": "0004_zippy_supernaut",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "6",
+      "when": 1788999207145,
+      "tag": "0005_shocking_khan",
+      "breakpoints": true
     }
   ]
 }

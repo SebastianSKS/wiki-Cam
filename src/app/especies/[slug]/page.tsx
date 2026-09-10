@@ -84,7 +84,7 @@ export default async function SpeciesPage({
           {species.mayaName && (
             <p className="mt-2 flex flex-wrap items-center gap-2">
               <span className="catalog rounded-full border-[3px] border-line bg-sky px-2.5 py-0.5 text-sky-ink">
-                en maya
+                {species.mayaLanguage ? `en maya ${species.mayaLanguage}` : "en maya"}
               </span>
               <span className="hand text-[clamp(1.3rem,3.4vw,1.9rem)] leading-none text-ink">
                 {species.mayaName}
