@@ -182,7 +182,7 @@ export default async function SpeciesPage({
               )}
 
               <div className="mt-5 grid gap-6 rounded-[26px] border-[3px] border-line bg-paper-2 p-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
-                <DistributionMap active={activeSlugs} />
+                <DistributionMap active={activeSlugs} showLabels={false} />
                 <div>
                   <p className="text-sm text-ink-soft">
                     {species.marineZone
