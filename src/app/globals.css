@@ -187,6 +187,12 @@ html {
   scrollbar-color: var(--ink-faint) transparent;
   /* la cabecera es sticky (h-20 + borde ≈ 84px); reserva espacio para anclas */
   scroll-padding-top: 6rem;
+  /* Candado real contra el scroll horizontal: `overflow-x: hidden` sólo en
+     <body> NO se propaga al viewport en Chrome, así que un hijo ancho (p. ej.
+     el header en pantallas muy angostas) sacaba barra horizontal. `clip` corta
+     el desborde sin crear un contenedor de scroll — no rompe el header sticky
+     ni el scroll-padding de las anclas. */
+  overflow-x: clip;
 }
 
 body {
@@ -197,7 +203,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 ::selection {
