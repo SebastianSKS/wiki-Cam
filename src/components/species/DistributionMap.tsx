@@ -99,7 +99,7 @@ export function DistributionMap({
           return (
             <g key={slug} className="pin" style={{ transformOrigin: `${m.cx}px ${m.cy}px` }}>
               <title>
-                {m.name} · {on ? "con criaturas del libro" : "todavía sin registrar"}
+                {`${m.name} · ${on ? "con criaturas del libro" : "todavía sin registrar"}`}
               </title>
               {on && (
                 <circle
