@@ -210,6 +210,12 @@ type Candidate = { lang: string; title: string };
 const CANDIDATES: Record<string, Candidate[]> = {
   ceiba: [{ lang: "en", title: "Ceiba pentandra" }],
   "tapir-centroamericano": [{ lang: "en", title: "Tapirus bairdii" }],
+  // caoba → la portada en es es sólo un ramo de hojas; la de en muestra
+  //   la corteza escamosa rojiza además del follaje.
+  caoba: [
+    { lang: "en", title: "Swietenia macrophylla" },
+    { lang: "es", title: "Swietenia macrophylla" },
+  ],
   "cangrejo-violinista": [
     { lang: "en", title: "Leptuca panacea" },
     { lang: "en", title: "Minuca rapax" },

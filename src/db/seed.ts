@@ -538,6 +538,175 @@ const SPECIES: SpeciesSeed[] = [
       "escarcega",
     ],
   },
+  {
+    slug: "mono-arana",
+    commonNameEs: "Mono araña de Geoffroy",
+    genus: "Ateles",
+    speciesEpithet: "geoffroyi",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Mammalia",
+    order: "Primates",
+    family: "Atelidae",
+    conservationStatus: "EN",
+    category: "mamiferos",
+    presenceType: "native",
+    description:
+      "Uno de los monos más grandes de América, de cuerpo esbelto y extremidades larguísimas. Carece de pulgar en las manos: se cuelga y se balancea con los cuatro dedos en forma de gancho y con su cola prensil, que usa como un quinto miembro. Es casi exclusivamente arborícola y frugívoro, y como traga las semillas enteras y las dispersa lejos del árbol madre, es un jardinero clave de la selva alta. La UICN lo cataloga En Peligro y la NOM-059-SEMARNAT-2010 lo considera en Peligro de Extinción en México; la tala, los incendios y el tráfico de crías para mascota han fragmentado sus poblaciones. En Campeche, la Reserva de la Biosfera de Calakmul es uno de sus últimos grandes refugios.",
+    kidDescription:
+      "El mono araña parece hecho de brazos y piernas: los tiene larguísimos y una cola que agarra las ramas como si fuera otra mano. No tiene pulgares, así que se cuelga con los dedos en forma de gancho y se lanza de árbol en árbol sin bajar casi nunca al suelo. Come sobre todo fruta y, sin querer, va sembrando la selva con las semillas. Quedan pocos, porque necesitan selvas grandes y bien conectadas para viajar por las copas.",
+    funFact:
+      "Su cola no tiene pelo en la punta, por dentro, y tiene surcos como las yemas de nuestros dedos: le sirve para agarrar mejor y hasta para recoger fruta.",
+    habitat:
+      "Dosel de selva alta y mediana perennifolia y subperennifolia, con árboles grandes y continuos. Necesita territorios extensos con árboles frutales en distintas épocas del año; en Campeche se concentra en el bloque forestal de Calakmul y sus alrededores.",
+    imageUrl: null,
+    regionSlugs: ["calakmul", "candelaria", "escarcega", "champoton"],
+  },
+  {
+    slug: "flamenco-americano",
+    commonNameEs: "Flamenco americano",
+    genus: "Phoenicopterus",
+    speciesEpithet: "ruber",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Aves",
+    order: "Phoenicopteriformes",
+    family: "Phoenicopteridae",
+    conservationStatus: "LC",
+    category: "aves",
+    presenceType: "native",
+    description:
+      "Ave zancuda de plumaje rosa intenso —el color viene de los pigmentos de los pequeños crustáceos y algas que come—, cuello largo en forma de S y pico grueso y curvado que usa boca abajo, filtrando el lodo como un colador. En México sólo se reproduce en la península de Yucatán, sobre todo en Ría Lagartos; en Campeche se le ve alimentándose en las lagunas costeras del norte, en la Reserva de la Biosfera Los Petenes y hacia Isla Arena. La UICN lo considera de Preocupación Menor a escala global, pero en México está protegido por la NOM-059-SEMARNAT-2010 como especie amenazada, por lo sensible que es a las molestias en sus zonas de descanso y alimentación.",
+    kidDescription:
+      "El flamenco es rosa por lo que come: unos camaroncitos y algas diminutas del agua salada le tiñen las plumas poco a poco. Mete la cabeza al revés en el agua y usa el pico como un colador para atrapar su comida del lodo. Se para en una sola pata durante horas, para no enfriarse tanto, y vuela en grupos grandes con el cuello y las patas estiradas. En Campeche viene a comer a las lagunas de la costa norte.",
+    funFact:
+      "Un flamenco recién nacido es gris y tiene el pico recto; el rosa y la curva del pico le van saliendo con los meses, según lo que come.",
+    habitat:
+      "Lagunas costeras someras, salinas y planicies de lodo con agua salobre o hipersalina, donde abundan los invertebrados y las algas de los que se alimenta. En Campeche frecuenta la franja costera del norte, en especial Los Petenes e Isla Arena; anida más al este, ya en Yucatán.",
+    imageUrl: null,
+    regionSlugs: ["calkini", "tenabo", "campeche", "hecelchakan"],
+  },
+  {
+    slug: "abeja-melipona",
+    commonNameEs: "Abeja melipona",
+    genus: "Melipona",
+    speciesEpithet: "beecheii",
+    kingdom: "Animalia",
+    phylum: "Arthropoda",
+    class: "Insecta",
+    order: "Hymenoptera",
+    family: "Apidae",
+    conservationStatus: "NE",
+    category: "insectos",
+    presenceType: "native",
+    mayaName: "Xunán Kab",
+    description:
+      "Abeja social sin aguijón, más pequeña y rechoncha que la abeja de miel europea y de carácter manso. Anida en troncos huecos y guarda la miel en potes de cera en vez de panales; produce poca miel, muy líquida y ácida, valorada desde hace siglos como medicina. Los mayas la crían en troncos ahuecados llamados jobones —una tradición llamada meliponicultura— y en yucateco la nombran Xunán Kab, \"señora abeja\" o \"abeja real\". No ha sido evaluada por la UICN ni por la NOM-059, pero sus colonias están en retroceso por la pérdida de selva, el uso de agroquímicos, la competencia con la abeja africanizada y el abandono de la crianza tradicional. Es polinizadora de muchas plantas nativas que la abeja de miel no visita.",
+    kidDescription:
+      "Esta abeja no pica: nació sin aguijón, así que se puede estar cerca de su casa sin miedo. Es chiquita y regordeta, y guarda su miel en ollitas de cera dentro de un tronco hueco. Los mayas la cuidan desde hace muchísimo tiempo en troncos acostados llamados jobones, y la llaman Xunán Kab, la \"señora abeja\". Su miel es poquita, aguada y un poco ácida, y se usa como remedio. Cuidarla es cuidar también a las flores del monte que sólo ella poliniza.",
+    funFact:
+      "En vez de panales de celdas hexagonales, guarda la miel en montoncitos de potes de cera del tamaño de una uva.",
+    habitat:
+      "Selva mediana y baja, acahuales, solares y huertos con árboles maduros que ofrezcan troncos huecos para anidar y flores durante buena parte del año. En Campeche se le cría y se le encuentra sobre todo en la zona maya de Hopelchén, Calkiní y Hecelchakán.",
+    imageUrl: null,
+    regionSlugs: ["hopelchen", "calkini", "hecelchakan", "campeche", "calakmul"],
+  },
+  {
+    slug: "boa-mazacuate",
+    commonNameEs: "Boa / mazacuate",
+    genus: "Boa",
+    speciesEpithet: "constrictor",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Reptilia",
+    order: "Squamata",
+    family: "Boidae",
+    conservationStatus: "LC",
+    category: "reptiles",
+    presenceType: "native",
+    description:
+      "Serpiente robusta y no venenosa que mata a sus presas por constricción, apretándolas hasta cortarles la respiración. El fondo del cuerpo es pardo claro con una hilera de manchas oscuras en forma de silla de montar que se vuelven rojizas hacia la cola. Las poblaciones de México y Centroamérica se tratan cada vez más como una especie aparte, Boa imperator. La UICN la considera de Preocupación Menor, pero en México la NOM-059-SEMARNAT-2010 la incluye como especie amenazada, por la captura para el comercio de mascotas y pieles, los atropellamientos y la costumbre de matarla en cuanto se la ve. Controla roedores en milpas y poblados, así que conviene tenerla cerca.",
+    kidDescription:
+      "El mazacuate es una boa: una serpiente grande y tranquila que no tiene veneno. Para cazar, abraza a su presa con fuerza hasta que deja de respirar, y luego se la traga entera. Tiene el cuerpo color arena con manchas cafés como sillas de montar y la cola rojiza. Saca la lengua partida en dos para \"oler\" el aire y saber qué hay alrededor. Aunque asusta, es buena vecina: se come a los ratones que dañan la milpa.",
+    funFact:
+      "Las boas no ponen huevos: las crías nacen ya formadas, envueltas en una bolsa transparente de la que salen solas al momento.",
+    habitat:
+      "Selva alta, mediana y baja, acahuales, manglares y bordes de milpa y de poblados, del nivel del mar a la sierra. Trepa bien y también nada; de día se refugia en huecos de árbol, madrigueras y montones de piedra. Está por todo Campeche, con mayor presencia en el sur selvático.",
+    imageUrl: null,
+    regionSlugs: ["calakmul", "candelaria", "escarcega", "hopelchen", "champoton"],
+  },
+  {
+    slug: "tortuga-carey",
+    commonNameEs: "Tortuga carey",
+    genus: "Eretmochelys",
+    speciesEpithet: "imbricata",
+    kingdom: "Animalia",
+    phylum: "Chordata",
+    class: "Reptilia",
+    order: "Testudines",
+    family: "Cheloniidae",
+    conservationStatus: "CR",
+    category: "marino",
+    presenceType: "native",
+    description:
+      "Tortuga marina de tamaño mediano, reconocible por su pico angosto y ganchudo —como el de un halcón— y por los escudos del caparazón, de color ámbar y castaño, que se solapan como tejas y forman un borde aserrado. Se alimenta sobre todo de esponjas de los arrecifes de coral, un papel ecológico que ninguna otra especie cumple. La UICN la cataloga En Peligro Crítico y la NOM-059-SEMARNAT-2010 en Peligro de Extinción; el comercio de su concha (el \"carey\" de la joyería y las peinetas), el saqueo de nidos, la pesca incidental y la pérdida de playas la llevaron al borde. Las costas de Campeche, junto con Yucatán y Quintana Roo, concentran una de las mayores agregaciones de anidación de carey del Atlántico.",
+    kidDescription:
+      "La tortuga carey pasa casi toda su vida en el mar, sobre los arrecifes, donde come esponjas con su pico curvo de halcón. Su caparazón tiene placas color miel y café que se montan una sobre otra como tejas. Cada verano, las hembras salen de noche a las playas de Campeche —Isla Aguada, Sabancuy, Chenkán, Punta Xen— a cavar un hoyo y poner sus huevos. Quedan muy pocas, porque durante años se mató a las tortugas para hacer joyas y peinetas con su concha.",
+    funFact:
+      "El calor de la arena decide el sexo de las crías: en los nidos más tibios nacen sobre todo hembras, y en los más frescos, machos.",
+    habitat:
+      "Arrecifes de coral y fondos rocosos con esponjas donde se alimenta, y playas de arena tranquilas donde anida. En Campeche anida en la costa de los municipios de Carmen y Champotón (Isla Aguada, Sabancuy, Chenkán, Punta Xen) y se alimenta mar adentro, en la Sonda de Campeche.",
+    imageUrl: null,
+    regionSlugs: ["carmen", "champoton", "campeche"],
+  },
+  {
+    slug: "caoba",
+    commonNameEs: "Caoba",
+    genus: "Swietenia",
+    speciesEpithet: "macrophylla",
+    kingdom: "Plantae",
+    phylum: "Tracheophyta",
+    class: "Magnoliopsida",
+    order: "Sapindales",
+    family: "Meliaceae",
+    conservationStatus: "EN",
+    category: "flora",
+    presenceType: "native",
+    description:
+      "Árbol emergente de la selva tropical, de tronco recto y limpio que puede pasar los 40 m, corteza pardo rojiza que se desprende en placas y copa amplia y redondeada. Sus frutos son cápsulas leñosas erguidas que al madurar se abren desde abajo y sueltan semillas aladas que gira el viento. Su madera, rojiza y estable, es una de las más apreciadas del mundo para muebles e instrumentos; durante los siglos XIX y XX las monterías tumbaron los grandes ejemplares de Campeche y el sureste. Hoy la UICN la cataloga En Peligro y su comercio internacional está regulado por la CITES (Apéndice II) y la ley forestal mexicana; los árboles gruesos y viejos son ya raros fuera de las áreas protegidas como Calakmul.",
+    kidDescription:
+      "La caoba es un árbol altísimo y derecho, de madera color rojo que huele rico y no se tuerce. Por eso, durante muchísimos años se cortaron las caobas más grandes de Campeche para hacer muebles finos y llevarlas en barco. Sus frutos parecen coquitos de madera parados en la rama: cuando se abren, sueltan semillas con un ala que gira como helicóptero al caer. Quedan pocas caobas gigantes; las que sobreviven están casi todas en la selva protegida de Calakmul.",
+    funFact:
+      "Cada semilla de caoba lleva un ala plana y ligera: al soltarse de lo alto del árbol, cae girando como las aspas de un helicóptero y así se aleja del tronco madre.",
+    habitat:
+      "Selva alta y mediana perennifolia y subperennifolia, en suelos profundos y bien drenados, del nivel del mar a unos 1 400 m. Necesita claros con mucha luz para que crezcan sus plántulas. En Campeche se conserva sobre todo en el sur, en Calakmul, Candelaria y Escárcega.",
+    imageUrl: null,
+    regionSlugs: ["calakmul", "candelaria", "escarcega", "hopelchen"],
+  },
+  {
+    slug: "chicozapote",
+    commonNameEs: "Chicozapote",
+    genus: "Manilkara",
+    speciesEpithet: "zapota",
+    kingdom: "Plantae",
+    phylum: "Tracheophyta",
+    class: "Magnoliopsida",
+    order: "Ericales",
+    family: "Sapotaceae",
+    conservationStatus: "LC",
+    category: "flora",
+    presenceType: "native",
+    description:
+      "Árbol de copa densa y oscura y madera extraordinariamente dura y resistente a la pudrición y a las termitas: los mayas la usaron para los dinteles de sus templos, y muchos siguen enteros después de más de mil años. De su tronco se saca el chicle, un látex blanco que se obtiene haciendo cortes en zig-zag en la corteza y que fue la base original de la goma de mascar; en el sur de Campeche, la recolección de chicle por los chicleros movió la economía durante buena parte del siglo XX. Su fruto, redondo y de pulpa café y dulce, se come fresco. La UICN lo considera de Preocupación Menor: es común y de amplia distribución, aunque el sangrado mal hecho puede matar al árbol.",
+    kidDescription:
+      "Del chicozapote sale el chicle de verdad: se le hacen cortes en zig-zag en la corteza y por ahí escurre una lechita blanca y pegajosa que, ya seca, era la base de la goma de mascar. En Campeche había miles de chicleros que se internaban en la selva a sacarlo. Su madera es tan dura que los mayas la usaron para las vigas de sus templos, y algunas siguen puestas después de más de mil años. Además da una fruta redonda, café y muy dulce.",
+    funFact:
+      "Las vigas de chicozapote sobre las puertas de los templos mayas de Calakmul llevan más de mil años en su sitio, todavía firmes y sin pudrirse.",
+    habitat:
+      "Selva alta y mediana perennifolia y subperennifolia, y vegetación secundaria madura; tolera suelos pedregosos y algo de sequía. En Campeche es común en la selva del centro y el sur del estado, sobre todo en la región de Calakmul.",
+    imageUrl: null,
+    regionSlugs: ["calakmul", "candelaria", "escarcega", "hopelchen", "champoton"],
+  },
 ];
 
 async function main() {

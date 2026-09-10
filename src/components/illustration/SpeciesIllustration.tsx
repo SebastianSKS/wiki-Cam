@@ -18,6 +18,13 @@ import { FiddlerCrab } from "./FiddlerCrab";
 import { YellowtailSnapper } from "./YellowtailSnapper";
 import { BrainCoral } from "./BrainCoral";
 import { WhitePeacockButterfly } from "./WhitePeacockButterfly";
+import { SpiderMonkey } from "./SpiderMonkey";
+import { Flamingo } from "./Flamingo";
+import { StinglessBee } from "./StinglessBee";
+import { Boa } from "./Boa";
+import { HawksbillTurtle } from "./HawksbillTurtle";
+import { Mahogany } from "./Mahogany";
+import { Sapodilla } from "./Sapodilla";
 import { MysteryEgg } from "./MysteryEgg";
 
 type IlloProps = { className?: string };
@@ -73,6 +80,17 @@ const REGISTRY: Record<
     habitat: "selva",
     wash: "var(--lavender)",
   },
+  "mono-arana": { Illo: SpiderMonkey, habitat: "dosel", wash: "var(--jungle)" },
+  "flamenco-americano": { Illo: Flamingo, habitat: "agua", wash: "var(--sky)" },
+  "abeja-melipona": { Illo: StinglessBee, habitat: "selva", wash: "var(--sun)" },
+  "boa-mazacuate": { Illo: Boa, habitat: "selva", wash: "var(--jungle)" },
+  "tortuga-carey": {
+    Illo: HawksbillTurtle,
+    habitat: "arrecife",
+    wash: "var(--sky)",
+  },
+  caoba: { Illo: Mahogany, habitat: "dosel", wash: "var(--sun)" },
+  chicozapote: { Illo: Sapodilla, habitat: "dosel", wash: "var(--jungle)" },
 };
 
 export function hasIllustration(slug: string): boolean {
