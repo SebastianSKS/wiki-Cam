@@ -5,7 +5,7 @@
    200x193 con corrección de longitud por latitud media. */
 
 export const CAMPECHE_MAP_SOURCE = "INEGI. Marco Geoestadístico, diciembre de 2025";
-export const CAMPECHE_VIEWBOX = "-24 -8 248 209";
+export const CAMPECHE_VIEWBOX = "2 2 204 191";
 export const CAMPECHE_W = 200;
 export const CAMPECHE_H = 193;
 

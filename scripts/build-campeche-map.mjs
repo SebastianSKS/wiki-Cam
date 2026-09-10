@@ -198,12 +198,20 @@ function main() {
       lines.push(`   simplificados (Douglas–Peucker) y proyectados a un viewBox`);
       lines.push(`   ${VBW}x${VBH} con corrección de longitud por latitud media. */`);
       lines.push(``);
-      // viewBox con aire extra a los lados para las etiquetas
-      const MX = 24;
-      const MY = 8;
+      // viewBox ceñido al contorno proyectado (ocupa PAD..VBW-PAD x PAD..VBH-PAD)
+      // con un margen chico para el trazo + aire a la derecha, que es donde las
+      // etiquetas del este (Hopelchén, Calakmul) se salen ~5u del estado.
+      const ML = 4;
+      const MR = 12;
+      const MT = 4;
+      const MB = 6;
+      const vbX = PAD - ML;
+      const vbY = PAD - MT;
+      const vbW = VBW - PAD * 2 + ML + MR;
+      const vbH = VBH - PAD * 2 + MT + MB;
       lines.push(`export const CAMPECHE_MAP_SOURCE = ${JSON.stringify(src)};`);
       lines.push(
-        `export const CAMPECHE_VIEWBOX = "${-MX} ${-MY} ${VBW + MX * 2} ${VBH + MY * 2}";`,
+        `export const CAMPECHE_VIEWBOX = "${vbX} ${vbY} ${vbW} ${vbH}";`,
       );
       lines.push(`export const CAMPECHE_W = ${VBW};`);
       lines.push(`export const CAMPECHE_H = ${VBH};`);
