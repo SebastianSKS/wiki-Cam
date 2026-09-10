@@ -30,15 +30,44 @@ const BROWSER_UA =
 type WikiSummary = {
   type?: string;
   title?: string;
+  /** Descripción corta ("insecto", "especie de ave", …). */
+  description?: string;
+  /** Resumen en texto plano (primer párrafo). */
+  extract?: string;
   originalimage?: { source: string; width: number; height: number };
   thumbnail?: { source: string };
   content_urls?: { desktop?: { page?: string } };
 };
 
-async function getJson<T>(url: string): Promise<T | null> {
-  const res = await fetch(url, { headers: { "User-Agent": UA, Accept: "application/json" } });
-  if (!res.ok) return null;
-  return (await res.json()) as T;
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * GET JSON con reintentos. Distingue "no existe" (404 → null definitivo) de
+ * "ahora no puedo" (429 / 5xx / red → espera y reintenta). Sin esto, el
+ * rate-limit de la API de Wikipedia hacía que especies con artículo y foto
+ * se marcaran como "sin artículo".
+ */
+async function getJson<T>(url: string, tries = 4): Promise<T | null> {
+  for (let i = 0; i < tries; i++) {
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        headers: { "User-Agent": UA, Accept: "application/json" },
+      });
+    } catch {
+      await sleep(800 * (i + 1));
+      continue;
+    }
+    if (res.ok) return (await res.json()) as T;
+    if (res.status === 404) return null; // genuinamente no existe
+    if (res.status === 429 || res.status >= 500) {
+      const wait = Number(res.headers.get("retry-after")) * 1000 || 1200 * (i + 1);
+      await sleep(wait);
+      continue;
+    }
+    return null; // 4xx varios: no reintentar
+  }
+  return null;
 }
 
 async function wikiSummary(lang: string, title: string): Promise<WikiSummary | null> {
@@ -141,6 +170,20 @@ async function commonsCredit(fileName: string): Promise<{
   };
 }
 
+/**
+ * Excepciones revisadas a mano: slugs donde la imagen principal del artículo
+ * en español NO sirve (es un dibujo/lámina antigua, la especie equivocada, o
+ * sin atribución). Se fuerza otra página de Wikipedia como fuente.
+ *   ceiba  → es: encabeza con una lámina botánica de Blanco (1880s), no una
+ *            foto. en:Ceiba pentandra trae una foto real del árbol.
+ *   tapir  → la foto en es no tiene autor en Commons; la de en (madre + cría
+ *            rayada, Featured Picture) sí, y encaja con su dato curioso.
+ */
+const OVERRIDES: Record<string, { lang: string; title: string }> = {
+  ceiba: { lang: "en", title: "Ceiba pentandra" },
+  "tapir-centroamericano": { lang: "en", title: "Tapirus bairdii" },
+};
+
 async function fetchForSpecies(slug: string): Promise<void> {
   const row = await db.query.species.findFirst({
     where: eq(species.slug, slug),
@@ -151,12 +194,21 @@ async function fetchForSpecies(slug: string): Promise<void> {
     return;
   }
   const sci = `${row.genus} ${row.speciesEpithet}`;
+  const override = OVERRIDES[slug];
 
-  let summary = await wikiSummary("es", sci);
-  let lang = "es";
-  if (!summary) {
-    summary = await wikiSummary("en", sci);
-    lang = "en";
+  let summary: WikiSummary | null;
+  let lang: string;
+  if (override) {
+    lang = override.lang;
+    summary = await wikiSummary(override.lang, override.title);
+    if (summary) console.log(`  (override: ${override.lang}:${override.title})`);
+  } else {
+    summary = await wikiSummary("es", sci);
+    lang = "es";
+    if (!summary) {
+      summary = await wikiSummary("en", sci);
+      lang = "en";
+    }
   }
   if (!summary) {
     console.log(`— ${slug} (${sci}): sin artículo con foto en Wikipedia (es/en). No se toca.`);
@@ -168,7 +220,9 @@ async function fetchForSpecies(slug: string): Promise<void> {
   const photoUrl = displayUrl(original);
 
   let credit = "Foto: Wikimedia Commons";
-  let sourceUrl = summary.content_urls?.desktop?.page ?? `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(sci)}`;
+  let sourceUrl =
+    summary.content_urls?.desktop?.page ??
+    `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(override?.title ?? sci)}`;
 
   if (fileName) {
     const c = await commonsCredit(fileName);
@@ -186,9 +240,14 @@ async function fetchForSpecies(slug: string): Promise<void> {
     .where(eq(species.slug, slug));
 
   console.log(`✓ ${slug} (${sci}) · Wikipedia ${lang.toUpperCase()} · miniatura HTTP ${warm}`);
-  console.log(`  photo_url        ${photoUrl}`);
-  console.log(`  photo_credit     ${credit}`);
-  console.log(`  photo_source_url ${sourceUrl}`);
+  console.log(`  página encontrada  "${summary.title ?? "?"}"  —  ${summary.description ?? "sin descripción"}`);
+  if (summary.extract) {
+    console.log(`  resumen           ${summary.extract.slice(0, 220).replace(/\s+/g, " ")}…`);
+  }
+  console.log(`  archivo Commons   ${fileName ?? "(no identificado)"}`);
+  console.log(`  photo_url         ${photoUrl}`);
+  console.log(`  photo_credit      ${credit}`);
+  console.log(`  photo_source_url  ${sourceUrl}`);
 }
 
 async function main() {
@@ -200,7 +259,7 @@ async function main() {
   }
   for (const slug of slugs) {
     await fetchForSpecies(slug);
-    await new Promise((r) => setTimeout(r, 400)); // cortesía con la API
+    await sleep(1200); // cortesía con la API (evita el rate-limit)
   }
 }
 
