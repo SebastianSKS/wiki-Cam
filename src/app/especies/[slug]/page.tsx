@@ -15,6 +15,7 @@ import { CareMeter } from "@/components/species/CareMeter";
 import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
 import { SpeciesDiscover } from "@/components/species/SpeciesDiscover"; // "Toca para descubrir": capa de puntos sobre el hero
+import { SpeciesPhotoReveal } from "@/components/species/SpeciesPhotoReveal"; // botón opcional "Ver foto real"
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -114,13 +115,23 @@ export default async function SpeciesPage({
         </div>
 
         <Reveal y={18}>
-          {/* "Toca para descubrir": la ilustración la pinta el servidor;
-              SpeciesDiscover es sólo la capa de puntos (cliente, sin importar
-              ilustraciones). Contenedor relativo para posicionarla encima. */}
-          <div className="relative mx-auto w-full max-w-md">
-            <SpeciesScene slug={species.slug} shared className="w-full" />
-            <SpeciesDiscover slug={species.slug} mayaName={species.mayaName} />
-          </div>
+          {/* La ilustración la pinta el servidor. SpeciesDiscover añade los
+              puntos "toca para descubrir" (cliente, sin importar ilustraciones)
+              y SpeciesPhotoReveal el botón opcional "Ver foto real" (sólo si la
+              especie tiene photo_url). Contenedor relativo para posicionar los
+              puntos encima. */}
+          <SpeciesPhotoReveal
+            photoUrl={species.photoUrl}
+            photoCredit={species.photoCredit}
+            photoSourceUrl={species.photoSourceUrl}
+            alt={`Fotografía de ${species.commonNameEs} (${bin})`}
+            className="mx-auto w-full max-w-md"
+          >
+            <div className="relative w-full">
+              <SpeciesScene slug={species.slug} shared className="w-full" />
+              <SpeciesDiscover slug={species.slug} mayaName={species.mayaName} />
+            </div>
+          </SpeciesPhotoReveal>
         </Reveal>
       </header>
 

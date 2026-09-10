@@ -87,6 +87,17 @@ export const species = sqliteTable("species", {
   marineZone: text("marine_zone"),
   habitat: text("habitat").notNull(),
   imageUrl: text("image_url"),
+  /**
+   * Foto real de la especie: un "extra" que se revela desde la ficha, NO
+   * reemplaza la ilustración. Se llena con `scripts/fetch-photos.ts` (API de
+   * Wikipedia + Wikimedia Commons). Si `photoUrl` es null, la ficha no muestra
+   * el botón "Ver foto real".
+   */
+  photoUrl: text("photo_url"),
+  /** Crédito a mostrar bajo la foto, ej. "Foto: Autor · CC BY-SA 4.0". */
+  photoCredit: text("photo_credit"),
+  /** Página de origen de la foto (normalmente la ficha de Wikimedia Commons). */
+  photoSourceUrl: text("photo_source_url"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(CURRENT_TIMESTAMP)`),

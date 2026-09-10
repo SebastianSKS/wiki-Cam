@@ -43,6 +43,13 @@
       "when": 1788999207145,
       "tag": "0005_shocking_khan",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "6",
+      "when": 1788999888263,
+      "tag": "0006_skinny_emma_frost",
+      "breakpoints": true
     }
   ]
 }
