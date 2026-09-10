@@ -21,21 +21,52 @@ const ORDER = [
   "palizada", "candelaria", "calakmul",
 ] as const;
 
-/** Ajuste fino de la etiqueta donde el reparto automático se amontona
- *  (norte del estado, sobre todo). `side` fuerza el lado; `dy` la separa. */
-const LABEL_TWEAK: Record<string, { side?: "start" | "end"; dy?: number }> = {
-  calkini: { side: "end", dy: -2 },
-  dzitbalche: { side: "start", dy: -1 },
-  hecelchakan: { side: "end" },
-  tenabo: { side: "end", dy: 1 },
-  campeche: { side: "start" },
-  seybaplaya: { side: "end", dy: 4 },
-  hopelchen: { side: "start" },
-  champoton: { side: "end", dy: -1 },
-  escarcega: { side: "end" },
-  candelaria: { side: "start", dy: 3 },
-  calakmul: { side: "start", dy: 1 },
+/**
+ * Racimo del centro-norte: Calkiní, Dzitbalché, Hecelchakán, Tenabo, Campeche
+ * y Seybaplaya quedan tan juntos que sus nombres se enciman aunque el mapa sea
+ * grande. Se aparcan en una columna sobre el Golfo (a la izquierda) y una línea
+ * guía fina conecta cada nombre con su punto. `ly` es la línea base del texto.
+ */
+const LEADER: Record<string, { ly: number }> = {
+  calkini: { ly: 25 },
+  dzitbalche: { ly: 41 },
+  hecelchakan: { ly: 57 },
+  tenabo: { ly: 73 },
+  campeche: { ly: 89 },
+  seybaplaya: { ly: 106 },
 };
+const LEADER_X = 92; // borde derecho de la columna de nombres aparcados (centro vertical del texto)
+
+/** Ajuste fino de las etiquetas que sí caben junto a su punto. */
+const INLINE_TWEAK: Record<string, { side?: "start" | "end"; dy?: number }> = {
+  // Hopelchén y Calakmul llegan casi al borde derecho: sus nombres van hacia
+  // adentro (oeste), sobre su propio territorio.
+  hopelchen: { side: "end" },
+  // Champotón va hacia el este (a su territorio) para no chocar con la columna
+  // de nombres aparcados del racimo del norte.
+  champoton: { side: "start", dy: 1 },
+  escarcega: { side: "end" },
+  carmen: { side: "end" },
+  palizada: { side: "start", dy: 2 },
+  candelaria: { side: "start", dy: 2 },
+  // Calakmul es el municipio más grande y llega casi al borde: el nombre va
+  // hacia adentro (oeste), sobre su propio territorio, para que no lo corte
+  // el marco.
+  calakmul: { side: "end", dy: 0 },
+};
+
+const FONT = 6.2; // tamaño base (unidades de viewBox) para el cálculo de posiciones
+const HALO = 2.2;
+const GAP = 5.8; // separación etiqueta ↔ punto en las etiquetas en línea
+
+/* La misma etiqueta se ve en un mapa de ~740 px (escritorio) y en uno de
+   ~330 px (móvil): sin este ajuste los nombres quedan diminutos en el móvil.
+   El font-size en un <style> de SVG está en unidades de viewBox y la media
+   query se evalúa contra el viewport, así que sólo crece en pantallas chicas. */
+const LABEL_CSS = `
+  .mapa-lbl { font-size: ${FONT}px; }
+  @media (max-width: 640px) { .mapa-lbl { font-size: 8px; } }
+`;
 
 export function DistributionMap({
   active,
@@ -62,6 +93,8 @@ export function DistributionMap({
         role="img"
         aria-label={`Mapa de Campeche: se ha visto alguna criatura en ${active.length} de ${ORDER.length} municipios`}
       >
+        {showLabels && <style>{LABEL_CSS}</style>}
+
         {/* Silueta real, con el temblor de acuarela del resto de ilustraciones */}
         <g
           filter="url(#wc-paint-soft)"
@@ -87,17 +120,35 @@ export function DistributionMap({
           />
         </g>
 
+        {/* Líneas guía del racimo del centro-norte (van bajo las etiquetas) */}
+        {showLabels &&
+          Object.entries(LEADER).map(([slug, p]) => {
+            const m = CAMPECHE_MUNI[slug];
+            return (
+              <line
+                key={slug}
+                x1={LEADER_X + 2}
+                y1={p.ly}
+                x2={m.cx}
+                y2={m.cy}
+                stroke="currentColor"
+                strokeWidth="0.5"
+                strokeLinecap="round"
+                opacity="0.42"
+              />
+            );
+          })}
+
         {/* Pines: uno por municipio, en su centroide real */}
         {ORDER.map((slug) => {
           const m = CAMPECHE_MUNI[slug];
           const on = activeSet.has(slug);
-          const side =
-            LABEL_TWEAK[slug]?.side ??
-            (m.cx > CAMPECHE_W * 0.52 ? "end" : "start");
-          const lx = m.cx + (side === "start" ? 4 : -4);
-          const ly = m.cy + 1.6 + (LABEL_TWEAK[slug]?.dy ?? 0);
           return (
-            <g key={slug} className="pin" style={{ transformOrigin: `${m.cx}px ${m.cy}px` }}>
+            <g
+              key={slug}
+              className="pin"
+              style={{ transformOrigin: `${m.cx}px ${m.cy}px` }}
+            >
               <title>
                 {`${m.name} · ${on ? "con criaturas del libro" : "todavía sin registrar"}`}
               </title>
@@ -121,27 +172,54 @@ export function DistributionMap({
                 strokeWidth="0.9"
                 opacity={on ? 1 : 0.6}
               />
-              {showLabels && (
-                <text
-                  x={lx}
-                  y={ly}
-                  textAnchor={side}
-                  fontSize="5.6"
-                  fontFamily="var(--font-body)"
-                  fontWeight={on ? 800 : 600}
-                  fill="currentColor"
-                  opacity={on ? 0.95 : 0.5}
-                  paintOrder="stroke"
-                  stroke="var(--paper)"
-                  strokeWidth="1.9"
-                  strokeLinejoin="round"
-                >
-                  {m.name}
-                </text>
-              )}
             </g>
           );
         })}
+
+        {/* Etiquetas: en columna con línea guía las del racimo, junto al punto el resto */}
+        {showLabels &&
+          ORDER.map((slug) => {
+            const m = CAMPECHE_MUNI[slug];
+            const on = activeSet.has(slug);
+            const lead = LEADER[slug];
+
+            let x: number;
+            let y: number;
+            let anchor: "start" | "end";
+            if (lead) {
+              x = LEADER_X;
+              y = lead.ly;
+              anchor = "end";
+            } else {
+              const side =
+                INLINE_TWEAK[slug]?.side ??
+                (m.cx > CAMPECHE_W * 0.52 ? "end" : "start");
+              anchor = side;
+              x = m.cx + (side === "start" ? GAP : -GAP);
+              y = m.cy + (INLINE_TWEAK[slug]?.dy ?? 0);
+            }
+
+            return (
+              <text
+                key={slug}
+                className="mapa-lbl"
+                x={x}
+                y={y}
+                textAnchor={anchor}
+                dominantBaseline="central"
+                fontFamily="var(--font-body)"
+                fontWeight={on ? 800 : 600}
+                fill="currentColor"
+                opacity={on ? 0.98 : 0.62}
+                paintOrder="stroke"
+                stroke="var(--paper)"
+                strokeWidth={HALO}
+                strokeLinejoin="round"
+              >
+                {m.name}
+              </text>
+            );
+          })}
       </svg>
     </figure>
   );
