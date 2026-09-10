@@ -34,22 +34,25 @@ export default async function MapaPage() {
         </p>
       </header>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,24rem)_1fr] lg:gap-14">
-        <div className="lg:sticky lg:top-24 lg:self-start">
-          <DistributionMap active={activeSlugs} />
-          <div className="mt-4 flex flex-wrap gap-4">
-            <span className="inline-flex items-center gap-2 text-sm font-bold text-ink-soft">
-              <span className="inline-block h-3 w-3 rounded-full border-[2px] border-line bg-rust" />
-              con criaturas
-            </span>
-            <span className="inline-flex items-center gap-2 text-sm font-bold text-ink-faint">
-              <span className="inline-block h-3 w-3 rounded-full border-[2px] border-line bg-paper" />
-              todavía sin registrar
-            </span>
-          </div>
+      {/* El mapa manda: ocupa toda la fila para que los 13 nombres se lean sin
+          zoom. La lista de municipios va debajo, nunca apretándolo. */}
+      <div className="mt-8">
+        <DistributionMap
+          active={activeSlugs}
+          className="mx-auto w-full max-w-3xl"
+        />
+        <div className="mx-auto mt-4 flex max-w-3xl flex-wrap gap-4">
+          <span className="inline-flex items-center gap-2 text-sm font-bold text-ink-soft">
+            <span className="inline-block h-3 w-3 rounded-full border-[2px] border-line bg-rust" />
+            con criaturas
+          </span>
+          <span className="inline-flex items-center gap-2 text-sm font-bold text-ink-faint">
+            <span className="inline-block h-3 w-3 rounded-full border-[2px] border-line bg-paper" />
+            todavía sin registrar
+          </span>
         </div>
 
-        <ul className="grid gap-5 sm:grid-cols-2">
+        <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {regions.map((r) => (
             <Reveal
               as="li"
