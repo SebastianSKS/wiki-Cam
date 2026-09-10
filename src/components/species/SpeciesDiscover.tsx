@@ -4,15 +4,21 @@
    TOCA PARA DESCUBRIR · puntos táctiles sobre la ilustración hero
    ------------------------------------------------------------
    Capa fina que se monta ENCIMA de <SpeciesScene> (hermana, no
-   la envuelve): 2-3 puntos por especie sobre partes concretas
+   la envuelve): 2-4 puntos por especie sobre partes concretas
    del dibujo. Al activarlos, micro-animación en esa parte del
    SVG (reusa los keyframes del sistema de guiño: `twinkle`,
    `tail-wag`, `blink`, `sway`; más un par locales) y una notita
    adhesiva con un dato de una línea.
 
+   La notita se coloca MIDIENDO al abrir: elige el lado (der/izq/
+   arriba/abajo del punto) donde quepa entera dentro de la viñeta
+   y, si hace falta, se pega al borde sin salirse ni quedar tapada
+   por el marco; además evita cubrir otro puntito. Se recalcula al
+   redimensionar. (Sólo hay una notita abierta a la vez.)
+
    No importa ninguna ilustración: alcanza las partes del SVG por
    selector desde el DOM. Así este componente pesa lo mismo para
-   las 18 fichas y NO arrastra el registro de ilustraciones al
+   todas las fichas y NO arrastra el registro de ilustraciones al
    bundle de cliente de la ruta.
 
    Para quitarlo por completo: borra este archivo y, en
@@ -21,7 +27,14 @@
    quitando el <div> contenedor y el import de SpeciesDiscover.
    ============================================================ */
 
-import { useEffect, useId, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "@/lib/cn";
 
 type Place = "below" | "above" | "left" | "right";
@@ -34,6 +47,7 @@ type Spot = {
   /** centro del punto, en % del cuadro de la viñeta */
   x: number;
   y: number;
+  /** lado preferido para la notita (se cambia si no cabe) */
   place: Place;
   /** parte(s) del SVG a animar, relativo al <svg> de la ilustración */
   sel: string;
@@ -62,8 +76,8 @@ const ANIM: Record<AnimKey, { name: string; dur: string; ease: string; iters: st
 
 const MAYA_LABEL = "El nombre en maya de esta criatura";
 
-/* Datos de una línea, tomados de fun_fact / description / habitat de cada
-   especie (misma fuente que la ficha). Coordenadas en % de la viñeta. */
+/* Datos de una línea, tomados de fun_fact / description / kid_description de
+   cada especie (misma fuente que la ficha). Coordenadas en % de la viñeta. */
 const SPOTS: Record<string, Spot[]> = {
   jaguar: [
     { id: "manchas", label: "Un dato sobre las manchas del jaguar", x: 50, y: 25, place: "above",
@@ -229,13 +243,110 @@ const SPOTS: Record<string, Spot[]> = {
     { id: "maya", label: MAYA_LABEL, x: 50, y: 38, place: "below", needsMaya: true,
       sel: "[data-eye]", all: true, anim: "blink", fact: "En maya se le dice «MAYA» (mariposa)." },
   ],
+
+  /* ---- 7 especies nuevas ---- */
+  "mono-arana": [
+    { id: "cola", label: "Un dato sobre la cola del mono araña", x: 74, y: 31, place: "left",
+      sel: "[data-tail]", anim: "wag",
+      fact: "Usa la cola como una quinta mano; la punta no tiene pelo y lleva surcos, como las yemas de tus dedos." },
+    { id: "manos", label: "Un dato sobre las manos del mono araña", x: 36, y: 21, place: "below",
+      sel: 'path[fill="#25201c"]', anim: "pulse",
+      fact: "No tiene pulgares: se cuelga con los cuatro dedos en forma de gancho y se lanza de árbol en árbol." },
+    { id: "fruta", label: "Un dato sobre qué come el mono araña", x: 47, y: 74, place: "above",
+      sel: 'ellipse[fill="#d9ad78"]', anim: "glow",
+      fact: "Come sobre todo fruta y, al tragar las semillas enteras, va sembrando la selva lejos del árbol madre." },
+  ],
+  "flamenco-americano": [
+    { id: "pico", label: "Un dato sobre el pico del flamenco", x: 33, y: 31, place: "right",
+      sel: 'path[fill="var(--cacao)"][stroke="none"]', anim: "quiver",
+      fact: "Come con la cabeza al revés dentro del agua, usando el pico curvo como un colador para atrapar comida del lodo." },
+    { id: "plumas", label: "Un dato sobre el color rosa del flamenco", x: 47, y: 47, place: "right",
+      sel: 'path[fill="#f38aa8"]', anim: "glow",
+      fact: "El rosa le viene de lo que come: unos camaroncitos y algas diminutas le tiñen las plumas poco a poco." },
+    { id: "pata", label: "Un dato sobre por qué el flamenco se para en una pata", x: 47, y: 78, place: "above",
+      sel: 'path[stroke="#e05f86"]', all: true, anim: "sway",
+      fact: "Se para en una sola pata durante horas para perder menos calor por el agua." },
+  ],
+  "abeja-melipona": [
+    { id: "cuerpo", label: "Un dato sobre la abeja sin aguijón", x: 45, y: 66, place: "left",
+      sel: 'path[fill="#c98a3c"]', anim: "pulse",
+      fact: "Nació sin aguijón y guarda la miel en ollitas de cera, no en panales, dentro de un tronco hueco llamado jobón." },
+    { id: "maya", label: MAYA_LABEL, x: 45, y: 22, place: "right", needsMaya: true,
+      sel: "[data-eye]", all: true, anim: "blink",
+      fact: "Los mayas la crían desde hace siglos y la llaman «MAYA», la “señora abeja”." },
+  ],
+  "boa-mazacuate": [
+    { id: "lengua", label: "Un dato sobre la lengua de la boa", x: 10, y: 53, place: "right",
+      sel: 'path[stroke="#b25436"][stroke-width="4"]', anim: "quiver",
+      fact: "Saca la lengua partida en dos para “oler” el aire y saber qué hay a su alrededor." },
+    { id: "manchas", label: "Un dato sobre el patrón de la boa", x: 47, y: 47, place: "above",
+      sel: 'g[fill="#6e4b30"]', anim: "glow",
+      fact: "El cuerpo color arena lleva manchas cafés en forma de silla de montar que se vuelven rojizas hacia la cola." },
+    { id: "crias", label: "Un dato sobre las crías de la boa", x: 75, y: 80, place: "left",
+      sel: "[data-tail]", anim: "wag",
+      fact: "No pone huevos: las crías nacen ya formadas, envueltas en una bolsita de la que salen solas." },
+  ],
+  "tortuga-carey": [
+    { id: "caparazon", label: "Un dato sobre el caparazón de la tortuga carey", x: 47, y: 49, place: "below",
+      sel: 'g[stroke="#7a4a1e"]', anim: "glow",
+      fact: "Los escudos de su caparazón, color miel y café, se montan uno sobre otro como tejas y forman un borde aserrado." },
+    { id: "pico", label: "Un dato sobre el pico de la tortuga carey", x: 11, y: 51, place: "right",
+      sel: 'path[fill="var(--cacao)"][stroke="none"]', anim: "quiver",
+      fact: "Con su pico curvo, como el de un halcón, saca esponjas de entre los corales para comer." },
+    { id: "aleta", label: "Un dato sobre dónde anida la tortuga carey", x: 33, y: 67, place: "right",
+      sel: "[data-tail]", anim: "wag",
+      fact: "Cada verano, las hembras salen de noche a las playas de Campeche a cavar un hoyo y poner sus huevos." },
+  ],
+  caoba: [
+    { id: "copa", label: "Un dato sobre lo alta que crece la caoba", x: 47, y: 26, place: "below",
+      sel: 'path[fill="#4f9e5f"]', anim: "pulse",
+      fact: "Es un árbol altísimo y derecho; quedan pocas caobas gigantes, casi todas en la selva protegida de Calakmul." },
+    { id: "fruto", label: "Un dato sobre el fruto de la caoba", x: 70, y: 61, place: "left",
+      sel: "[data-tail]", anim: "wag",
+      fact: "Sus frutos son cápsulas de madera paradas en la rama; al abrirse sueltan semillas con un ala que cae girando como un helicóptero." },
+    { id: "corteza", label: "Un dato sobre la madera de la caoba", x: 47, y: 65, place: "right",
+      sel: 'g[stroke="#733f28"]', anim: "quiver",
+      fact: "Su madera rojiza no se tuerce y huele bien; por eso se cortaron las caobas más grandes de Campeche para hacer muebles finos." },
+  ],
+  chicozapote: [
+    { id: "madera", label: "Un dato sobre la madera del chicozapote", x: 47, y: 25, place: "below",
+      sel: 'path[fill="#2f7d4a"]', anim: "pulse",
+      fact: "Su madera es tan dura que las vigas de chicozapote de los templos de Calakmul llevan más de mil años sin pudrirse." },
+    { id: "corte", label: "Un dato sobre el chicle del chicozapote", x: 47, y: 61, place: "left",
+      sel: 'path[stroke="#5c4a35"]', anim: "quiver",
+      fact: "Se le hacen cortes en zig-zag en la corteza y por ahí escurre el chicle, la lechita blanca que era la base de la goma de mascar." },
+    { id: "fruto", label: "Un dato sobre el fruto del chicozapote", x: 70, y: 62, place: "right",
+      sel: "[data-tail]", anim: "wag",
+      fact: "Da una fruta redonda, café y muy dulce que se come fresca." },
+  ],
 };
 
-const BUBBLE_POS: Record<Place, string> = {
-  below: "left-1/2 top-[calc(100%+10px)] -translate-x-1/2",
-  above: "left-1/2 bottom-[calc(100%+10px)] -translate-x-1/2",
-  left: "right-[calc(100%+12px)] top-1/2 -translate-y-1/2",
-  right: "left-[calc(100%+12px)] top-1/2 -translate-y-1/2",
+/* Geometría de la notita relativa al punto. */
+const GAP = 14; // distancia del centro del punto al borde de la notita
+const PAD = 8; // margen mínimo dentro de la viñeta (deja libre el marco)
+const DOT_R = 12; // radio efectivo del punto (para no taparlo con la notita)
+
+type Box = { left: number; top: number };
+
+/** Devuelve la esquina sup-izq de la notita para un lado dado. */
+function corner(place: Place, cx: number, cy: number, bw: number, bh: number): Box {
+  switch (place) {
+    case "right":
+      return { left: cx + GAP, top: cy - bh / 2 };
+    case "left":
+      return { left: cx - GAP - bw, top: cy - bh / 2 };
+    case "below":
+      return { left: cx - bw / 2, top: cy + GAP };
+    case "above":
+      return { left: cx - bw / 2, top: cy - GAP - bh };
+  }
+}
+
+const OPPOSITE: Record<Place, Place> = {
+  right: "left",
+  left: "right",
+  below: "above",
+  above: "below",
 };
 
 export function SpeciesDiscover({
@@ -246,11 +357,14 @@ export function SpeciesDiscover({
   mayaName?: string | null;
 }) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const bubbleRef = useRef<HTMLSpanElement>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const [pos, setPos] = useState<Box | null>(null);
   const [reduced, setReduced] = useState(false);
   const uid = useId();
 
   const spots = (SPOTS[slug] ?? []).filter((s) => !s.needsMaya || mayaName);
+  const openSpot = spots.find((s) => s.id === open) ?? null;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -276,6 +390,104 @@ export function SpeciesDiscover({
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
+
+  /* Coloca la notita midiendo: elige el lado donde quepa entera dentro de la
+     viñeta sin salirse ni tapar otro punto; si en ningún lado cabe del todo,
+     usa el preferido y la pega al borde. */
+  const place = useCallback(() => {
+    const overlay = overlayRef.current;
+    const bubble = bubbleRef.current;
+    if (!overlay || !bubble || !openSpot) return;
+
+    const W = overlay.clientWidth;
+    const H = overlay.clientHeight;
+    if (!W || !H) return;
+
+    const cx = (openSpot.x / 100) * W;
+    const cy = (openSpot.y / 100) * H;
+
+    // La notita nunca más ancha de lo que cabe en la viñeta (importante en
+    // móvil y viñetas pequeñas): así no se corta ni por ancho.
+    const maxW = Math.min(190, Math.max(150, W - 60));
+    bubble.style.maxWidth = `${maxW}px`;
+    void bubble.offsetWidth; // reflow para medir con el nuevo ancho
+    const bw = bubble.offsetWidth;
+    const bh = bubble.offsetHeight;
+
+    // El propio punto también cuenta como "no tapar" (más estricto), más el
+    // resto de puntos con un margen.
+    const avoid = [
+      { x: cx, y: cy, m: DOT_R + 2 },
+      ...spots
+        .filter((s) => s.id !== openSpot.id)
+        .map((s) => ({ x: (s.x / 100) * W, y: (s.y / 100) * H, m: DOT_R })),
+    ];
+
+    // Sujeta la caja dentro de la viñeta (siempre visible entera).
+    const clamp = (b: Box): Box => ({
+      left: Math.max(PAD, Math.min(b.left, W - PAD - bw)),
+      top: Math.max(PAD, Math.min(b.top, H - PAD - bh)),
+    });
+
+    // Cuántos puntos toca la caja (el propio punto pesa más: nunca queremos
+    // que la notita quede encima de su propio botón).
+    const dotHits = (b: Box) =>
+      avoid.reduce((n, d, i) => {
+        const hit =
+          d.x > b.left - d.m &&
+          d.x < b.left + bw + d.m &&
+          d.y > b.top - d.m &&
+          d.y < b.top + bh + d.m;
+        return hit ? n + (i === 0 ? 100 : 1) : n;
+      }, 0);
+
+    const order: Place[] = [
+      openSpot.place,
+      OPPOSITE[openSpot.place],
+      ...(["right", "left", "below", "above"] as Place[]).filter(
+        (p) => p !== openSpot.place && p !== OPPOSITE[openSpot.place],
+      ),
+    ];
+
+    // Prueba cada lado (ya sujeto a la viñeta): el primero que no toque ningún
+    // punto gana. Si todos tocan alguno, se queda con el que menos estorbe
+    // (respetando el orden de preferencia en caso de empate).
+    let chosen: Box | null = null;
+    let bestScore = Infinity;
+    for (const p of order) {
+      const b = clamp(corner(p, cx, cy, bw, bh));
+      const score = dotHits(b);
+      if (score === 0) {
+        chosen = b;
+        break;
+      }
+      if (score < bestScore) {
+        bestScore = score;
+        chosen = b;
+      }
+    }
+    if (!chosen) chosen = clamp(corner(order[0], cx, cy, bw, bh));
+
+    chosen = { left: Math.round(chosen.left), top: Math.round(chosen.top) };
+    setPos((prev) =>
+      prev && prev.left === chosen!.left && prev.top === chosen!.top
+        ? prev
+        : chosen,
+    );
+  }, [openSpot, spots]);
+
+  useLayoutEffect(() => {
+    if (!open) {
+      setPos(null);
+      return;
+    }
+    place();
+    const overlay = overlayRef.current;
+    if (!overlay || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => place());
+    ro.observe(overlay);
+    return () => ro.disconnect();
+  }, [open, place]);
 
   // Micro-animación en la parte del SVG al abrir un punto
   useEffect(() => {
@@ -315,6 +527,12 @@ export function SpeciesDiscover({
   }, [open, reduced, slug]);
 
   if (!spots.length) return null;
+
+  const bubbleId = openSpot ? `${uid}-${openSpot.id}` : undefined;
+  const bubbleText =
+    openSpot && openSpot.needsMaya && mayaName
+      ? openSpot.fact.replace("«MAYA»", mayaName)
+      : openSpot?.fact;
 
   return (
     <div ref={overlayRef} className="pointer-events-none absolute inset-0 z-10">
@@ -363,11 +581,6 @@ export function SpeciesDiscover({
 
       {spots.map((spot) => {
         const isOpen = open === spot.id;
-        const bubbleId = `${uid}-${spot.id}`;
-        const text =
-          spot.needsMaya && mayaName
-            ? spot.fact.replace("«MAYA»", mayaName)
-            : spot.fact;
         return (
           <div
             key={spot.id}
@@ -379,28 +592,35 @@ export function SpeciesDiscover({
               className="hp-dot pointer-events-auto"
               aria-label={spot.label}
               aria-expanded={isOpen}
-              aria-controls={isOpen ? bubbleId : undefined}
-              aria-describedby={isOpen ? bubbleId : undefined}
+              aria-controls={isOpen ? `${uid}-${spot.id}` : undefined}
+              aria-describedby={isOpen ? `${uid}-${spot.id}` : undefined}
               onClick={() => setOpen((cur) => (cur === spot.id ? null : spot.id))}
             />
-            {isOpen && (
-              <span
-                id={bubbleId}
-                role="status"
-                className={cn(
-                  "hp-bubble pointer-events-auto absolute z-20 w-max max-w-[190px] -rotate-2",
-                  "rounded-2xl border-[3px] border-line bg-sun px-3 py-2",
-                  "text-left text-[0.8rem] font-bold leading-snug text-sun-ink",
-                  "shadow-[var(--card-shadow)]",
-                  BUBBLE_POS[spot.place],
-                )}
-              >
-                {text}
-              </span>
-            )}
           </div>
         );
       })}
+
+      {openSpot && (
+        <span
+          ref={bubbleRef}
+          id={bubbleId}
+          role="status"
+          style={
+            pos
+              ? { left: pos.left, top: pos.top }
+              : { left: -9999, top: -9999, visibility: "hidden" }
+          }
+          className={cn(
+            "pointer-events-auto absolute z-20 w-max max-w-[190px] -rotate-2",
+            "rounded-2xl border-[3px] border-line bg-sun px-3 py-2",
+            "text-left text-[0.8rem] font-bold leading-snug text-sun-ink",
+            "shadow-[var(--card-shadow)]",
+            pos && "hp-bubble",
+          )}
+        >
+          {bubbleText}
+        </span>
+      )}
     </div>
   );
 }
