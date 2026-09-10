@@ -6,8 +6,7 @@
    Envuelve la ilustración (que sigue pintando el servidor) y le
    añade un botón "Ver foto real →". Al pulsarlo, la viñeta se
    voltea (flip 3D, o cambio directo con prefers-reduced-motion)
-   y muestra la foto real con el mismo tratamiento a dos tintas
-   que tenía la versión de museo del sitio. Debajo, el crédito.
+   y muestra la foto real a todo color. Debajo, el crédito.
 
    Si `photoUrl` es null, este componente NO añade nada: sólo
    devuelve la ilustración tal cual (nunca un hueco roto).
@@ -83,42 +82,21 @@ export function SpeciesPhotoReveal({
               style={{ borderRadius: "var(--radius-blob)" }}
             >
               {revealed && (
-                <>
-                  {/* `<img>` a secas, no next/image: `photo_url` ya es una
-                      miniatura de tamaño sensato (1280px) servida por el CDN de
-                      Wikimedia, hecho para entregarla. El optimizador de
-                      next/image pedía anchos mayores y recibía HTTP 429 de
-                      upload.wikimedia.org (foto en blanco); además metía ~6 kB
-                      de runtime en la ruta para una foto que 17 de 18 fichas
-                      ni cargan. Servir el archivo tal cual evita ambas cosas. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={photoUrl}
-                    alt={alt}
-                    loading="eager"
-                    decoding="async"
-                    className="absolute inset-0 h-full w-full object-cover [filter:grayscale(1)_contrast(1.08)_sepia(0.28)_brightness(0.97)]"
-                  />
-                  {/* velo verde→coral, como la lámina de museo original */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 mix-blend-multiply"
-                    style={{
-                      background:
-                        "linear-gradient(180deg, color-mix(in srgb, var(--jungle) 26%, transparent), color-mix(in srgb, var(--rust) 20%, transparent))",
-                    }}
-                  />
-                  {/* trama de puntos muy fina */}
-                  <span
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 opacity-50 mix-blend-multiply"
-                    style={{
-                      backgroundImage:
-                        "radial-gradient(var(--ink) 0.5px, transparent 0.6px)",
-                      backgroundSize: "4px 4px",
-                    }}
-                  />
-                </>
+                /* `<img>` a secas, no next/image: `photo_url` ya es una
+                   miniatura de tamaño sensato (1280px) servida por el CDN de
+                   Wikimedia, hecho para entregarla. El optimizador de next/image
+                   pedía anchos mayores y recibía HTTP 429 de upload.wikimedia.org
+                   (foto en blanco); además metía ~6 kB de runtime en la ruta
+                   para una foto que casi nadie abre. La foto va a todo color:
+                   es el contraste con el dibujo lo que la hace un "extra". */
+                /* eslint-disable-next-line @next/next/no-img-element */
+                <img
+                  src={photoUrl}
+                  alt={alt}
+                  loading="eager"
+                  decoding="async"
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
               )}
             </div>
           </div>

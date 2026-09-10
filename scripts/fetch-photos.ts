@@ -70,13 +70,28 @@ async function getJson<T>(url: string, tries = 4): Promise<T | null> {
   return null;
 }
 
+/**
+ * Descarta imágenes que casi seguro NO son una fotografía: láminas históricas
+ * (FMIB = Freshwater and Marine Image Bank), grabados, ilustraciones, mapas de
+ * distribución y SVG. Ej.: el artículo de Leptuca thayeri encabeza con una
+ * lámina científica ("FMIB_43738_Uca_thayeri…"), no con una foto.
+ */
+function looksLikeIllustration(imageUrl: string): boolean {
+  const f = decodeURIComponent(imageUrl.split("?")[0]).toLowerCase();
+  return /\.svg$|fmib_|_plate|plate_|illustration|lithograph|engrav|drawing|\bmap\b|distribution|range_map|\.tif$/.test(
+    f,
+  );
+}
+
 async function wikiSummary(lang: string, title: string): Promise<WikiSummary | null> {
   const url = `https://${lang}.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(
     title,
   )}`;
   const data = await getJson<WikiSummary>(url);
   if (!data || data.type === "disambiguation") return null;
-  if (!data.originalimage?.source && !data.thumbnail?.source) return null;
+  const img = data.originalimage?.source ?? data.thumbnail?.source;
+  if (!img) return null;
+  if (looksLikeIllustration(img)) return null;
   return data;
 }
 
@@ -170,18 +185,37 @@ async function commonsCredit(fileName: string): Promise<{
   };
 }
 
+type Candidate = { lang: string; title: string };
+
 /**
- * Excepciones revisadas a mano: slugs donde la imagen principal del artículo
- * en español NO sirve (es un dibujo/lámina antigua, la especie equivocada, o
- * sin atribución). Se fuerza otra página de Wikipedia como fuente.
- *   ceiba  → es: encabeza con una lámina botánica de Blanco (1880s), no una
- *            foto. en:Ceiba pentandra trae una foto real del árbol.
- *   tapir  → la foto en es no tiene autor en Commons; la de en (madre + cría
- *            rayada, Featured Picture) sí, y encaja con su dato curioso.
+ * Candidatos revisados a mano para slugs donde el nombre científico de la base
+ * no sirve para buscar en Wikipedia. Se prueban EN ORDEN; gana el primero con
+ * artículo y una foto real. Si ninguno sirve, la especie se queda sin foto.
+ *
+ *   ceiba   → "Ceiba pentandra" en es encabeza con una lámina botánica de
+ *             Blanco (1880s), no una foto → se fuerza en:Ceiba pentandra.
+ *   tapir   → la foto de es no tiene autor en Commons → en:Tapirus bairdii
+ *             (madre + cría rayada, Featured Picture, con autor y CC BY-SA 4.0).
+ *   cangrejo violinista → la base guarda "Uca sp." (especie sin determinar).
+ *             Lista de cangrejos violinistas reales del Golfo de México /
+ *             Caribe. Verificado a mano que el artículo elegido reporte
+ *             distribución en México y que su imagen sea una fotografía:
+ *               1. Leptuca panacea — el artículo dice literalmente "along the
+ *                  Gulf of Mexico from northwestern Florida to Mexico"; foto
+ *                  real de dos machos ondeando la pinza (CC BY 4.0). ✓
+ *               2-4. respaldo si (1) cae: Minuca rapax / M. longisignalis /
+ *                  Leptuca thayeri (artículos más pobres; thayeri además
+ *                  encabeza con lámina científica, que el filtro descarta).
  */
-const OVERRIDES: Record<string, { lang: string; title: string }> = {
-  ceiba: { lang: "en", title: "Ceiba pentandra" },
-  "tapir-centroamericano": { lang: "en", title: "Tapirus bairdii" },
+const CANDIDATES: Record<string, Candidate[]> = {
+  ceiba: [{ lang: "en", title: "Ceiba pentandra" }],
+  "tapir-centroamericano": [{ lang: "en", title: "Tapirus bairdii" }],
+  "cangrejo-violinista": [
+    { lang: "en", title: "Leptuca panacea" },
+    { lang: "en", title: "Minuca rapax" },
+    { lang: "en", title: "Minuca longisignalis" },
+    { lang: "en", title: "Leptuca thayeri" },
+  ],
 };
 
 async function fetchForSpecies(slug: string): Promise<void> {
@@ -194,14 +228,20 @@ async function fetchForSpecies(slug: string): Promise<void> {
     return;
   }
   const sci = `${row.genus} ${row.speciesEpithet}`;
-  const override = OVERRIDES[slug];
+  const candidates = CANDIDATES[slug];
 
-  let summary: WikiSummary | null;
-  let lang: string;
-  if (override) {
-    lang = override.lang;
-    summary = await wikiSummary(override.lang, override.title);
-    if (summary) console.log(`  (override: ${override.lang}:${override.title})`);
+  let summary: WikiSummary | null = null;
+  let lang = "es";
+  if (candidates) {
+    for (const c of candidates) {
+      summary = await wikiSummary(c.lang, c.title);
+      if (summary) {
+        lang = c.lang;
+        console.log(`  (candidato usado: ${c.lang}:${c.title})`);
+        break;
+      }
+      console.log(`  (candidato descartado, sin artículo/foto real: ${c.lang}:${c.title})`);
+    }
   } else {
     summary = await wikiSummary("es", sci);
     lang = "es";
@@ -211,7 +251,7 @@ async function fetchForSpecies(slug: string): Promise<void> {
     }
   }
   if (!summary) {
-    console.log(`— ${slug} (${sci}): sin artículo con foto en Wikipedia (es/en). No se toca.`);
+    console.log(`— ${slug} (${sci}): sin artículo con foto real en Wikipedia. No se toca.`);
     return;
   }
 
@@ -222,7 +262,7 @@ async function fetchForSpecies(slug: string): Promise<void> {
   let credit = "Foto: Wikimedia Commons";
   let sourceUrl =
     summary.content_urls?.desktop?.page ??
-    `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(override?.title ?? sci)}`;
+    `https://${lang}.wikipedia.org/wiki/${encodeURIComponent(summary.title ?? sci)}`;
 
   if (fileName) {
     const c = await commonsCredit(fileName);
