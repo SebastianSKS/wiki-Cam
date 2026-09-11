@@ -36,8 +36,8 @@ yarn-error.log*
 .env.development
 .env.production
 
-# base de datos local (fallback de desarrollo sin Turso)
-/local.db
+# base de datos: se versiona local.db (catálogo de solo lectura que se
+# empaqueta en el deploy). Los ficheros de journal/WAL sí se ignoran.
 /local.db-*
 *.sqlite
 *.sqlite3
