@@ -3,216 +3,252 @@
 /* ============================================================
    COLA DE QUINTA MANO · minijuego propio del mono aullador negro
    ------------------------------------------------------------
-   Se evaluó usar el micrófono de verdad (getUserMedia + medir volumen
-   con la Web Audio API) para que el niño "aullara" al dispositivo. Se
-   descartó a propósito: pedir permiso de micrófono en un sitio
-   educativo infantil es una fricción grande (aviso del navegador,
-   "no" por defecto en muchos equipos de escuela, sin micrófono en
-   varios dispositivos), agrega manejo de errores importante (permiso
-   negado, sin hardware, contexto no seguro) y no se puede verificar
-   de forma fiable en este entorno de pruebas. El aullido y su alcance
-   ya viven en el hotspot "garganta" de la ficha (SpeciesDiscover); acá
-   se cuenta OTRO rasgo real y muy concreto: la cola prensil, que el
-   saraguato usa como una quinta mano para colgarse y moverse entre
-   ramas sin usar las manos.
+   Segunda versión: la primera vivía en una pista con circulitos
+   abstractos, separada de la ilustración — se sentía un widget, no
+   parte del libro. Ahora el escenario ES la ilustración real del
+   saraguato (<SpeciesScene>, mismo marco/acuarela que la ficha) y lo
+   que se arrastra es su propia cola (el `[data-tail]` que ya trae el
+   SVG, el mismo que usa el guiño en hover), no un token aparte.
 
-   Mecánica (distinta a sostener/soltar del jaguar y a tocar-en-tiempo
-   de la versión anterior de este mismo juego): ARRASTRAR. El saraguato
-   cuelga de una rama; se arrastra su cola hacia la siguiente rama y se
-   suelta cuando el estirón llega a la zona marcada (se pone verde).
-   Cruza las 5 ramas para llegar al otro lado de la copa.
+   Arrastra en cualquier parte del escenario: la cola gira en vivo
+   siguiendo el dedo/cursor (como si se estirara para alcanzar la
+   rama) y brilla cuando ya estiró lo suficiente. Suéltala ahí: la
+   cola completa el swing con rebote, las hojas del fondo se sacuden
+   y el saraguato avanza un poco. Si sueltas antes de tiempo, la cola
+   sólo regresa con un rebotito — sin castigo. Al tercer salto, canta
+   (la boca y las notas que ya trae el dibujo se animan) y revela el
+   dato real.
 
-   Sin temporizadores: es un puzle espacial de precisión, no de tiempo,
-   así que no hay reloj que limpiar ni ronda que perder por tardarse.
-   Fuente de verdad del arrastre en una ref (no estado funcional
-   anidado), igual que en JaguarStalk/el resto de los minijuegos.
+   Una sola instrucción (la frase de registry.ts, en el encabezado del
+   modal); el texto de aquí abajo sólo reacciona, nunca la repite ni
+   la contradice — ver la nota de estilo en types.ts.
    ============================================================ */
 
 import { useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
 import type { MinigameProps } from "./types";
-import { BranchIcon, TailHookIcon } from "./icons";
+import { BranchIcon } from "./icons";
 
-const BRANCH_X = [8, 30, 52, 74, 92]; // % a lo largo de la pista
-const REQUIRED_DIST = [15, 15, 15, 12]; // % mínimo de arrastre para llegar a la siguiente
-const LAST = BRANCH_X.length - 1;
+const SWINGS_NEEDED = 3;
+const MAX_DRAG_PX = 85; // arrastre que cuenta como "estiramiento completo"
+const REQUIRED_PCT = 55; // % del arrastre máximo que hay que alcanzar para soltar bien
+const MAX_ROTATE_DEG = 55;
+const CREEP_PX = 18; // cuánto avanza el escenario por cada salto logrado
+
+function findIllustrationSvg(root: HTMLElement | null) {
+  return root?.querySelector<SVGSVGElement>('svg[aria-label^="Ilustración"]') ?? null;
+}
+function findBackdropSvg(root: HTMLElement | null) {
+  return root?.querySelector<SVGSVGElement>('svg[aria-hidden="true"]') ?? null;
+}
 
 export function HowlerCall({ reduced }: MinigameProps) {
-  const [current, setCurrent] = useState(0);
-  const [won, setWon] = useState(false);
+  const [swings, setSwings] = useState(0);
   const [missed, setMissed] = useState(false);
-  const [, bump] = useState(0);
-
-  const trackRef = useRef<HTMLDivElement>(null);
+  const [justSwung, setJustSwung] = useState(false);
+  const hitRef = useRef<HTMLDivElement>(null);
   const draggingRef = useRef(false);
   const startXRef = useRef(0);
-  const stretchRef = useRef(0);
+  const dragPxRef = useRef(0);
+  const won = swings >= SWINGS_NEEDED;
 
-  function pctFromClientX(clientX: number) {
-    const track = trackRef.current;
-    if (!track) return 0;
-    const r = track.getBoundingClientRect();
-    return ((clientX - r.left) / r.width) * 100;
+  function tailEl() {
+    return findIllustrationSvg(hitRef.current)?.querySelector<SVGElement>("[data-tail]") ?? null;
   }
 
-  function gapWidth(i: number) {
-    return BRANCH_X[i + 1] - BRANCH_X[i];
+  function liveRotate(pct: number) {
+    const tail = tailEl();
+    if (!tail) return;
+    tail.style.transition = "";
+    tail.style.transform = `rotate(${pct * MAX_ROTATE_DEG}deg)`;
+    tail.style.filter = pct * 100 >= REQUIRED_PCT ? "drop-shadow(0 0 6px var(--sun))" : "";
   }
 
-  function advance() {
-    const next = current + 1;
-    setCurrent(next);
-    setMissed(false);
-    if (next === LAST) setWon(true);
+  function rustleLeaves() {
+    const backdrop = findBackdropSvg(hitRef.current);
+    const leaves = backdrop?.querySelectorAll<SVGElement>(
+      'path[fill="var(--jungle)"], path[fill="var(--jungle-deep)"]',
+    );
+    leaves?.forEach((leaf, i) => {
+      leaf.style.transformBox = "fill-box";
+      leaf.style.transformOrigin = "top center";
+      leaf.style.animation = "none";
+      void leaf.getBoundingClientRect();
+      leaf.style.animation = `sway ${0.5 + i * 0.1}s ease-in-out 2`;
+    });
+  }
+
+  function celebrate() {
+    const svg = findIllustrationSvg(hitRef.current);
+    const mouth = svg?.querySelector<SVGElement>('ellipse[fill="var(--coral)"]');
+    if (mouth) {
+      mouth.style.transformBox = "fill-box";
+      mouth.style.transformOrigin = "center";
+      mouth.style.animation = "none";
+      void mouth.getBoundingClientRect();
+      mouth.style.animation = "mk-pulse 0.4s var(--ease-bounce) 3";
+    }
+    const notes = svg?.querySelectorAll<SVGElement>('g[fill="var(--sky)"], path[stroke="var(--sky)"]');
+    notes?.forEach((note, i) => {
+      note.style.animation = "none";
+      void note.getBoundingClientRect();
+      note.style.animation = `mk-float-fade 1s ease-out ${i * 0.12}s 1 forwards`;
+    });
+  }
+
+  function succeedSwing() {
+    rustleLeaves();
+    setJustSwung(true);
+    window.setTimeout(() => setJustSwung(false), reduced ? 260 : 700);
+    setSwings((s) => {
+      const next = s + 1;
+      if (next >= SWINGS_NEEDED) window.setTimeout(celebrate, reduced ? 0 : 180);
+      return next;
+    });
   }
 
   function onPointerDown(e: React.PointerEvent) {
-    if (won || current >= LAST) return;
-    // La captura evita perder el arrastre si el dedo se sale del óvalo; en
-    // algún navegador/dispositivo puede fallar, así que no debe frenar el
-    // resto del gesto si eso pasa.
+    if (won) return;
     try {
       (e.currentTarget as Element).setPointerCapture(e.pointerId);
     } catch {
-      // sin captura, igual sigue funcionando mientras el puntero no se
-      // salga del óvalo
+      // sin captura, igual sigue funcionando mientras el puntero no se salga
     }
     draggingRef.current = true;
-    startXRef.current = pctFromClientX(e.clientX);
-    stretchRef.current = 0;
-    bump((n) => n + 1);
+    startXRef.current = e.clientX;
+    dragPxRef.current = 0;
+    liveRotate(0);
   }
 
   function onPointerMove(e: React.PointerEvent) {
     if (!draggingRef.current) return;
-    const raw = pctFromClientX(e.clientX) - startXRef.current;
-    stretchRef.current = Math.max(0, Math.min(raw, gapWidth(current)));
-    bump((n) => n + 1);
+    const raw = e.clientX - startXRef.current;
+    dragPxRef.current = Math.max(0, Math.min(raw, MAX_DRAG_PX));
+    liveRotate(dragPxRef.current / MAX_DRAG_PX);
   }
 
   function onPointerEnd() {
     if (!draggingRef.current) return;
     draggingRef.current = false;
-    const reached = stretchRef.current >= REQUIRED_DIST[current];
-    stretchRef.current = 0;
-    bump((n) => n + 1);
-    if (reached) {
-      advance();
+    const pct = (dragPxRef.current / MAX_DRAG_PX) * 100;
+    const tail = tailEl();
+    const fromDeg = (dragPxRef.current / MAX_DRAG_PX) * MAX_ROTATE_DEG;
+
+    if (tail) {
+      tail.style.setProperty("--from", `${fromDeg}deg`);
+      tail.style.filter = "";
+      tail.style.transform = "";
+      tail.style.animation = "none";
+      void tail.getBoundingClientRect();
+      tail.style.transition = "";
+      tail.style.animation = reduced
+        ? ""
+        : pct >= REQUIRED_PCT
+          ? "mk-swing-success 0.55s var(--ease-soft) 1"
+          : "mk-swing-fail 0.45s var(--ease-soft) 1";
+    }
+
+    if (pct >= REQUIRED_PCT) {
+      succeedSwing();
     } else {
       setMissed(true);
-      window.setTimeout(() => setMissed(false), reduced ? 300 : 900);
+      window.setTimeout(() => setMissed(false), reduced ? 260 : 700);
     }
-  }
-
-  function onKeyDown(e: React.KeyboardEvent) {
-    if (won || current >= LAST) return;
-    if (e.key === "Enter" || e.key === " " || e.key === "ArrowRight") {
-      e.preventDefault();
-      advance(); // alternativa accesible: sin arrastre que medir, salta directo
-    }
+    dragPxRef.current = 0;
   }
 
   function reset() {
-    setCurrent(0);
-    setWon(false);
+    setSwings(0);
     setMissed(false);
-    stretchRef.current = 0;
+    setJustSwung(false);
+    const svg = findIllustrationSvg(hitRef.current);
+    const tail = svg?.querySelector<SVGElement>("[data-tail]");
+    if (tail) {
+      tail.style.animation = "";
+      tail.style.transform = "";
+      tail.style.filter = "";
+    }
+    const mouth = svg?.querySelector<SVGElement>('ellipse[fill="var(--coral)"]');
+    if (mouth) mouth.style.animation = "";
+    svg
+      ?.querySelectorAll<SVGElement>('g[fill="var(--sky)"], path[stroke="var(--sky)"]')
+      .forEach((note) => {
+        note.style.animation = "";
+        note.style.opacity = "";
+        note.style.transform = "";
+      });
   }
 
-  const stretch = stretchRef.current;
-  const ready = stretch >= REQUIRED_DIST[current];
-  const monkeyLeft = won ? BRANCH_X[LAST] : BRANCH_X[current] + stretch;
-
-  const message = won
-    ? "¡Cruzó toda la copa usando la cola!"
+  const caption = won
+    ? "¡Cruzó toda la copa cantando!"
     : missed
-      ? "Casi… estira un poco más antes de soltar."
-      : current === 0
-        ? "Arrastra al saraguato y suéltalo cuando se ponga verde."
-        : `¡Vas bien! Rama ${current + 1} de ${BRANCH_X.length}.`;
+      ? "Casi… otra vez."
+      : justSwung
+        ? "¡Buen salto!"
+        : "La copa de los árboles espera.";
 
   return (
     <div>
       <div
-        ref={trackRef}
-        className="relative h-16 overflow-hidden rounded-full border-[3px] border-line bg-paper-2"
+        ref={hitRef}
+        role="button"
+        tabIndex={won ? -1 : 0}
+        aria-label="Arrastra la cola del saraguato hacia la rama y suéltala cuando brille"
+        aria-disabled={won}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerEnd}
+        onPointerCancel={onPointerEnd}
+        onKeyDown={(e) => {
+          // alternativa accesible: sin arrastre que medir, cuenta el salto directo
+          if ((e.key === "Enter" || e.key === " " || e.key === "ArrowRight") && !won) {
+            e.preventDefault();
+            succeedSwing();
+          }
+        }}
+        style={{ touchAction: "none" }}
+        className={cn(
+          "relative mx-auto block w-full max-w-[16rem] select-none rounded-[999px] outline-none",
+          !won && "cursor-grab active:cursor-grabbing",
+          "focus-visible:ring-4 focus-visible:ring-sun/60",
+        )}
       >
         <div
-          aria-hidden
-          className="absolute left-[4%] right-[4%] top-1/2 h-0 -translate-y-1/2 border-t-2 border-dashed border-ink-faint/50"
-        />
-
-        {/* ramas: apoyos fijos del recorrido */}
-        {BRANCH_X.map((x, i) => (
-          <div
-            key={i}
-            aria-hidden
-            className={cn(
-              "absolute top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] bg-paper",
-              i < current || won ? "border-jungle-deep text-jungle-deep" : "border-line text-ink-soft",
-            )}
-            style={{ left: `${x}%` }}
-          >
-            <BranchIcon className="h-4 w-4" />
-          </div>
-        ))}
-
-        {/* marca de cuánto hay que estirar para llegar a la siguiente rama */}
-        {!won && current < LAST && (
-          <div
-            aria-hidden
-            className="absolute top-1/2 h-9 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sun"
-            style={{ left: `${BRANCH_X[current] + REQUIRED_DIST[current]}%` }}
-          />
-        )}
-
-        {/* estirón de la cola, en vivo mientras se arrastra */}
-        {stretch > 0 && (
-          <div
-            aria-hidden
-            className={cn(
-              "absolute top-1/2 h-3 -translate-y-1/2 rounded-full",
-              ready ? "bg-jungle" : "bg-coral/70",
-            )}
-            style={{
-              left: `${BRANCH_X[current]}%`,
-              width: `${stretch}%`,
-            }}
-          />
-        )}
-
-        {/* el saraguato: aquí se arrastra */}
-        <div
-          role="button"
-          tabIndex={won || current >= LAST ? -1 : 0}
-          aria-label="Estira la cola del saraguato hacia la siguiente rama"
-          aria-disabled={won}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerEnd}
-          onPointerCancel={onPointerEnd}
-          onKeyDown={onKeyDown}
-          style={{ left: `${monkeyLeft}%`, touchAction: "none" }}
-          className={cn(
-            "absolute top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 select-none place-items-center rounded-full border-[3px] border-line bg-jungle text-jungle-ink shadow-[var(--shadow-toy)]",
-            !draggingRef.current && !reduced && "transition-[left] duration-200 ease-out",
-            !won && current < LAST && "cursor-grab active:cursor-grabbing",
-          )}
+          className={cn(!reduced && "transition-transform duration-500 ease-out")}
+          style={{ transform: `translateX(${swings * CREEP_PX}px)` }}
         >
-          <TailHookIcon className="h-6 w-6" />
+          <SpeciesScene slug="mono-aullador-negro" className="w-full" compact />
         </div>
+      </div>
+
+      {/* ramas cruzadas: rastro de avance, no una barra */}
+      <div aria-hidden className="mt-2.5 flex items-center justify-center gap-3">
+        {Array.from({ length: SWINGS_NEEDED }, (_, i) => i + 1).map((mark) => {
+          const reached = swings >= mark;
+          return (
+            <BranchIcon
+              key={mark}
+              className={cn(
+                "h-4 w-4 text-ink-faint/50",
+                !reduced && "transition-all duration-300",
+                reached && "scale-125 text-jungle-deep",
+              )}
+            />
+          );
+        })}
       </div>
 
       <p
         role="status"
         aria-live="polite"
-        className="mt-3 min-h-[1.4em] text-center text-sm font-extrabold text-ink-soft"
+        className="mt-2 min-h-[1.4em] text-center text-sm font-extrabold text-ink-soft"
       >
-        {message}
+        {caption}
       </p>
 
       {won && (
-        <div className="mt-3 space-y-3">
+        <div className="mt-1 space-y-3">
           <p className="rounded-2xl border-[3px] border-line bg-sun px-4 py-3 text-sm font-bold leading-snug text-sun-ink">
             La cola del saraguato es una quinta mano de verdad: en la punta
             tiene un parche de piel sin pelo, con surcos como los de tus
@@ -228,6 +264,27 @@ export function HowlerCall({ reduced }: MinigameProps) {
           </button>
         </div>
       )}
+
+      <style>{`
+        @keyframes mk-swing-success {
+          0% { transform: rotate(var(--from, 0deg)); }
+          50% { transform: rotate(${MAX_ROTATE_DEG}deg); }
+          100% { transform: rotate(0deg); }
+        }
+        @keyframes mk-swing-fail {
+          0% { transform: rotate(var(--from, 0deg)); }
+          55% { transform: rotate(-4deg); }
+          100% { transform: rotate(0deg); }
+        }
+        @keyframes mk-pulse {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.35); }
+        }
+        @keyframes mk-float-fade {
+          0% { transform: translateY(0); opacity: 1; }
+          100% { transform: translateY(-16px); opacity: 0; }
+        }
+      `}</style>
     </div>
   );
 }
