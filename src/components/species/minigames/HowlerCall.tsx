@@ -1,172 +1,206 @@
 "use client";
 
 /* ============================================================
-   AULLIDO TERRITORIAL · minijuego propio del mono aullador negro
+   COLA DE QUINTA MANO · minijuego propio del mono aullador negro
    ------------------------------------------------------------
-   El saraguato no pelea por su territorio: lo aúlla. Su rugido es de
-   los sonidos de animal terrestre más fuertes que existen y se oye a
-   varios kilómetros dentro de la selva; al amanecer y al atardecer,
-   las tropas se contestan a la distancia para marcar límites sin
-   llegar a los golpes.
+   Se evaluó usar el micrófono de verdad (getUserMedia + medir volumen
+   con la Web Audio API) para que el niño "aullara" al dispositivo. Se
+   descartó a propósito: pedir permiso de micrófono en un sitio
+   educativo infantil es una fricción grande (aviso del navegador,
+   "no" por defecto en muchos equipos de escuela, sin micrófono en
+   varios dispositivos), agrega manejo de errores importante (permiso
+   negado, sin hardware, contexto no seguro) y no se puede verificar
+   de forma fiable en este entorno de pruebas. El aullido y su alcance
+   ya viven en el hotspot "garganta" de la ficha (SpeciesDiscover); acá
+   se cuenta OTRO rasgo real y muy concreto: la cola prensil, que el
+   saraguato usa como una quinta mano para colgarse y moverse entre
+   ramas sin usar las manos.
 
-   Aquí: un juego de RITMO, no de sigilo (deliberadamente distinto en
-   sensación al "Acecho silencioso" del jaguar, que era sostener/soltar).
-   Cinco tiempos marcados; toca «¡Aúlla!» justo cuando cada punto se
-   ilumina. Cada acierto alarga el aullido de tu tropa sobre la pista;
-   si llega más allá de la marca de la tropa rival, ganas el territorio
-   sin pelear — el mismo dato real que cierra el minijuego.
+   Mecánica (distinta a sostener/soltar del jaguar y a tocar-en-tiempo
+   de la versión anterior de este mismo juego): ARRASTRAR. El saraguato
+   cuelga de una rama; se arrastra su cola hacia la siguiente rama y se
+   suelta cuando el estirón llega a la zona marcada (se pone verde).
+   Cruza las 5 ramas para llegar al otro lado de la copa.
 
-   El reloj usa performance.now() + una ref como fuente de verdad (no
-   estado funcional anidado): el tick sólo fuerza un repintado. Un tap
-   fuera de ventana no penaliza, para que se sienta justo con niños.
+   Sin temporizadores: es un puzle espacial de precisión, no de tiempo,
+   así que no hay reloj que limpiar ni ronda que perder por tardarse.
+   Fuente de verdad del arrastre en una ref (no estado funcional
+   anidado), igual que en JaguarStalk/el resto de los minijuegos.
    ============================================================ */
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@/lib/cn";
 import type { MinigameProps } from "./types";
-import { HowlIcon } from "./icons";
+import { BranchIcon, TailHookIcon } from "./icons";
 
-type BeatState = "pending" | "hit" | "miss";
-
-const BEAT_COUNT = 5;
-const BEATS = [900, 1650, 2400, 3150, 3900]; // ms desde que arranca la ronda
-const BEAT_X = [10, 30, 50, 70, 90]; // % a lo largo de la pista
-const HIT_WINDOW = 260; // ms de tolerancia a cada lado del tiempo exacto
-const LEAD = 320; // ms antes del tiempo exacto en que el punto empieza a avisar
-const WIN_THRESHOLD = 3; // aciertos de 5 para ganar el territorio
-const RIVAL_X = 58; // % donde está la marca de la tropa rival
-const ROUND_MS = BEATS[BEAT_COUNT - 1] + HIT_WINDOW + 150;
+const BRANCH_X = [8, 30, 52, 74, 92]; // % a lo largo de la pista
+const REQUIRED_DIST = [15, 15, 15, 12]; // % mínimo de arrastre para llegar a la siguiente
+const LAST = BRANCH_X.length - 1;
 
 export function HowlerCall({ reduced }: MinigameProps) {
-  const [phase, setPhase] = useState<"idle" | "playing" | "won" | "lost">(
-    "idle",
-  );
-  const [pulse, setPulse] = useState(false);
-  const statusRef = useRef<BeatState[]>(Array(BEAT_COUNT).fill("pending"));
-  const startRef = useRef(0);
+  const [current, setCurrent] = useState(0);
+  const [won, setWon] = useState(false);
+  const [missed, setMissed] = useState(false);
   const [, bump] = useState(0);
 
-  // Ronda: arranca el reloj, resuelve tiempos vencidos como "miss" y decide
-  // ganar/perder en cuanto los 5 quedan resueltos.
-  useEffect(() => {
-    if (phase !== "playing") return;
-    startRef.current = performance.now();
-    statusRef.current = Array(BEAT_COUNT).fill("pending");
-    bump((n) => n + 1);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const draggingRef = useRef(false);
+  const startXRef = useRef(0);
+  const stretchRef = useRef(0);
 
-    const id = setInterval(() => {
-      const elapsed = performance.now() - startRef.current;
-      let changed = false;
-      const next = statusRef.current.map((s, i) => {
-        if (s === "pending" && elapsed > BEATS[i] + HIT_WINDOW) {
-          changed = true;
-          return "miss" as const;
-        }
-        return s;
-      });
-      if (changed) statusRef.current = next;
-      bump((n) => n + 1);
-
-      if (next.every((s) => s !== "pending") || elapsed > ROUND_MS) {
-        clearInterval(id);
-        const hits = next.filter((s) => s === "hit").length;
-        setPhase(hits >= WIN_THRESHOLD ? "won" : "lost");
-      }
-    }, 50);
-    return () => clearInterval(id);
-  }, [phase]);
-
-  function start() {
-    setPhase("playing");
+  function pctFromClientX(clientX: number) {
+    const track = trackRef.current;
+    if (!track) return 0;
+    const r = track.getBoundingClientRect();
+    return ((clientX - r.left) / r.width) * 100;
   }
 
-  function tap() {
-    if (phase !== "playing") return;
-    const elapsed = performance.now() - startRef.current;
-    const idx = statusRef.current.findIndex(
-      (s, i) => s === "pending" && Math.abs(elapsed - BEATS[i]) <= HIT_WINDOW,
-    );
-    if (idx === -1) return; // toque suelto: no penaliza, simplemente no cuenta
-    const next = [...statusRef.current];
-    next[idx] = "hit";
-    statusRef.current = next;
+  function gapWidth(i: number) {
+    return BRANCH_X[i + 1] - BRANCH_X[i];
+  }
+
+  function advance() {
+    const next = current + 1;
+    setCurrent(next);
+    setMissed(false);
+    if (next === LAST) setWon(true);
+  }
+
+  function onPointerDown(e: React.PointerEvent) {
+    if (won || current >= LAST) return;
+    // La captura evita perder el arrastre si el dedo se sale del óvalo; en
+    // algún navegador/dispositivo puede fallar, así que no debe frenar el
+    // resto del gesto si eso pasa.
+    try {
+      (e.currentTarget as Element).setPointerCapture(e.pointerId);
+    } catch {
+      // sin captura, igual sigue funcionando mientras el puntero no se
+      // salga del óvalo
+    }
+    draggingRef.current = true;
+    startXRef.current = pctFromClientX(e.clientX);
+    stretchRef.current = 0;
     bump((n) => n + 1);
-    setPulse(true);
-    window.setTimeout(() => setPulse(false), reduced ? 150 : 320);
+  }
+
+  function onPointerMove(e: React.PointerEvent) {
+    if (!draggingRef.current) return;
+    const raw = pctFromClientX(e.clientX) - startXRef.current;
+    stretchRef.current = Math.max(0, Math.min(raw, gapWidth(current)));
+    bump((n) => n + 1);
+  }
+
+  function onPointerEnd() {
+    if (!draggingRef.current) return;
+    draggingRef.current = false;
+    const reached = stretchRef.current >= REQUIRED_DIST[current];
+    stretchRef.current = 0;
+    bump((n) => n + 1);
+    if (reached) {
+      advance();
+    } else {
+      setMissed(true);
+      window.setTimeout(() => setMissed(false), reduced ? 300 : 900);
+    }
+  }
+
+  function onKeyDown(e: React.KeyboardEvent) {
+    if (won || current >= LAST) return;
+    if (e.key === "Enter" || e.key === " " || e.key === "ArrowRight") {
+      e.preventDefault();
+      advance(); // alternativa accesible: sin arrastre que medir, salta directo
+    }
   }
 
   function reset() {
-    setPhase("idle");
+    setCurrent(0);
+    setWon(false);
+    setMissed(false);
+    stretchRef.current = 0;
   }
 
-  const status = statusRef.current;
-  const hits = status.filter((s) => s === "hit").length;
-  const reachPct = (hits / BEAT_COUNT) * 100;
-  const elapsedNow =
-    phase === "playing" ? performance.now() - startRef.current : -1;
+  const stretch = stretchRef.current;
+  const ready = stretch >= REQUIRED_DIST[current];
+  const monkeyLeft = won ? BRANCH_X[LAST] : BRANCH_X[current] + stretch;
 
-  const message =
-    phase === "won"
-      ? "¡Se escuchó hasta el otro lado de la selva!"
-      : phase === "lost"
-        ? "Casi… no llegó tan lejos como la tropa rival."
-        : phase === "playing"
-          ? "Sigue el ritmo…"
-          : "Toca «¡Aúlla!» y sigue el ritmo.";
+  const message = won
+    ? "¡Cruzó toda la copa usando la cola!"
+    : missed
+      ? "Casi… estira un poco más antes de soltar."
+      : current === 0
+        ? "Arrastra al saraguato y suéltalo cuando se ponga verde."
+        : `¡Vas bien! Rama ${current + 1} de ${BRANCH_X.length}.`;
 
   return (
     <div>
-      <div className="relative h-16 overflow-hidden rounded-full border-[3px] border-line bg-paper-2">
-        {/* pista punteada */}
+      <div
+        ref={trackRef}
+        className="relative h-16 overflow-hidden rounded-full border-[3px] border-line bg-paper-2"
+      >
         <div
           aria-hidden
-          className="absolute left-[6%] right-[6%] top-1/2 h-0 -translate-y-1/2 border-t-2 border-dashed border-ink-faint/50"
+          className="absolute left-[4%] right-[4%] top-1/2 h-0 -translate-y-1/2 border-t-2 border-dashed border-ink-faint/50"
         />
-        {/* territorio ya ganado por tu tropa */}
+
+        {/* ramas: apoyos fijos del recorrido */}
+        {BRANCH_X.map((x, i) => (
+          <div
+            key={i}
+            aria-hidden
+            className={cn(
+              "absolute top-1/2 grid h-8 w-8 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] bg-paper",
+              i < current || won ? "border-jungle-deep text-jungle-deep" : "border-line text-ink-soft",
+            )}
+            style={{ left: `${x}%` }}
+          >
+            <BranchIcon className="h-4 w-4" />
+          </div>
+        ))}
+
+        {/* marca de cuánto hay que estirar para llegar a la siguiente rama */}
+        {!won && current < LAST && (
+          <div
+            aria-hidden
+            className="absolute top-1/2 h-9 w-1 -translate-x-1/2 -translate-y-1/2 rounded-full bg-sun"
+            style={{ left: `${BRANCH_X[current] + REQUIRED_DIST[current]}%` }}
+          />
+        )}
+
+        {/* estirón de la cola, en vivo mientras se arrastra */}
+        {stretch > 0 && (
+          <div
+            aria-hidden
+            className={cn(
+              "absolute top-1/2 h-3 -translate-y-1/2 rounded-full",
+              ready ? "bg-jungle" : "bg-coral/70",
+            )}
+            style={{
+              left: `${BRANCH_X[current]}%`,
+              width: `${stretch}%`,
+            }}
+          />
+        )}
+
+        {/* el saraguato: aquí se arrastra */}
         <div
-          aria-hidden
+          role="button"
+          tabIndex={won || current >= LAST ? -1 : 0}
+          aria-label="Estira la cola del saraguato hacia la siguiente rama"
+          aria-disabled={won}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerEnd}
+          onPointerCancel={onPointerEnd}
+          onKeyDown={onKeyDown}
+          style={{ left: `${monkeyLeft}%`, touchAction: "none" }}
           className={cn(
-            "absolute left-0 top-0 h-full rounded-full bg-jungle/35",
-            !reduced && "transition-[width] duration-200 ease-out",
+            "absolute top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 select-none place-items-center rounded-full border-[3px] border-line bg-jungle text-jungle-ink shadow-[var(--shadow-toy)]",
+            !draggingRef.current && !reduced && "transition-[left] duration-200 ease-out",
+            !won && current < LAST && "cursor-grab active:cursor-grabbing",
           )}
-          style={{ width: `${reachPct}%` }}
-        />
-        {/* marca de la tropa rival */}
-        <div
-          aria-hidden
-          title="Hasta dónde llega la tropa rival"
-          className="absolute top-1/2 h-9 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-rust/70"
-          style={{ left: `${RIVAL_X}%` }}
-        />
-        {/* los 5 tiempos del aullido */}
-        {BEATS.map((t, i) => {
-          const live =
-            phase === "playing" &&
-            status[i] === "pending" &&
-            elapsedNow >= t - LEAD &&
-            elapsedNow <= t + HIT_WINDOW;
-          return (
-            <div
-              key={i}
-              aria-hidden
-              className={cn(
-                "absolute top-1/2 grid h-7 w-7 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px]",
-                status[i] === "hit" &&
-                  "border-jungle-deep bg-jungle text-jungle-ink",
-                status[i] === "miss" && "border-ink-faint/60 bg-paper text-ink-faint",
-                status[i] === "pending" &&
-                  (live
-                    ? "border-sun bg-sun text-sun-ink"
-                    : "border-line bg-paper text-ink-soft"),
-                live && !reduced && "scale-110",
-                !reduced && "transition-transform duration-150",
-              )}
-              style={{ left: `${BEAT_X[i]}%` }}
-            >
-              <HowlIcon className="h-4 w-4" />
-            </div>
-          );
-        })}
+        >
+          <TailHookIcon className="h-6 w-6" />
+        </div>
       </div>
 
       <p
@@ -177,37 +211,20 @@ export function HowlerCall({ reduced }: MinigameProps) {
         {message}
       </p>
 
-      {phase === "idle" || phase === "playing" ? (
-        <button
-          type="button"
-          onClick={phase === "idle" ? start : tap}
-          className={cn(
-            "mt-3 w-full select-none rounded-full border-[3px] border-line py-3 text-base font-extrabold shadow-[var(--shadow-toy)]",
-            !reduced && "transition-transform duration-100",
-            pulse
-              ? "translate-y-1 bg-sun text-sun-ink shadow-[var(--shadow-toy-press)]"
-              : "bg-jungle text-jungle-ink hover:-translate-y-0.5",
-          )}
-        >
-          {phase === "idle" ? "¡Aúlla! →" : "¡Aúlla!"}
-        </button>
-      ) : (
+      {won && (
         <div className="mt-3 space-y-3">
-          {phase === "won" && (
-            <p className="rounded-2xl border-[3px] border-line bg-sun px-4 py-3 text-sm font-bold leading-snug text-sun-ink">
-              El aullido del mono saraguato es de los sonidos de animal
-              terrestre más fuertes que existen: se oye a varios kilómetros
-              dentro de la selva. Al amanecer y al atardecer, las tropas
-              aúllan para marcar su territorio y evitar peleas — la que se
-              escucha más lejos lo gana sin pelear.
-            </p>
-          )}
+          <p className="rounded-2xl border-[3px] border-line bg-sun px-4 py-3 text-sm font-bold leading-snug text-sun-ink">
+            La cola del saraguato es una quinta mano de verdad: en la punta
+            tiene un parche de piel sin pelo, con surcos como los de tus
+            huellas digitales, que se pega a las ramas. Aguanta todo su peso:
+            puede colgarse sólo de la cola mientras usa las manos para comer.
+          </p>
           <button
             type="button"
             onClick={reset}
             className="w-full rounded-full border-[3px] border-line bg-paper py-2.5 text-sm font-extrabold transition-transform hover:-translate-y-0.5"
           >
-            {phase === "won" ? "Jugar de nuevo" : "Intentar de nuevo"}
+            Jugar de nuevo
           </button>
         </div>
       )}

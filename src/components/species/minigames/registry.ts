@@ -18,8 +18,8 @@ export const MINIGAMES: Record<string, MinigameEntry> = {
     Component: JaguarStalkGame,
   },
   "mono-aullador-negro": {
-    title: "Aullido territorial",
-    tagline: "Gana territorio con la voz, no con pelea: sigue el ritmo.",
+    title: "Cola de quinta mano",
+    tagline: "Arrastra la cola de rama en rama por la copa de los árboles.",
     Component: HowlerCall,
   },
 };
