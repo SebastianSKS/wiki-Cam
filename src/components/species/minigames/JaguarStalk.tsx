@@ -3,42 +3,58 @@
 /* ============================================================
    ACECHO SILENCIOSO · minijuego propio del jaguar
    ------------------------------------------------------------
-   El jaguar caza al acecho: se acerca sin ruido y se congela en
-   cuanto la presa mira hacia él (así se mueve de verdad en la Selva
-   Maya de Calakmul). Aquí: mantén presionada la huella para avanzar;
-   si el ojo se abre mientras te mueves, te descubre y retrocedes un
-   poco. Llega hasta el ojo para "cazar" sin que te vean.
+   Segunda versión: la primera vivía aparte de la ilustración (una
+   píldora con un punto deslizante y un ojo en un círculo) y se sentía
+   un widget de formulario, no parte del libro. Ahora el escenario ES
+   la ilustración real del jaguar (<SpeciesScene>, mismo marco/acuarela
+   que la ficha) y quien actúa es el propio dibujo: se reutilizan los
+   `[data-tail]`/`[data-eye]` que ya trae el SVG (los mismos que usa el
+   guiño en hover) en vez de inventar iconos sueltos sobre una barra.
 
-   Pointer Events (no mouse/touch por separado) para que funcione
-   igual con dedo o cursor; `touch-action: none` evita que el hold
-   arrastre la página en móvil.
+   Mantén presionado el escenario: el jaguar se acerca (la cola se
+   mece) y dos huellas de tinta aparecen bajo el marco por cada mitad
+   del camino. Si sus ojos brillan (alerta), suelta o lo escucha: si
+   sigues sosteniendo, la cola se sobresalta, el escenario tiembla y
+   retrocede un poco. Al llegar, salta con un rebote satisfecho.
+
+   Una sola instrucción (la frase de registry.ts, en el encabezado del
+   modal); el texto de aquí abajo sólo reacciona, nunca la repite ni
+   la contradice — ver la nota de estilo en types.ts.
    ============================================================ */
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/cn";
+import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
 import type { MinigameProps } from "./types";
-import { EyeIcon, PawIcon } from "./icons";
+import { PawIcon } from "./icons";
 
 const STEP = 2.6; // % de avance por tick mientras se sostiene sin ser visto
 const TICK_MS = 110;
 const CATCH_PENALTY = 24; // % que se pierde si te ven avanzando
-const SAFE_MS = [1000, 1900] as const; // rango "a salvo" (ojo cerrado)
-const WATCH_MS = [650, 1050] as const; // rango "alerta" (ojo abierto)
+const SAFE_MS = [1000, 1900] as const; // rango "a salvo" (ojos relajados)
+const WATCH_MS = [650, 1050] as const; // rango "alerta" (ojos brillando)
+const CREEP_PX = 22; // cuánto se acerca el escenario al llegar al 100%
+const MARKS = [25, 50, 75, 100];
 
 function randBetween([a, b]: readonly [number, number]) {
   return a + Math.random() * (b - a);
+}
+
+function findSvg(root: HTMLElement | null) {
+  return root?.querySelector<SVGSVGElement>('svg[aria-label^="Ilustración"]') ?? null;
 }
 
 export function JaguarStalkGame({ reduced }: MinigameProps) {
   const [progress, setProgress] = useState(0);
   const [watching, setWatching] = useState(false);
   const [holding, setHolding] = useState(false);
-  const [caught, setCaught] = useState(false);
+  const [caughtFlash, setCaughtFlash] = useState(false);
   const caughtThisWatch = useRef(false);
   const won = progress >= 100;
+  const hitRef = useRef<HTMLDivElement>(null);
 
-  // Ciclo de vigilancia de la presa: alterna sola, sin depender de si
-  // el jugador sostiene el botón.
+  // Ciclo de vigilancia: los ojos del jaguar alternan solos entre relajados
+  // y alerta, sin depender de si el jugador sostiene.
   useEffect(() => {
     if (won) return;
     let timer: ReturnType<typeof setTimeout>;
@@ -60,16 +76,23 @@ export function JaguarStalkGame({ reduced }: MinigameProps) {
     };
   }, [won]);
 
-  // Avance mientras se sostiene, y captura si te ven en el intento.
+  // Avance mientras se sostiene, y captura (con sobresalto real de la cola)
+  // si se sigue sosteniendo cuando los ojos brillan.
   useEffect(() => {
     if (won || !holding) return;
     const id = setInterval(() => {
       if (watching) {
         if (!caughtThisWatch.current) {
           caughtThisWatch.current = true;
-          setCaught(true);
+          setCaughtFlash(true);
           setProgress((p) => Math.max(0, p - CATCH_PENALTY));
-          window.setTimeout(() => setCaught(false), reduced ? 260 : 480);
+          const tail = findSvg(hitRef.current)?.querySelector<SVGElement>("[data-tail]");
+          if (tail) {
+            tail.style.animation = "none";
+            void tail.getBoundingClientRect();
+            tail.style.animation = "tail-wag 0.35s ease-in-out 1";
+          }
+          window.setTimeout(() => setCaughtFlash(false), reduced ? 260 : 480);
         }
         return;
       }
@@ -78,96 +101,125 @@ export function JaguarStalkGame({ reduced }: MinigameProps) {
     return () => clearInterval(id);
   }, [holding, watching, won, reduced]);
 
-  const press = () => {
+  // Ojos: se abren en grande y brillan mientras hay alerta (pista continua,
+  // no sólo el instante del sobresalto), sin importar si se sostiene o no.
+  useEffect(() => {
+    const eyes = findSvg(hitRef.current)?.querySelectorAll<SVGElement>("[data-eye]");
+    eyes?.forEach((eye) => {
+      eye.style.transition = reduced ? "" : "transform 0.2s var(--ease-bounce), filter 0.2s";
+      eye.style.transform = watching ? "scale(1.22)" : "";
+      eye.style.filter = watching
+        ? "drop-shadow(0 0 7px var(--rust)) drop-shadow(0 0 3px var(--rust))"
+        : "";
+    });
+  }, [watching, reduced]);
+
+  // Cola: se mece despacio mientras avanza a salvo; quieta en cualquier
+  // otro momento (congelarse del todo es parte de la actuación).
+  useEffect(() => {
+    const tail = findSvg(hitRef.current)?.querySelector<SVGElement>("[data-tail]");
+    if (!tail || won) return;
+    tail.style.animation = holding && !watching ? "sway 1.3s ease-in-out infinite" : "";
+  }, [holding, watching, won]);
+
+  // Salto al ganar: un guiño satisfecho + la cola se acomoda.
+  useEffect(() => {
+    if (!won) return;
+    const svg = findSvg(hitRef.current);
+    svg?.querySelectorAll<SVGElement>("[data-eye]").forEach((eye) => {
+      eye.style.animation = "blink 0.5s var(--ease-soft) 1";
+    });
+    const tail = svg?.querySelector<SVGElement>("[data-tail]");
+    if (tail) tail.style.animation = "tail-wag 0.6s var(--ease-soft) 1";
+  }, [won]);
+
+  function press() {
     if (!won) setHolding(true);
-  };
-  const release = () => setHolding(false);
-  const reset = () => {
+  }
+  function release() {
+    setHolding(false);
+  }
+  function reset() {
     setProgress(0);
     setHolding(false);
-    setCaught(false);
-  };
+    setCaughtFlash(false);
+  }
 
-  const message = won
-    ? "¡Cacería exitosa! Ni un ruido."
-    : caught
-      ? "¡Te vio! Espera a que se calme."
+  const caption = won
+    ? "¡Cacería lista, ni lo escuchó!"
+    : caughtFlash
+      ? "¡Se puso alerta!"
       : holding
-        ? watching
-          ? "¡Alerta! Suelta ya…"
-          : "Sigue así, con cuidado…"
-        : "Sostén la huella para avanzar.";
+        ? "Shhh… se acerca sin hacer ruido."
+        : "La selva está en silencio.";
 
   return (
     <div>
       <div
+        ref={hitRef}
+        role="button"
+        tabIndex={won ? -1 : 0}
+        aria-label="Mantén presionado para que el jaguar avance sin ruido; suelta si sus ojos brillan"
+        aria-disabled={won}
+        onPointerDown={(e) => {
+          e.preventDefault();
+          press();
+        }}
+        onPointerUp={release}
+        onPointerLeave={release}
+        onPointerCancel={release}
+        onKeyDown={(e) => {
+          if (e.key === " " || e.key === "Enter") {
+            e.preventDefault();
+            press();
+          }
+        }}
+        onKeyUp={(e) => {
+          if (e.key === " " || e.key === "Enter") release();
+        }}
+        style={{ touchAction: "none" }}
         className={cn(
-          "relative h-16 overflow-hidden rounded-full border-[3px] bg-paper-2",
-          caught ? "border-rust" : "border-line",
+          "jg-stage relative mx-auto block w-full max-w-[16rem] select-none rounded-[999px] outline-none",
+          !won && "cursor-pointer",
+          "focus-visible:ring-4 focus-visible:ring-sun/60",
+          caughtFlash && !reduced && "jg-shake",
         )}
       >
         <div
-          aria-hidden
-          className="absolute left-[9%] right-[13%] top-1/2 h-0 -translate-y-1/2 border-t-2 border-dashed border-ink-faint/50"
-        />
-        <div
-          aria-hidden
-          className={cn(
-            "absolute top-1/2 grid h-11 w-11 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border-[3px] border-line bg-sun text-sun-ink",
-            !reduced && "transition-[left] duration-150 ease-linear",
-          )}
-          style={{ left: `${9 + progress * 0.66}%` }}
+          className={cn(!reduced && "transition-transform duration-500 ease-out")}
+          style={{ transform: `translateX(${(progress / 100) * CREEP_PX}px)` }}
         >
-          <PawIcon className="h-6 w-6" />
+          <SpeciesScene slug="jaguar" className="w-full" compact />
         </div>
-        <div
-          aria-hidden
-          className="absolute right-[7%] top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full border-[3px] border-line bg-paper"
-        >
-          <EyeIcon
-            open={watching}
-            className={cn("h-7 w-7", watching ? "text-rust" : "text-ink-soft")}
-          />
-        </div>
+      </div>
+
+      {/* huellas: rastro de avance, no una barra */}
+      <div aria-hidden className="mt-2.5 flex items-center justify-center gap-3">
+        {MARKS.map((mark) => {
+          const reached = progress >= mark;
+          return (
+            <PawIcon
+              key={mark}
+              className={cn(
+                "h-4 w-4 text-ink-faint/50",
+                !reduced && "transition-all duration-300",
+                reached && "scale-125 text-rust",
+              )}
+            />
+          );
+        })}
       </div>
 
       <p
         role="status"
         aria-live="polite"
-        className="mt-3 min-h-[1.4em] text-center text-sm font-extrabold text-ink-soft"
+        className="mt-2 min-h-[1.4em] text-center text-sm font-extrabold text-ink-soft"
       >
-        {message}
+        {caption}
       </p>
 
-      {!won ? (
-        <button
-          type="button"
-          onPointerDown={press}
-          onPointerUp={release}
-          onPointerLeave={release}
-          onPointerCancel={release}
-          onKeyDown={(e) => {
-            if (e.key === " " || e.key === "Enter") {
-              e.preventDefault();
-              press();
-            }
-          }}
-          onKeyUp={(e) => {
-            if (e.key === " " || e.key === "Enter") release();
-          }}
-          style={{ touchAction: "none" }}
-          className={cn(
-            "mt-3 w-full select-none rounded-full border-[3px] border-line py-3 text-base font-extrabold shadow-[var(--shadow-toy)]",
-            !reduced && "transition-transform duration-100",
-            holding
-              ? "translate-y-1 bg-rust text-coral-ink shadow-[var(--shadow-toy-press)]"
-              : "bg-jungle text-jungle-ink hover:-translate-y-0.5",
-          )}
-        >
-          {holding ? "Avanzando…" : "Sostén para avanzar"}
-        </button>
-      ) : (
-        <div className="mt-3 space-y-3">
+      {won && (
+        <div className="mt-1 space-y-3">
           <p className="rounded-2xl border-[3px] border-line bg-sun px-4 py-3 text-sm font-bold leading-snug text-sun-ink">
             En la Selva Maya de Calakmul, el jaguar es el gran depredador del
             corredor biológico: se acerca en silencio y ataca con una sola
@@ -182,6 +234,15 @@ export function JaguarStalkGame({ reduced }: MinigameProps) {
           </button>
         </div>
       )}
+
+      <style>{`
+        @keyframes jg-shake {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-2.5deg); }
+          75% { transform: rotate(2.5deg); }
+        }
+        .jg-shake { animation: jg-shake 0.4s ease-in-out 1; }
+      `}</style>
     </div>
   );
 }
