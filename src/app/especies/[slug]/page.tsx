@@ -16,6 +16,7 @@ import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
 import { SpeciesDiscover } from "@/components/species/SpeciesDiscover"; // "Toca para descubrir": capa de puntos sobre el hero
 import { SpeciesPhotoReveal } from "@/components/species/SpeciesPhotoReveal"; // botón opcional "Ver foto real"
+import { SpeciesMinigame } from "@/components/species/SpeciesMinigame"; // minijuego propio (por ahora sólo el jaguar)
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -129,6 +130,10 @@ export default async function SpeciesPage({
           >
             <div className="relative w-full">
               <SpeciesScene slug={species.slug} shared className="w-full" />
+              <SpeciesMinigame
+                slug={species.slug}
+                speciesName={species.commonNameEs}
+              />
               <SpeciesDiscover slug={species.slug} mayaName={species.mayaName} />
             </div>
           </SpeciesPhotoReveal>
