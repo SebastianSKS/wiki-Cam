@@ -61,13 +61,23 @@ export function EyeIcon({
   );
 }
 
-/** Aullido: boca abierta + ondas de sonido, el botón del ritmo del saraguato. */
-export function HowlIcon(props: IconProps) {
+/** Ramita con un par de hojas: los apoyos del recorrido de "Cola de quinta mano". */
+export function BranchIcon(props: IconProps) {
   return (
     <Base {...props}>
-      <ellipse cx="12" cy="13" rx="3.6" ry="4.6" fill="var(--jungle)" />
-      <path d="M5.5 8.5c-1 1.4-1.5 3-1.5 4.5s.5 3.1 1.5 4.5M18.5 8.5c1 1.4 1.5 3 1.5 4.5s-.5 3.1-1.5 4.5" />
-      <path d="M8.7 9.3c-.6.9-.9 2.1-.9 3.7s.3 2.8.9 3.7M15.3 9.3c.6.9.9 2.1.9 3.7s-.3 2.8-.9 3.7" />
+      <path d="M4 17c5-2.4 11-2.4 16 0" />
+      <path d="M9.5 17c-.4-3 .8-5.4 3-7 .6 2.7-.2 5.2-3 7Z" fill="var(--jungle)" />
+      <path d="M15 17c.6-2.6-.2-4.8-2.2-6.4-.9 2.4-.4 4.7 2.2 6.4Z" fill="var(--jungle)" />
+    </Base>
+  );
+}
+
+/** Punta de la cola prensil: el asa que se arrastra para estirarla hacia la siguiente rama. */
+export function TailHookIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M5 5c7-1 10 2.3 10 7s-3 7.6-8 6.6" />
+      <circle cx="7.6" cy="18.3" r="2" fill="var(--coral)" stroke="none" />
     </Base>
   );
 }
