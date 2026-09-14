@@ -1,5 +1,6 @@
 import type { MinigameEntry } from "./types";
 import { JaguarStalkGame } from "./JaguarStalk";
+import { HowlerCall } from "./HowlerCall";
 
 /**
  * slug de especie → su minijuego propio. Sólo las especies listadas aquí
@@ -15,5 +16,10 @@ export const MINIGAMES: Record<string, MinigameEntry> = {
     title: "Acecho silencioso",
     tagline: "Así caza el jaguar en la selva: sin que lo escuchen.",
     Component: JaguarStalkGame,
+  },
+  "mono-aullador-negro": {
+    title: "Aullido territorial",
+    tagline: "Gana territorio con la voz, no con pelea: sigue el ritmo.",
+    Component: HowlerCall,
   },
 };
