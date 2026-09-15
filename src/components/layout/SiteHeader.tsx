@@ -1,14 +1,25 @@
 import { Link } from "next-view-transitions";
-import { JaguarMark } from "@/components/ui/icons";
+import { JaguarMark, BookIcon, MapIcon, InfoIcon } from "@/components/ui/icons";
 
 const NAV = [
   {
     href: "/especies",
     label: "Criaturas",
     hover: "hover:bg-jungle hover:text-jungle-ink",
+    Icon: BookIcon,
   },
-  { href: "/mapa", label: "Mapa", hover: "hover:bg-sky hover:text-sky-ink" },
-  { href: "/acerca", label: "Acerca", hover: "hover:bg-coral hover:text-coral-ink" },
+  {
+    href: "/mapa",
+    label: "Mapa",
+    hover: "hover:bg-sky hover:text-sky-ink",
+    Icon: MapIcon,
+  },
+  {
+    href: "/acerca",
+    label: "Acerca",
+    hover: "hover:bg-coral hover:text-coral-ink",
+    Icon: InfoIcon,
+  },
 ];
 
 export function SiteHeader() {
@@ -33,14 +44,19 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <nav className="flex shrink-0 items-center gap-1 sm:gap-2">
+        {/* Botones grandes a propósito: dedos de preescolar (3-5 años) fallan
+            fácil en pastillas chicas. Bajo sm es un cuadrito ícono-arriba /
+            texto-abajo de 56px (excede el mínimo táctil de 44px); en sm+
+            vuelve a la fila horizontal, también más generosa que antes. */}
+        <nav className="flex shrink-0 items-center gap-2 sm:gap-3">
           {NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className={`rounded-full border-[3px] border-line px-2 py-1.5 text-xs font-extrabold leading-none transition-transform duration-150 ease-[var(--ease-bounce)] hover:-translate-y-0.5 sm:px-4 sm:py-2.5 sm:text-sm ${item.hover}`}
+              className={`flex h-14 min-w-14 flex-col items-center justify-center gap-0.5 rounded-2xl border-[3px] border-line px-2 text-center text-[0.65rem] font-extrabold leading-none transition-transform duration-150 ease-[var(--ease-bounce)] hover:-translate-y-0.5 sm:h-12 sm:min-w-0 sm:flex-row sm:gap-2 sm:rounded-full sm:px-5 sm:text-sm ${item.hover}`}
             >
-              {item.label}
+              <item.Icon className="h-5 w-5 shrink-0" />
+              <span className="whitespace-nowrap">{item.label}</span>
             </Link>
           ))}
         </nav>

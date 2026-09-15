@@ -127,7 +127,7 @@ function FilterButton({
       href={to}
       aria-current={active ? "true" : undefined}
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border-[3px] border-line px-4 py-2 text-sm font-extrabold",
+        "inline-flex min-h-11 items-center gap-2 rounded-full border-[3px] border-line px-5 py-2.5 text-sm font-extrabold",
         "shadow-[var(--shadow-toy)] transition-transform duration-150 ease-[var(--ease-bounce)]",
         "hover:-translate-y-0.5 active:translate-y-1 active:scale-95 active:shadow-[var(--shadow-toy-press)]",
         active ? tone ?? "bg-ink text-paper" : "bg-paper text-ink-soft",
@@ -191,7 +191,7 @@ export default async function IndexPage({
       <div className="mt-8 space-y-4 rounded-[26px] border-[3px] border-line bg-paper-2 p-5">
         <div>
           <p className="catalog mb-2 text-ink-faint">¿Qué tipo de animal?</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             <FilterButton to={href(cur, { tipo: undefined })} active={!tipo}>
               Todos
             </FilterButton>
@@ -210,7 +210,7 @@ export default async function IndexPage({
 
         <div>
           <p className="catalog mb-2 text-ink-faint">¿Cómo están?</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             <FilterButton to={href(cur, { estado: undefined })} active={!estado}>
               Todas
             </FilterButton>
@@ -233,7 +233,7 @@ export default async function IndexPage({
 
         <div>
           <p className="catalog mb-2 text-ink-faint">¿Sólo vive aquí?</p>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2.5">
             <FilterButton
               to={href(cur, { presencia: undefined })}
               active={!presencia}
@@ -281,7 +281,7 @@ export default async function IndexPage({
         </p>
       ) : (
         <>
-          <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-8 grid gap-7 sm:grid-cols-2 sm:gap-8 lg:grid-cols-3">
             {visible.map((s, i) => (
               <li key={s.slug}>
                 <StorybookCard species={s} index={i} />

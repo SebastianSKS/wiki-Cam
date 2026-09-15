@@ -30,7 +30,7 @@ export function StorybookCard({
     <Link
       href={`/especies/${species.slug}`}
       className={cn(
-        "group relative block rounded-[30px] border-[3px] border-line bg-paper p-4",
+        "group relative block rounded-[30px] border-[3px] border-line bg-paper p-5",
         "shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)]",
         "hover:-translate-y-1.5 hover:-rotate-1 focus-visible:-translate-y-1.5",
       )}
