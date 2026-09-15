@@ -16,6 +16,7 @@ import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
 import { SpeciesDiscover } from "@/components/species/SpeciesDiscover"; // "Toca para descubrir": capa de puntos sobre el hero
 import { SpeciesPhotoReveal } from "@/components/species/SpeciesPhotoReveal"; // botón opcional "Ver foto real"
+import { SpeciesNarration } from "@/components/species/SpeciesNarration"; // botón "Escúchame": lee la ficha en voz alta
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -146,6 +147,11 @@ export default async function SpeciesPage({
               <p className="mt-3 text-lg leading-relaxed">
                 {species.kidDescription ?? species.description}
               </p>
+              <div className="mt-4">
+                <SpeciesNarration
+                  parts={[species.kidDescription ?? species.description, species.funFact]}
+                />
+              </div>
             </section>
           </Reveal>
 

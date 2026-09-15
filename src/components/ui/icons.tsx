@@ -184,6 +184,37 @@ export function HomeIcon(props: IconProps) {
   );
 }
 
+/* — "Escúchame": bocina con ondas de sonido (narración de la ficha) — */
+export function SpeakerIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <path d="M4 9.5v5h3.4l5.1 4V5.5l-5.1 4H4Z" fill="var(--sun)" />
+      <path d="M16 9a4.5 4.5 0 0 1 0 6" />
+      <path d="M18.6 6.5a8 8 0 0 1 0 11" />
+    </Base>
+  );
+}
+
+/* — "Detener": cuadro (para parar la narración a la mitad) — */
+export function StopIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <rect x="6" y="6" width="12" height="12" rx="3" fill="var(--coral)" />
+    </Base>
+  );
+}
+
+/* — "Acerca": i de información (nav principal) — */
+export function InfoIcon(props: IconProps) {
+  return (
+    <Base {...props}>
+      <circle cx="12" cy="12" r="9" fill="var(--sky)" />
+      <circle cx="12" cy="8" r="1.15" fill="currentColor" stroke="none" />
+      <path d="M12 11v5.5" />
+    </Base>
+  );
+}
+
 /* — Marca del logo: carita de jaguar (línea, va sobre el círculo bg-sun) — */
 export function JaguarMark(props: IconProps) {
   return (
