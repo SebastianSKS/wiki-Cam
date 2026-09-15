@@ -16,7 +16,7 @@ import { DistributionMap } from "@/components/species/DistributionMap";
 import { PresenceBadge } from "@/components/species/PresenceBadge";
 import { SpeciesDiscover } from "@/components/species/SpeciesDiscover"; // "Toca para descubrir": capa de puntos sobre el hero
 import { SpeciesPhotoReveal } from "@/components/species/SpeciesPhotoReveal"; // botón opcional "Ver foto real"
-import { SpeciesNarration } from "@/components/species/SpeciesNarration"; // botón "Escúchame": lee la ficha en voz alta
+import { SpeciesNarration, SpeciesNarrationProvider } from "@/components/species/SpeciesNarration"; // botón "Escúchame" por apartado
 import { PRESENCE } from "@/lib/format";
 import { BulbIcon, SearchIcon } from "@/components/ui/icons";
 
@@ -62,218 +62,227 @@ export default async function SpeciesPage({
   const next = idx < catalog.length - 1 ? catalog[idx + 1] : catalog[0];
 
   return (
-    <article className="mx-auto max-w-[1200px] px-4 pb-10 pt-8 sm:px-8">
-      <Link
-        href="/especies"
-        className="hand inline-block text-lg text-ink-soft transition-transform hover:-translate-x-1 hover:text-rust"
-      >
-        ← volver al índice
-      </Link>
+    // Un solo `speechSynthesis` compartido por todos los botones "Escúchame"
+    // de la ficha (historia, dato curioso, hábitat): así nunca se encima el
+    // audio de dos apartados. Ver SpeciesNarration.tsx.
+    <SpeciesNarrationProvider>
+      <article className="mx-auto max-w-[1200px] px-4 pb-10 pt-8 sm:px-8">
+        <Link
+          href="/especies"
+          className="hand inline-block text-lg text-ink-soft transition-transform hover:-translate-x-1 hover:text-rust"
+        >
+          ← volver al índice
+        </Link>
 
-      {/* Héroe */}
-      <header className="mt-4 grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
-        <div>
-          <span className="hand inline-block -rotate-2 rounded-full border-[3px] border-line bg-sun px-3 py-0.5 text-lg text-sun-ink">
-            criatura n.º {idx + 1}
-          </span>
-          <h1 className="font-display mt-3 text-[clamp(2.6rem,9vw,5.5rem)] leading-[0.95] text-jungle-deep">
-            {species.commonNameEs}
-          </h1>
-          <p className="sci mt-2 text-[clamp(1.15rem,3.2vw,1.8rem)] text-ink-soft">
-            {bin}
-          </p>
-
-          {species.mayaName && (
-            <p className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="catalog rounded-full border-[3px] border-line bg-sky px-2.5 py-0.5 text-sky-ink">
-                {species.mayaLanguage ? `en maya ${species.mayaLanguage}` : "en maya"}
-              </span>
-              <span className="hand text-[clamp(1.3rem,3.4vw,1.9rem)] leading-none text-ink">
-                {species.mayaName}
-              </span>
+        {/* Héroe */}
+        <header className="mt-4 grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-center lg:gap-12">
+          <div>
+            <span className="hand inline-block -rotate-2 rounded-full border-[3px] border-line bg-sun px-3 py-0.5 text-lg text-sun-ink">
+              criatura n.º {idx + 1}
+            </span>
+            <h1 className="font-display mt-3 text-[clamp(2.6rem,9vw,5.5rem)] leading-[0.95] text-jungle-deep">
+              {species.commonNameEs}
+            </h1>
+            <p className="sci mt-2 text-[clamp(1.15rem,3.2vw,1.8rem)] text-ink-soft">
+              {bin}
             </p>
-          )}
 
-          <div className="mt-4 flex flex-wrap items-center gap-2">
-            <PresenceBadge type={species.presenceType} />
-            <Tag tone={careTone} seed={species.slug}>
-              {care.headline}
-            </Tag>
-            <Tag tone={CATEGORY_TONE[species.category]} seed={species.category}>
-              {CATEGORY_LABEL[species.category]}
-            </Tag>
-            <Tag tone="outline" seed={species.slug + "m"}>
-              {species.marineZone
-                ? "Vive mar adentro"
-                : `Vive en ${species.regions.length} ${
-                    species.regions.length === 1 ? "municipio" : "municipios"
-                  }`}
-            </Tag>
-          </div>
-          <p className="mt-3 max-w-md text-sm text-ink-soft">
-            {PRESENCE[species.presenceType].blurb}
-          </p>
-        </div>
+            {species.mayaName && (
+              <p className="mt-2 flex flex-wrap items-center gap-2">
+                <span className="catalog rounded-full border-[3px] border-line bg-sky px-2.5 py-0.5 text-sky-ink">
+                  {species.mayaLanguage ? `en maya ${species.mayaLanguage}` : "en maya"}
+                </span>
+                <span className="hand text-[clamp(1.3rem,3.4vw,1.9rem)] leading-none text-ink">
+                  {species.mayaName}
+                </span>
+              </p>
+            )}
 
-        <Reveal y={18}>
-          {/* La ilustración la pinta el servidor. SpeciesDiscover añade los
-              puntos "toca para descubrir" (cliente, sin importar ilustraciones)
-              y SpeciesPhotoReveal el botón opcional "Ver foto real" (sólo si la
-              especie tiene photo_url). Contenedor relativo para posicionar los
-              puntos encima. */}
-          <SpeciesPhotoReveal
-            photoUrl={species.photoUrl}
-            photoCredit={species.photoCredit}
-            photoSourceUrl={species.photoSourceUrl}
-            alt={`Fotografía de ${species.commonNameEs} (${bin})`}
-            className="mx-auto w-full max-w-md"
-          >
-            <div className="relative w-full">
-              <SpeciesScene slug={species.slug} shared className="w-full" />
-              <SpeciesDiscover slug={species.slug} mayaName={species.mayaName} />
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <PresenceBadge type={species.presenceType} />
+              <Tag tone={careTone} seed={species.slug}>
+                {care.headline}
+              </Tag>
+              <Tag tone={CATEGORY_TONE[species.category]} seed={species.category}>
+                {CATEGORY_LABEL[species.category]}
+              </Tag>
+              <Tag tone="outline" seed={species.slug + "m"}>
+                {species.marineZone
+                  ? "Vive mar adentro"
+                  : `Vive en ${species.regions.length} ${
+                      species.regions.length === 1 ? "municipio" : "municipios"
+                    }`}
+              </Tag>
             </div>
-          </SpeciesPhotoReveal>
-        </Reveal>
-      </header>
+            <p className="mt-3 max-w-md text-sm text-ink-soft">
+              {PRESENCE[species.presenceType].blurb}
+            </p>
+          </div>
 
-      {/* Cuerpo + aparato lateral */}
-      <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_23rem] lg:gap-14">
-        <div className="max-w-2xl space-y-10">
-          <Reveal>
-            <section>
-              <h2 className="font-display text-[clamp(1.6rem,4vw,2.25rem)]">
-                Su historia
-              </h2>
-              <p className="mt-3 text-lg leading-relaxed">
-                {species.kidDescription ?? species.description}
-              </p>
-              <div className="mt-4">
-                <SpeciesNarration
-                  parts={[species.kidDescription ?? species.description, species.funFact]}
-                />
+          <Reveal y={18}>
+            {/* La ilustración la pinta el servidor. SpeciesDiscover añade los
+                puntos "toca para descubrir" (cliente, sin importar ilustraciones)
+                y SpeciesPhotoReveal el botón opcional "Ver foto real" (sólo si la
+                especie tiene photo_url). Contenedor relativo para posicionar los
+                puntos encima. */}
+            <SpeciesPhotoReveal
+              photoUrl={species.photoUrl}
+              photoCredit={species.photoCredit}
+              photoSourceUrl={species.photoSourceUrl}
+              alt={`Fotografía de ${species.commonNameEs} (${bin})`}
+              className="mx-auto w-full max-w-md"
+            >
+              <div className="relative w-full">
+                <SpeciesScene slug={species.slug} shared className="w-full" />
+                <SpeciesDiscover slug={species.slug} mayaName={species.mayaName} />
               </div>
-            </section>
+            </SpeciesPhotoReveal>
           </Reveal>
+        </header>
 
-          {species.funFact && (
+        {/* Cuerpo + aparato lateral */}
+        <div className="mt-12 grid gap-10 lg:grid-cols-[1fr_23rem] lg:gap-14">
+          <div className="max-w-2xl space-y-10">
             <Reveal>
-              <aside className="relative rounded-[26px] border-[3px] border-line bg-sun p-5 text-sun-ink shadow-[var(--card-shadow)]">
-                <p className="hand text-2xl">¿Sabías que…?</p>
-                <p className="mt-1 text-lg font-bold leading-snug">
-                  {species.funFact}
+              <section>
+                <h2 className="font-display text-[clamp(1.6rem,4vw,2.25rem)]">
+                  Su historia
+                </h2>
+                <p className="mt-3 text-lg leading-relaxed">
+                  {species.kidDescription ?? species.description}
                 </p>
-                <span
-                  aria-hidden
-                  className="absolute -right-3 -top-5 inline-flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-line bg-paper text-ink"
-                >
-                  <BulbIcon className="h-6 w-6" />
-                </span>
-              </aside>
-            </Reveal>
-          )}
-
-          <Reveal>
-            <section>
-              <h2 className="font-display text-[clamp(1.6rem,4vw,2.25rem)]">
-                ¿Dónde vive?
-              </h2>
-              <p className="mt-3 text-lg leading-relaxed">{species.habitat}</p>
-
-              {species.marineZone && (
-                <p className="mt-4 rounded-[20px] border-[3px] border-dashed border-sky bg-paper px-4 py-3 text-sm text-ink-soft">
-                  <strong className="text-sky-ink">Mar abierto:</strong> no vive
-                  en ningún municipio de tierra. Su hogar es {species.marineZone},
-                  lejos de la costa.
-                </p>
-              )}
-
-              <div className="mt-5 grid gap-6 rounded-[26px] border-[3px] border-line bg-paper-2 p-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
-                <DistributionMap active={activeSlugs} showLabels={false} />
-                <div>
-                  <p className="text-sm text-ink-soft">
-                    {species.marineZone
-                      ? "Frente a las costas de estos municipios:"
-                      : "En Campeche se le ha visto en estos municipios:"}
-                  </p>
-                  <ul className="mt-3 flex flex-wrap gap-1.5">
-                    {species.regions.map((r) => (
-                      <li key={r.slug}>
-                        <Tag tone="jungle" seed={r.slug} title={`Cabecera: ${r.seat}`}>
-                          {r.name}
-                        </Tag>
-                      </li>
-                    ))}
-                  </ul>
-                  <Link
-                    href="/mapa"
-                    className="hand mt-3 inline-block text-lg text-rust hover:underline"
-                  >
-                    ver el mapa completo →
-                  </Link>
+                <div className="mt-4">
+                  <SpeciesNarration parts={[species.kidDescription ?? species.description]} />
                 </div>
-              </div>
-            </section>
-          </Reveal>
+              </section>
+            </Reveal>
 
-          <Reveal>
-            <details className="group rounded-[22px] border-[3px] border-dashed border-line bg-paper p-5">
-              <summary className="hand flex cursor-pointer list-none items-center gap-2 text-xl text-ink-soft marker:content-none">
-                <SearchIcon className="h-5 w-5 shrink-0" />
-                <span className="group-open:hidden">
-                  Para quien quiera saber más…
-                </span>
-                <span className="hidden group-open:inline">
-                  Versión para expertos
-                </span>
-              </summary>
-              <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
-                {species.description}
-              </p>
-            </details>
-          </Reveal>
+            {species.funFact && (
+              <Reveal>
+                <aside className="relative rounded-[26px] border-[3px] border-line bg-sun p-5 text-sun-ink shadow-[var(--card-shadow)]">
+                  <p className="hand text-2xl">¿Sabías que…?</p>
+                  <p className="mt-1 text-lg font-bold leading-snug">
+                    {species.funFact}
+                  </p>
+                  <div className="mt-3">
+                    <SpeciesNarration parts={[species.funFact]} />
+                  </div>
+                  <span
+                    aria-hidden
+                    className="absolute -right-3 -top-5 inline-flex h-10 w-10 items-center justify-center rounded-full border-[3px] border-line bg-paper text-ink"
+                  >
+                    <BulbIcon className="h-6 w-6" />
+                  </span>
+                </aside>
+              </Reveal>
+            )}
+
+            <Reveal>
+              <section>
+                <h2 className="font-display text-[clamp(1.6rem,4vw,2.25rem)]">
+                  ¿Dónde vive?
+                </h2>
+                <p className="mt-3 text-lg leading-relaxed">{species.habitat}</p>
+                <div className="mt-4">
+                  <SpeciesNarration parts={[species.habitat]} />
+                </div>
+
+                {species.marineZone && (
+                  <p className="mt-4 rounded-[20px] border-[3px] border-dashed border-sky bg-paper px-4 py-3 text-sm text-ink-soft">
+                    <strong className="text-sky-ink">Mar abierto:</strong> no vive
+                    en ningún municipio de tierra. Su hogar es {species.marineZone},
+                    lejos de la costa.
+                  </p>
+                )}
+
+                <div className="mt-5 grid gap-6 rounded-[26px] border-[3px] border-line bg-paper-2 p-5 sm:grid-cols-[minmax(0,14rem)_1fr] sm:items-center">
+                  <DistributionMap active={activeSlugs} showLabels={false} />
+                  <div>
+                    <p className="text-sm text-ink-soft">
+                      {species.marineZone
+                        ? "Frente a las costas de estos municipios:"
+                        : "En Campeche se le ha visto en estos municipios:"}
+                    </p>
+                    <ul className="mt-3 flex flex-wrap gap-1.5">
+                      {species.regions.map((r) => (
+                        <li key={r.slug}>
+                          <Tag tone="jungle" seed={r.slug} title={`Cabecera: ${r.seat}`}>
+                            {r.name}
+                          </Tag>
+                        </li>
+                      ))}
+                    </ul>
+                    <Link
+                      href="/mapa"
+                      className="hand mt-3 inline-block text-lg text-rust hover:underline"
+                    >
+                      ver el mapa completo →
+                    </Link>
+                  </div>
+                </div>
+              </section>
+            </Reveal>
+
+            <Reveal>
+              <details className="group rounded-[22px] border-[3px] border-dashed border-line bg-paper p-5">
+                <summary className="hand flex cursor-pointer list-none items-center gap-2 text-xl text-ink-soft marker:content-none">
+                  <SearchIcon className="h-5 w-5 shrink-0" />
+                  <span className="group-open:hidden">
+                    Para quien quiera saber más…
+                  </span>
+                  <span className="hidden group-open:inline">
+                    Versión para expertos
+                  </span>
+                </summary>
+                <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-soft">
+                  {species.description}
+                </p>
+              </details>
+            </Reveal>
+          </div>
+
+          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
+            <Reveal y={16}>
+              <ExplorerId species={species} />
+            </Reveal>
+            <Reveal y={16}>
+              <CareMeter status={species.conservationStatus} />
+            </Reveal>
+          </aside>
         </div>
 
-        <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-          <Reveal y={16}>
-            <ExplorerId species={species} />
-          </Reveal>
-          <Reveal y={16}>
-            <CareMeter status={species.conservationStatus} />
-          </Reveal>
-        </aside>
-      </div>
-
-      {/* Otra criatura */}
-      <nav className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        <Link
-          href={`/especies/${prev.slug}`}
-          className="group flex items-center gap-4 rounded-[26px] border-[3px] border-line bg-paper p-4 shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)] hover:-translate-y-1 hover:-rotate-1"
-        >
-          <SpeciesScene slug={prev.slug} className="h-20 w-20 shrink-0 border-[4px]" />
-          <span>
-            <span className="hand block text-lg text-ink-faint">
-              ← otra criatura
+        {/* Otra criatura */}
+        <nav className="mt-16 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <Link
+            href={`/especies/${prev.slug}`}
+            className="group flex items-center gap-4 rounded-[26px] border-[3px] border-line bg-paper p-4 shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)] hover:-translate-y-1 hover:-rotate-1"
+          >
+            <SpeciesScene slug={prev.slug} className="h-20 w-20 shrink-0 border-[4px]" />
+            <span>
+              <span className="hand block text-lg text-ink-faint">
+                ← otra criatura
+              </span>
+              <span className="font-display text-xl leading-tight">
+                {prev.commonNameEs}
+              </span>
             </span>
-            <span className="font-display text-xl leading-tight">
-              {prev.commonNameEs}
+          </Link>
+          <Link
+            href={`/especies/${next.slug}`}
+            className="group flex items-center justify-end gap-4 rounded-[26px] border-[3px] border-line bg-paper p-4 text-right shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)] hover:-translate-y-1 hover:rotate-1"
+          >
+            <span>
+              <span className="hand block text-lg text-ink-faint">
+                otra criatura →
+              </span>
+              <span className="font-display text-xl leading-tight">
+                {next.commonNameEs}
+              </span>
             </span>
-          </span>
-        </Link>
-        <Link
-          href={`/especies/${next.slug}`}
-          className="group flex items-center justify-end gap-4 rounded-[26px] border-[3px] border-line bg-paper p-4 text-right shadow-[var(--card-shadow)] transition-transform duration-200 ease-[var(--ease-bounce)] hover:-translate-y-1 hover:rotate-1"
-        >
-          <span>
-            <span className="hand block text-lg text-ink-faint">
-              otra criatura →
-            </span>
-            <span className="font-display text-xl leading-tight">
-              {next.commonNameEs}
-            </span>
-          </span>
-          <SpeciesScene slug={next.slug} className="h-20 w-20 shrink-0 border-[4px]" />
-        </Link>
-      </nav>
-    </article>
+            <SpeciesScene slug={next.slug} className="h-20 w-20 shrink-0 border-[4px]" />
+          </Link>
+        </nav>
+      </article>
+    </SpeciesNarrationProvider>
   );
 }
