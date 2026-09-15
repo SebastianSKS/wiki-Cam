@@ -84,15 +84,18 @@ const CARE_GROUPS = {
 >;
 type CareKey = keyof typeof CARE_GROUPS;
 
+// Un acento propio por categoría, sin repetir (antes "aves" y "marino"
+// compartían sky, y "crustáceos"/"flora" no pasaban contraste AA —
+// ver CATEGORY_TONE en lib/format.ts, la misma idea para <Tag>).
 const CAT_TONE: Record<SpeciesCategory, string> = {
   mamiferos: "bg-jungle text-jungle-ink",
   aves: "bg-sky text-sky-ink",
   reptiles: "bg-sun text-sun-ink",
   anfibios: "bg-coral text-coral-ink",
   insectos: "bg-lavender text-lavender-ink",
-  crustaceos: "bg-rust text-coral-ink",
-  flora: "bg-jungle-deep text-paper",
-  marino: "bg-sky text-sky-ink",
+  crustaceos: "bg-flamingo text-flamingo-ink",
+  flora: "bg-moss text-moss-ink",
+  marino: "bg-aqua text-aqua-ink",
 };
 
 function href(cur: SP, patch: Partial<SP>): string {

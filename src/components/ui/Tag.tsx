@@ -1,13 +1,16 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 
-type Tone =
+export type Tone =
   | "default"
   | "jungle"
   | "sky"
   | "coral"
   | "sun"
   | "lavender"
+  | "aqua"
+  | "flamingo"
+  | "moss"
   | "outline";
 
 const TONE: Record<Tone, string> = {
@@ -17,6 +20,9 @@ const TONE: Record<Tone, string> = {
   coral: "bg-coral text-coral-ink border-line",
   sun: "bg-sun text-sun-ink border-line",
   lavender: "bg-lavender text-lavender-ink border-line",
+  aqua: "bg-aqua text-aqua-ink border-line",
+  flamingo: "bg-flamingo text-flamingo-ink border-line",
+  moss: "bg-moss text-moss-ink border-line",
   outline: "bg-transparent text-ink border-current",
 };
 

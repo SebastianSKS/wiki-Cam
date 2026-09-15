@@ -6,7 +6,7 @@ import {
   getAllSlugs,
   getSpeciesCatalog,
 } from "@/lib/queries";
-import { CATEGORY_LABEL, CARE, CONSERVATION, binomial } from "@/lib/format";
+import { CATEGORY_LABEL, CATEGORY_TONE, CARE, CONSERVATION, binomial } from "@/lib/format";
 import { Tag } from "@/components/ui/Tag";
 import { Reveal } from "@/components/ui/Reveal";
 import { SpeciesScene } from "@/components/illustration/SpeciesIllustration";
@@ -98,7 +98,7 @@ export default async function SpeciesPage({
             <Tag tone={careTone} seed={species.slug}>
               {care.headline}
             </Tag>
-            <Tag tone="sky" seed={species.category}>
+            <Tag tone={CATEGORY_TONE[species.category]} seed={species.category}>
               {CATEGORY_LABEL[species.category]}
             </Tag>
             <Tag tone="outline" seed={species.slug + "m"}>

@@ -3,6 +3,7 @@ import type {
   PresenceType,
   SpeciesCategory,
 } from "@/db/schema";
+import type { Tone } from "@/components/ui/Tag";
 
 /** Número de catálogo tipo museo: CAM·MAM·0007 */
 export function catalogNumber(id: number, category: SpeciesCategory): string {
@@ -28,6 +29,23 @@ export const CATEGORY_LABEL: Record<SpeciesCategory, string> = {
   crustaceos: "Crustáceos",
   flora: "Flora",
   marino: "Marino",
+};
+
+/**
+ * Color por categoría (para <Tag>): cada una con su propio acento, sin
+ * repetir — antes "aves" y "marino" compartían sky. "marino" usa el
+ * turquesa de laguna/costa; "crustáceos" y "flora" tenían combinaciones
+ * que no pasaban AA (ver commit), ahora con su propio tono.
+ */
+export const CATEGORY_TONE: Record<SpeciesCategory, Tone> = {
+  mamiferos: "jungle",
+  aves: "sky",
+  reptiles: "sun",
+  anfibios: "coral",
+  insectos: "lavender",
+  crustaceos: "flamingo",
+  flora: "moss",
+  marino: "aqua",
 };
 
 /** Relación con Campeche: exclusiva vs. compartida con vecinos. */
