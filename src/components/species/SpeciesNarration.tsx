@@ -21,16 +21,26 @@
    de empezar la nueva, y el estado de React (no un evento async del
    navegador) es lo que decide qué botón se ve en "Detener".
 
-   Bug corregido: `getVoices()` devuelve `[]` en la primera carga en
-   varios navegadores porque la lista llega de forma asíncrona (evento
-   `voiceschanged`, que en Safari a veces ni dispara). El proveedor la
-   pide de entrada, escucha `voiceschanged` y además reintenta un par
-   de veces por si el evento no llega. Pase lo que pase, `speak()`
-   nunca espera a que carguen las voces antes de hablar — si al
-   momento del clic no hay ninguna en español, narra con la voz por
-   defecto del navegador en vez de quedarse en silencio; esperar (con
-   `await`) antes de llamar a `speak()` rompería además el gesto de
-   usuario que Safari/iOS exige para permitir el audio.
+   Bug corregido (voces): `getVoices()` devuelve `[]` en la primera
+   carga en varios navegadores porque la lista llega de forma
+   asíncrona (evento `voiceschanged`, que en Safari a veces ni
+   dispara). El proveedor la pide de entrada, escucha `voiceschanged`
+   y además reintenta un par de veces por si el evento no llega. Pase
+   lo que pase, `speak()` nunca espera a que carguen las voces antes
+   de hablar — si al momento del clic no hay ninguna en español, narra
+   con la voz por defecto del navegador en vez de quedarse en
+   silencio; esperar (con `await`) antes de llamar a `speak()`
+   rompería además el gesto de usuario que Safari/iOS exige para
+   permitir el audio.
+
+   Bug corregido (silencio en Chrome/Edge de escritorio): Chrome tiene
+   un bug conocido donde, si el `SpeechSynthesisUtterance` sólo vive
+   como variable local de la función que llama a `speak()`, el
+   recolector de basura puede liberarlo a medio camino — `speak()` se
+   llama, no hay ningún error, pero no suena nada o se corta. La
+   solución documentada es quedarse con una referencia fuerte al
+   utterance activo mientras dura el habla (aquí, `utterRef`), para
+   que nada lo recolecte hasta `onend`/`onerror`.
    ============================================================ */
 
 import {
@@ -69,6 +79,9 @@ export function SpeciesNarrationProvider({ children }: { children: ReactNode }) 
   const [supported, setSupported] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
   const voicesRef = useRef<SpeechSynthesisVoice[]>([]);
+  // Referencia fuerte al utterance que está sonando: sin esto, Chrome puede
+  // recolectarlo como basura a medio camino y el audio se corta en silencio.
+  const utterRef = useRef<SpeechSynthesisUtterance | null>(null);
 
   useEffect(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
@@ -90,12 +103,14 @@ export function SpeciesNarrationProvider({ children }: { children: ReactNode }) 
       window.clearTimeout(retry1);
       window.clearTimeout(retry2);
       synth.cancel();
+      utterRef.current = null;
     };
   }, []);
 
   const stop = useCallback(() => {
     if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
     window.speechSynthesis.cancel();
+    utterRef.current = null;
     setActiveId(null);
   }, []);
 
@@ -107,6 +122,12 @@ export function SpeciesNarrationProvider({ children }: { children: ReactNode }) 
     synth.cancel();
 
     const utter = new SpeechSynthesisUtterance(text);
+    // Se guarda en el ref del componente (no sólo en la variable local
+    // `utter`) para que el objeto siga vivo mientras dura el habla: el bug
+    // de Chrome que lo recolecta a medio camino ataca justo el caso donde
+    // sólo hay una referencia local que sale de scope al terminar speak().
+    utterRef.current = utter;
+
     const freshVoices = synth.getVoices();
     const voices = freshVoices.length ? freshVoices : voicesRef.current;
     const voice = pickSpanishVoice(voices);
@@ -115,8 +136,14 @@ export function SpeciesNarrationProvider({ children }: { children: ReactNode }) 
     if (voice) utter.voice = voice;
     utter.lang = voice?.lang ?? "es-MX";
     utter.rate = 0.85;
-    utter.onend = () => setActiveId((cur) => (cur === id ? null : cur));
-    utter.onerror = () => setActiveId((cur) => (cur === id ? null : cur));
+    utter.onend = () => {
+      if (utterRef.current === utter) utterRef.current = null;
+      setActiveId((cur) => (cur === id ? null : cur));
+    };
+    utter.onerror = () => {
+      if (utterRef.current === utter) utterRef.current = null;
+      setActiveId((cur) => (cur === id ? null : cur));
+    };
 
     synth.speak(utter);
     setActiveId(id);
