@@ -13,10 +13,10 @@ const TITLE = ["Las criaturas", "que sólo viven", "en Campeche"];
 const TITLE_COLOR = ["var(--jungle-deep)", "var(--ink)", "var(--rust)"];
 
 /* ----------------------------------------------------------------
-   Escenografía. Día y noche viven las dos en el DOM; el CSS decide
-   cuál se ve según el tema (.amb-day / .amb-night). Ninguna pieza
-   lleva el filtro de acuarela: son elementos que se mueven en cada
-   frame y feTurbulence se re-rasterizaría siempre (era el lag).
+   Escenografía de la portada (siempre de día: un solo tema en todo
+   el sitio). Ninguna pieza lleva el filtro de acuarela: son
+   elementos que se mueven en cada frame y feTurbulence se
+   re-rasterizaría siempre (era el lag).
    ---------------------------------------------------------------- */
 
 function DayScene() {
@@ -116,90 +116,6 @@ function DayScene() {
   );
 }
 
-function NightScene() {
-  const stars = [
-    { c: "left-[12%] top-[14%]", s: 10, d: "3.2s", delay: "0s" },
-    { c: "left-[30%] top-[8%]", s: 7, d: "4s", delay: "0.6s" },
-    { c: "left-[52%] top-[16%]", s: 8, d: "3.6s", delay: "1.1s" },
-    { c: "left-[18%] top-[52%]", s: 8, d: "4.4s", delay: "0.3s" },
-    { c: "right-[24%] top-[58%]", s: 11, d: "3s", delay: "1.6s" },
-    { c: "right-[10%] top-[40%]", s: 6, d: "5s", delay: "0.9s" },
-    { c: "left-[44%] top-[68%]", s: 7, d: "3.8s", delay: "2s" },
-  ];
-
-  return (
-    <div className="amb-night pointer-events-none absolute inset-0 overflow-hidden">
-      {/* nube de noche con la luna asomándose */}
-      <svg
-        className="amb-float absolute right-[5%] top-[6%] h-24 w-40 md:h-28 md:w-52"
-        viewBox="0 0 200 110"
-      >
-        {/* halo suave de la luna (estático, sin filtro) */}
-        <circle cx="150" cy="34" r="34" fill="var(--sun)" opacity="0.16" />
-        <circle cx="150" cy="34" r="24" fill="var(--sun)" opacity="0.2" />
-        {/* luna con carita */}
-        <g stroke="var(--cacao)" strokeWidth="4" strokeLinecap="round">
-          <circle cx="150" cy="34" r="20" fill="var(--sun)" />
-          <circle cx="144" cy="32" r="2.4" fill="var(--cacao)" />
-          <circle cx="156" cy="32" r="2.4" fill="var(--cacao)" />
-          <path d="M145 40q5 5 10 0" fill="none" />
-          <circle cx="139" cy="40" r="2.6" fill="var(--coral)" opacity="0.7" />
-          <circle cx="161" cy="40" r="2.6" fill="var(--coral)" opacity="0.7" />
-        </g>
-        {/* nube por delante */}
-        <g stroke="var(--cacao)" strokeWidth="4">
-          <path
-            d="M40 92c-20 0-30-12-24-30 5-15 22-17 32-8 5-19 34-22 44-6 17-5 32 8 29 25-3 15-18 17-30 17Z"
-            fill="var(--paper-3)"
-          />
-        </g>
-      </svg>
-
-      {/* estrellas que titilan */}
-      {stars.map((st, i) => (
-        <svg
-          key={i}
-          className={`amb-twinkle absolute ${st.c}`}
-          style={{
-            width: st.s,
-            height: st.s,
-            animationDuration: st.d,
-            animationDelay: st.delay,
-          }}
-          viewBox="0 0 24 24"
-          aria-hidden
-        >
-          <path
-            d="M12 0c1 7 4 10 12 12-8 2-11 5-12 12-1-7-4-10-12-12 8-2 11-5 12-12Z"
-            fill={i % 3 === 0 ? "var(--sun)" : i % 3 === 1 ? "var(--sky)" : "var(--lavender)"}
-          />
-        </svg>
-      ))}
-
-      {/* luciérnagas */}
-      {[
-        { c: "left-[16%] top-[64%]", d: "9s" },
-        { c: "right-[20%] top-[70%]", d: "11s" },
-      ].map((f, i) => (
-        <span
-          key={`f${i}`}
-          className={`amb-float absolute ${f.c} block h-3 w-3 rounded-full`}
-          style={{
-            animationDuration: f.d,
-            background: "var(--sun)",
-            boxShadow: "0 0 10px 3px color-mix(in srgb, var(--sun) 60%, transparent)",
-          }}
-        >
-          <span
-            className="amb-twinkle block h-full w-full rounded-full"
-            style={{ background: "var(--sun)", animationDuration: "2.4s" }}
-          />
-        </span>
-      ))}
-    </div>
-  );
-}
-
 export function StorybookCover({
   speciesCount,
   regionCount,
@@ -227,7 +143,7 @@ export function StorybookCover({
   useEffect(() => {
     if (reduce || !rootRef.current) return;
     const ctx = gsap.context(() => {
-      gsap.to("[data-ambient] .amb-day svg, [data-ambient] .amb-night svg", {
+      gsap.to("[data-ambient] .amb-day svg", {
         yPercent: (i: number) => -6 - (i % 4) * 4,
         ease: "none",
         scrollTrigger: {
@@ -258,7 +174,6 @@ export function StorybookCover({
     >
       <div data-ambient>
         <DayScene />
-        <NightScene />
       </div>
 
       <div className="relative mx-auto max-w-4xl text-center">

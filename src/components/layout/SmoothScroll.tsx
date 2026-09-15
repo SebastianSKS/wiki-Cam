@@ -13,8 +13,8 @@ gsap.registerPlugin(ScrollTrigger);
  * - `lerp` en vez de `duration`: respuesta independiente del framerate y sin
  *   la sensación de rebote pesado.
  * - Sincroniza ScrollTrigger con el scroll suavizado de Lenis y recalcula
- *   posiciones cuando cargan las webfonts o cambia el tema (esto evitaba que
- *   el título de la portada quedara bajo la cabecera).
+ *   posiciones cuando cargan las webfonts (esto evitaba que el título de la
+ *   portada quedara bajo la cabecera).
  */
 export function SmoothScroll() {
   useEffect(() => {
@@ -40,21 +40,11 @@ export function SmoothScroll() {
     document.fonts?.ready?.then(refresh).catch(() => {});
     window.addEventListener("load", refresh);
 
-    const mo = new MutationObserver(refresh);
-    mo.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ["data-theme"],
-    });
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    mq.addEventListener("change", refresh);
-
     return () => {
       cancelAnimationFrame(raf);
       lenis.off("scroll", onLenisScroll);
       lenis.destroy();
       window.removeEventListener("load", refresh);
-      mo.disconnect();
-      mq.removeEventListener("change", refresh);
     };
   }, []);
 

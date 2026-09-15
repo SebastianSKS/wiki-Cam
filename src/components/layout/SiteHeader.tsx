@@ -1,5 +1,4 @@
 import { Link } from "next-view-transitions";
-import { ThemeToggle } from "./ThemeToggle";
 import { JaguarMark } from "@/components/ui/icons";
 
 const NAV = [
@@ -22,8 +21,8 @@ export function SiteHeader() {
           <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-[3px] border-line bg-sun text-sun-ink transition-transform duration-200 ease-[var(--ease-bounce)] group-hover:-rotate-6 sm:h-[52px] sm:w-[52px]">
             <JaguarMark className="h-6 w-6 sm:h-8 sm:w-8" />
           </span>
-          {/* En móvil sólo la marca del jaguar: el wordmark + los pills + el
-              swap de tema no caben en una fila a 360-375 px sin sacar scroll. */}
+          {/* En móvil sólo la marca del jaguar: el wordmark + los pills no
+              caben en una fila a 360-375 px sin sacar scroll. */}
           <span className="hidden min-w-0 leading-none sm:block">
             <span className="font-display block truncate text-base leading-none sm:text-2xl">
               Wiki<span className="text-rust">·</span>Campeche
@@ -44,7 +43,6 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <ThemeToggle />
         </nav>
 
         {/* Filo de color tipo canto de libro: textura sutil, coherente con el

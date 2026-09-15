@@ -7,7 +7,6 @@ import { SmoothScroll } from "@/components/layout/SmoothScroll";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { WatercolorDefs } from "@/components/illustration/WatercolorDefs";
-import { themeInitScript } from "@/components/layout/ThemeToggle";
 
 const display = Baloo_2({
   subsets: ["latin"],
@@ -69,10 +68,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fff8ec" },
-    { media: "(prefers-color-scheme: dark)", color: "#1b1c3e" },
-  ],
+  themeColor: "#fff8ec",
 };
 
 export default function RootLayout({
@@ -83,10 +79,8 @@ export default function RootLayout({
       <html
         lang="es"
         className={`${display.variable} ${body.variable} ${serif.variable} ${hand.variable}`}
-        suppressHydrationWarning
       >
         <body className="min-h-dvh">
-          <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
           <a
             href="#contenido"
             className="skip-link catalog rounded-full border-[3px] border-rust bg-paper px-4 py-2 text-ink"
